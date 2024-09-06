@@ -1,0 +1,48 @@
+import { Module } from '@nestjs/common';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { ChatGateway } from './chat/chat.gateway';
+import { AniApiService } from './aniapi/aniapi.service';
+import { AniapiController } from './aniapi/aniapi.controller';
+import { LawApiService } from './lawapi/lawapi.service';
+import { LawApiController } from './lawapi/lawapi.controller';
+import { NewsApiService } from './newsapi/newsapi.service';
+import { NewsapiController } from './newsapi/newsapi.controller';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { MailModule } from './mail/mail.module';
+import { AuthModule } from './auth/auth.module';
+
+@Module({
+  imports: [    
+    ConfigModule.forRoot(),
+    MailModule,
+    MailerModule.forRootAsync({
+      imports:[ConfigModule],
+      useFactory: async(config: ConfigService) => ({
+        transport: {
+          host: config.get('MAIL_HOST'),
+          auth: {
+            user: config.get('MAIL_USER'),
+            pass: config.get('MAIL_PASS'),
+          },
+        },
+        defaults: {
+          from: '"nest-modules" <modules@nestjs.com>',
+        },
+        template: {
+          dir: __dirname + '/templates',
+          adapter: new HandlebarsAdapter(),
+          options: {
+            strict: true,
+          },
+        },
+      }),
+      inject: [ConfigService],
+    }),
+    AuthModule,],
+  controllers: [AppController, AniapiController, LawApiController, NewsapiController],
+  providers: [AppService, ChatGateway, AniApiService, LawApiService, NewsApiService],
+})
+export class AppModule {}
