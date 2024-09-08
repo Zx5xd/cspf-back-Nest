@@ -13,6 +13,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { MailModule } from './mail/mail.module';
 import { AuthModule } from './auth/auth.module';
+import { ImageService } from './image/image.service';
+import { ImageController } from './image/image.controller';
 
 @Module({
   imports: [    
@@ -42,7 +44,7 @@ import { AuthModule } from './auth/auth.module';
       inject: [ConfigService],
     }),
     AuthModule,],
-  controllers: [AppController, AniapiController, LawApiController, NewsapiController],
-  providers: [AppService, ChatGateway, AniApiService, LawApiService, NewsApiService],
+  controllers: [AppController, AniapiController, LawApiController, NewsapiController, ImageController],
+  providers: [AppService, ChatGateway, AniApiService, LawApiService, NewsApiService, ImageService],
 })
 export class AppModule {}
