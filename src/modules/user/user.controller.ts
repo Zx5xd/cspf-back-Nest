@@ -1,8 +1,9 @@
-import {Body, Controller, Delete, Get, Param, Post, Res} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Post, Req, Res, UseGuards} from '@nestjs/common';
 import { UserService } from "./user.service";
 import { UserEntity } from "./user.entity";
 import {CreateUserDto} from "../../dto/user.dto";
 import {Response} from "express";
+import {JwtAuthGuard} from "../auth/jwt-auth.guard";
 
 @Controller('user')
 export class UserController {
@@ -11,6 +12,13 @@ export class UserController {
     @Post()
     async create(@Body() createUserDTO: CreateUserDto) {
         return await this.userService.create(createUserDTO);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('profile')
+    async profile(@Req() req, @Res() res) {
+        const user = await this.userService.getProfile(req.user.userCode)
+        res.send(user)
     }
 
     @Get(':username')

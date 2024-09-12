@@ -43,6 +43,20 @@ export class UserService {
         return await this.userRepository.find();
     }
 
+    async getProfile(userCode:string): Promise<UserEntity> {
+        return await this.userRepository.findOne({
+            where: {userCode:userCode},
+            select: ['username','email','addr','phone','gender','nickname','name']
+        })
+    }
+
+    async updateRefreshToken(userCode:string,refreshToken:string) {
+        await this.userRepository.update(
+            userCode,
+            {refreshToken:refreshToken}
+        )
+    }
+
     async deleteUser(userCode:string) {
         const result = await this.userRepository.delete({userCode:userCode})
 

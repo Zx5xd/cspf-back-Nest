@@ -6,6 +6,7 @@ import {ConfigModule} from "@nestjs/config";
 import {TypeOrmModule} from "@nestjs/typeorm";
 import * as process from 'process';
 import * as Joi from "joi";
+import {AuthModule} from "./modules/auth/auth.module";
 
 @Module({
   imports: [
@@ -31,7 +32,8 @@ import * as Joi from "joi";
           entities: ['dist/**/*.entity.js'],
           synchronize: true
       }),
-      UserModule
+      UserModule,
+      AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],
