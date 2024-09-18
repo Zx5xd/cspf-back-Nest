@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import fileUploadComponent from "./components/ITTComponent";
 
 const EmailBut: React.FC = () => {
     const navigate = useNavigate();

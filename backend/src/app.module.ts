@@ -20,12 +20,12 @@ import { ScripingController } from './scriping/scriping.controller';
 import { MailauthModule } from './mailauth/mailauth.module';
 
 @Module({
-  imports: [    
+  imports: [
     ConfigModule.forRoot(),
     MailModule,
     MailerModule.forRootAsync({
-      imports:[ConfigModule],
-      useFactory: async(config: ConfigService) => ({
+      imports: [ConfigModule],
+      useFactory: async (config: ConfigService) => ({
         transport: {
           host: config.get('MAIL_HOST'),
           auth: {
@@ -47,8 +47,24 @@ import { MailauthModule } from './mailauth/mailauth.module';
       inject: [ConfigService],
     }),
     AuthModule,
-    MailauthModule,],
-  controllers: [AppController, AniapiController, LawApiController, NewsapiController, ImageController, ScripingController],
-  providers: [AppService, ChatGateway, AniApiService, LawApiService, NewsApiService, ImageService, ScripingService],
+    MailauthModule,
+  ],
+  controllers: [
+    AppController,
+    AniapiController,
+    LawApiController,
+    NewsapiController,
+    ImageController,
+    ScripingController,
+  ],
+  providers: [
+    AppService,
+    ChatGateway,
+    AniApiService,
+    LawApiService,
+    NewsApiService,
+    ImageService,
+    ScripingService,
+  ],
 })
 export class AppModule {}
