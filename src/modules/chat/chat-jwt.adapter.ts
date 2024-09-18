@@ -1,16 +1,25 @@
 import {IoAdapter} from "@nestjs/platform-socket.io";
-import {INestApplication} from "@nestjs/common";
+import {INestApplication, Injectable} from "@nestjs/common";
 import { Server, Socket } from "socket.io";
+import {AuthService} from "../auth/auth.service";
+import process from "process";
+import {JwtService} from "@nestjs/jwt";
+import {ConfigService} from "@nestjs/config";
+import {ChatRoomService} from "../chatroom/chatroom.service";
 
 export class ChatJwtAdapter extends IoAdapter {
     constructor(
-        app:INestApplication
+        app:INestApplication,
+        private readonly jwtService: JwtService,
+        private readonly configService: ConfigService,
+        private readonly chatRoomService: ChatRoomService,
     ) {super(app);}
 
     createIOServer(port: number, options?: any): Server {
         const server = super.createIOServer(port, options);
 
         server.use(async (socket:Socket, next)=>{
+            console.log('test')
             const accessToken:string = socket.handshake.query.accessToken as string || socket.handshake.headers['authorization'];
             const roomId = socket.handshake.query.roomId as string | null | undefined;
 
@@ -23,9 +32,26 @@ export class ChatJwtAdapter extends IoAdapter {
                 return next(new Error('No roomId provided'));
             }
 
+            const existChatRoom = await this.chatRoomService.findOne(roomId);
+            if (!existChatRoom) {
+                return next(new Error('Not Found roomId provided'));
+            }
 
+            try {
+                const secretKey = this.configService.get<string>('SECRET_KEY');
+                const payload = this.jwtService.verify(accessToken, {
+                    secret: secretKey
+                });
+                console.log(payload)
+                socket.data.user = payload;
+                socket.data.roomId = roomId;
+                socket.join(roomId)
+                next();
+            } catch (error) {
+                return next(new Error('Invalid token'));
+            }
         })
 
-        return super.createIOServer(port, options);
+        return server;
     }
 }

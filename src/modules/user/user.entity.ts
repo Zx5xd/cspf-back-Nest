@@ -1,4 +1,5 @@
-import {Entity, Column, PrimaryGeneratedColumn, Unique, CreateDateColumn, PrimaryColumn} from 'typeorm';
+import {Entity, Column, PrimaryGeneratedColumn, Unique, CreateDateColumn, PrimaryColumn, OneToMany} from 'typeorm';
+import {ChatLogEntity} from "../chatlog/chatlog.entity";
 
 @Entity('User')
 @Unique(['username'])
@@ -39,4 +40,7 @@ export class UserEntity {
 
     @CreateDateColumn({ type: 'timestamp' })
     createdTime: Date;
+
+    @OneToMany(() => ChatLogEntity, chatLog => chatLog.user)
+    chatLogs: ChatLogEntity[];
 }

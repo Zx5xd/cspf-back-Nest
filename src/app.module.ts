@@ -7,6 +7,10 @@ import {TypeOrmModule} from "@nestjs/typeorm";
 import * as process from 'process';
 import * as Joi from "joi";
 import {AuthModule} from "./modules/auth/auth.module";
+import {ChatJwtAdapter} from "./modules/chat/chat-jwt.adapter";
+import {ChatRoomModule} from "./modules/chatroom/chatroom.module";
+import {ChatLogModule} from "./modules/chatlog/chatlog.module";
+import {ChatGateway} from "./modules/chat/chat.gateway";
 
 @Module({
   imports: [
@@ -33,9 +37,11 @@ import {AuthModule} from "./modules/auth/auth.module";
           synchronize: true
       }),
       UserModule,
-      AuthModule
+      AuthModule,
+      ChatRoomModule,
+      ChatLogModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,ChatGateway],
 })
 export class AppModule {}
