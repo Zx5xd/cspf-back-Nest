@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import fileUploadComponent from "./components/ITTComponent";
 
 const EmailBut: React.FC = () => {
     const navigate = useNavigate();
@@ -28,16 +29,22 @@ const EmailBut: React.FC = () => {
         // '/target-path' 경로로 리다이렉트합니다.
         navigate('/aniInfo');
       };
+
+    const imageToTextRedirect = () => {
+        // '/target-path' 경로로 리다이렉트합니다.
+        navigate('/itt');
+    };
   
     return (
-      <div>
-        <h1>Button</h1>
-        <button onClick={emailVerifyRedirect}>emailVerify</button>
-        <button onClick={voiceChatRedirect}>voiceChat</button>
-        <button onClick={searchNewsRedirect}>searchNews</button>
-        <button onClick={caseLawsRedirect}>caseLaws</button>
-        <button onClick={aniInfoRedirect}>aniInfo</button>
-      </div>
+        <div>
+            <h1>Button</h1>
+            <button onClick={emailVerifyRedirect}>emailVerify</button>
+            <button onClick={voiceChatRedirect}>voiceChat</button>
+            <button onClick={searchNewsRedirect}>searchNews</button>
+            <button onClick={caseLawsRedirect}>caseLaws</button>
+            <button onClick={aniInfoRedirect}>aniInfo</button>
+            <button onClick={imageToTextRedirect}>ImageToText</button>
+        </div>
     );
 };
 

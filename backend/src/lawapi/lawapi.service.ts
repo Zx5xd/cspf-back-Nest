@@ -13,11 +13,9 @@ export class LawApiService {
     try {
       // HTTP GET 요청을 통해 URL에서 XML 데이터 가져오기
       const response = await axios.get(url, { responseType: 'text' });
-     
+
       // XML 데이터를 JavaScript 객체로 변환
       const result = await parser.parseStringPromise(response.data);
-      ;
-
       // 변환된 결과에서 날짜 형식을 포맷팅
       for (const key in result.PrecSearch.prec) {
         const dateVar = new Date(result.PrecSearch.prec[key].선고일자);

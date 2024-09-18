@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "heroic-light-436012-m1",
+  "private_key_id": "9dba6b2d4946cf6ab71d6d78000cac66914b2f00",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCaFY8EV834TV7u\nhvAKuwkyzh8iAaTvTxXPgEeGt4BE47GAIlYIZt3XymvIMHDNNeWifoohQasX59t5\nsVR1aRlYzpLwERtT7N/1D61/V6Lt0C+wtYqI9+sYYP47Squ6Izd8m7d+KnWL/HZH\nIK0hZwMdnm6natTx6z0W43XU7bQ+M9lHAProfndNUGS5/V5lp05AnzPCqIxw6UAe\nNHt67D30g9yUgodYydl42Ql0Pf+o67LJrVXZKRCyX1iIfzHfpreZHdGX3n6HkEW2\nyk9Lj3kq+rlQYkxqhr5FKCeKCHFchZvE5wacbHCLRwaHp9pMUzrrM4CZ2pwjp97v\nrA2nEYUrAgMBAAECggEAKFQWL5vPo/qUKzgUIarceHise1kU0zHO0pWPovnqT52M\nuq3B+Mb7r1wio63SCFPf+4zFGHk4j7Q2pH4+TdCpOq4ulTjU/z1TTK/CyD6mvTmt\nEcIiNUE2PhY81EXx9nD7N9kFyLbSN0ZnqqwpxEFS9nCeI6F5hKv+PDxifc2NTG4b\nhXZp5W6Kxd+fllmfaaV9x/f97uPR3jNtwSJwny0cjuA5W77IIc4Ap8YZb+KtjWHP\n62siCch/xS9dVZlBzFYns0WDcnA88ku2lr1t8ax0fV/Od833Nsa4g4sb0JGKMHr/\n3TLQv4KTBiz4s2QdzfXTilErEsGqOaXLYf3kzzYIaQKBgQDRnI5qCY+H2juvyHGL\n8t9YM2LV5Z4Q/cTuQNGt3RL5KHPq0I7fZmrJu1LQXYqCBkauZHGQ68vSg9tZtI6C\nNee6KadD5ISdeCd0Rjc528jqmI20xqyLFto9O39IKY7S42KNcjkjQwSCnt6gHXwd\n/Q7TR+CH37wQzQ40H3u8Hu5+BwKBgQC8LyCYXYBi8a31q+fCsvFmbSTgf9dTG8jJ\n2XFnKmWQIt3POwhEw8KWDJzntKFpIM+Xn0n8SI9SPrTpAkHLgNqGb5vxj6gIc/Ir\niD6Z0L/DiqVQt+jms5/b0c2JZtAM6gm5UzED+/lJPD0yCgt7FqJcrmcGOEuDGGUH\nLyYz4A82vQKBgGb9nnf5dJ2Sm+sV+LyDvDuxG+nvJYhBuCY8kQn1auIjfzkr+ldI\nEkZGlT0uCOU0Qjxju+0x/nbUNM3RyoeuBsrQto/EU2iv5eraqT3zgLfL9yyQxayd\nsOOPPU3upW93LDBFpE9wGWI4vzg65IYzlbo4QdlhFB3JMyZnJbvcEuC3AoGBALvG\nAq5GTj9sjHqhJ8b9KydbLPreVYtWJApVcHTStzkVsWKAswV6mIWE3GPPt2fhF4Nh\nrD+SX4BflcETQXfAgUy3vVFSWQbmOvT5JA3zYAXMKJzchgb9oTuEo6TA9ESOm1lT\nC4vAN8S92Qo/P6l4slXsqFxqe965zsVWZLZKkqO5AoGBAJQheAFUi4RDXwrYAR2p\n6smyjhxDr4ZIV2JEgwShJQEHeu9ZiCit1frDXZRAHYFTNtVT/xx0K7qn82FFScAX\nWdch8x+c5J/xPkA/3EMUsnkloXqW4B8sM/bMQiszTkfvJwk0CWwK/3kNXMa8hMPe\nn0yVudQHoOOA7FMMGz3+hdjw\n-----END PRIVATE KEY-----\n",
+  "client_email": "cspf-serviceapi@heroic-light-436012-m1.iam.gserviceaccount.com",
+  "client_id": "109827762932941745707",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/cspf-serviceapi%40heroic-light-436012-m1.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

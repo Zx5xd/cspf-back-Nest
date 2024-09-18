@@ -15,6 +15,9 @@ import { MailModule } from './mail/mail.module';
 import { AuthModule } from './auth/auth.module';
 import { ImageService } from './image/image.service';
 import { ImageController } from './image/image.controller';
+import { ScripingService } from './scriping/scriping.service';
+import { ScripingController } from './scriping/scriping.controller';
+import { MailauthModule } from './mailauth/mailauth.module';
 
 @Module({
   imports: [    
@@ -43,8 +46,9 @@ import { ImageController } from './image/image.controller';
       }),
       inject: [ConfigService],
     }),
-    AuthModule,],
-  controllers: [AppController, AniapiController, LawApiController, NewsapiController, ImageController],
-  providers: [AppService, ChatGateway, AniApiService, LawApiService, NewsApiService, ImageService],
+    AuthModule,
+    MailauthModule,],
+  controllers: [AppController, AniapiController, LawApiController, NewsapiController, ImageController, ScripingController],
+  providers: [AppService, ChatGateway, AniApiService, LawApiService, NewsApiService, ImageService, ScripingService],
 })
 export class AppModule {}

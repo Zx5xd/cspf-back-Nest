@@ -11,7 +11,7 @@ const Email: React.FC = () => {
 
     try {
       // GET 요청을 보냅니다.
-      const response = await axios.get('http://localhost:3500/auth/register');
+      const response = await axios.get('http://localhost:3500/mailauth/registerAuth');
 
       if (response.status === 200) {
         // 성공적인 응답을 받으면 메시지를 설정합니다.
