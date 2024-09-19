@@ -11,6 +11,7 @@ import {ChatJwtAdapter} from "./modules/chat/chat-jwt.adapter";
 import {ChatRoomModule} from "./modules/chatroom/chatroom.module";
 import {ChatLogModule} from "./modules/chatlog/chatlog.module";
 import {ChatGateway} from "./modules/chat/chat.gateway";
+import {AdminModule} from "./modules/admin/admin.module";
 
 @Module({
   imports: [
@@ -39,7 +40,8 @@ import {ChatGateway} from "./modules/chat/chat.gateway";
       UserModule,
       AuthModule,
       ChatRoomModule,
-      ChatLogModule
+      ChatLogModule,
+      AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService,ChatGateway],
