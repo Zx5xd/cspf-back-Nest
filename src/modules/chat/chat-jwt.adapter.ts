@@ -42,7 +42,11 @@ export class ChatJwtAdapter extends IoAdapter {
                 const payload = this.jwtService.verify(accessToken, {
                     secret: secretKey
                 });
-                console.log(payload)
+
+                if (!existChatRoom.accessUser[payload.sub]) {
+                    return next(new Error('Not Found Access Permission'))
+                }
+
                 socket.data.user = payload;
                 socket.data.roomId = roomId;
                 socket.join(roomId)
