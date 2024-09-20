@@ -1,10 +1,13 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import axios from 'axios';
 import * as xml2js from 'xml2js';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class LawApiService {
-  private oc = 'wvw201016'; // 고유 코드 설정
+  constructor(private config: ConfigService) {}
+
+  private oc = this.config.get('MAIL_ID'); // 고유 코드 설정
 
   // XML을 JSON으로 변환하는 함수
   private async fetchAndParseXML(url: string): Promise<any> {

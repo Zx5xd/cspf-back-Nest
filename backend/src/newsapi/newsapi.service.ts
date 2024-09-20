@@ -1,10 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 
 @Injectable()
 export class NewsApiService {
-  private client_id = 'bIJbfHfcyZpcgNsPOhll';
-  private client_secret = 'JZnAq8OE2I';
+  constructor(private configService: ConfigService) {}
+
+  private client_id = this.configService.get<string>('NAVER_CLIENT_ID');
+  private client_secret = this.configService.get<string>('NAVER_CLIENT_SECRET');
 
   async getNewsSearch(query: string): Promise<any> {
     const news_api =
