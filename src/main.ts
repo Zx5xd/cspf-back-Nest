@@ -4,9 +4,9 @@ import * as cookieParser from 'cookie-parser';
 import {ChatJwtAdapter} from "./modules/chat/chat-jwt.adapter";
 import {JwtService} from "@nestjs/jwt";
 import 'dotenv/config';
-import process from "process";
 import {ConfigService} from "@nestjs/config";
 import {ChatRoomService} from "./modules/chatroom/chatroom.service";
+import {ValidationPipe} from "@nestjs/common";
 
 async function bootstrap() {
 
@@ -14,6 +14,7 @@ async function bootstrap() {
   //app.useGlobalGuards(new JwtAuthGuard());
 
   app.use(cookieParser());
+  app.useGlobalPipes(new ValidationPipe());
 
   const jwtService = app.get(JwtService);
   const chatRoomService = app.get(ChatRoomService);

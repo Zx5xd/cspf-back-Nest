@@ -20,3 +20,17 @@ export class ChatLogDto {
   @MaxLength(255)
   ChatRoom?: string;
 }
+
+export class ChatLogFilterDto {
+  @IsOptional()
+  @IsString()
+  roomId?:string;
+
+  @IsOptional()
+  @IsNumber()
+  page?:number;
+
+  @IsOptional()
+  @IsNumber()
+  limit?:number;
+}
