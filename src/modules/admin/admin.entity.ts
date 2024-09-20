@@ -12,4 +12,6 @@ export class AdminEntity extends BaseEntity {
     password:string;
     @Column({type:"varchar",length:255})
     nickname:string;
+    @Column({type:'text', nullable: true})
+    refreshToken: string;
 }

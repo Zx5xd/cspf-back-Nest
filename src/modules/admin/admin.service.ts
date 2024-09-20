@@ -10,7 +10,18 @@ export class AdminService {
         private readonly adminRepository:Repository<AdminEntity>
     ) {}
 
+    async getUserById(username:string) {
+        return this.adminRepository.findOne({where:{username:username}})
+    }
+
     async findOne(adminCode:string,username:string) {
         return this.adminRepository.findOne({where:{adminCode:adminCode,username:username}})
+    }
+
+    async updateRefreshToken(userCode:string,refreshToken:string) {
+        await this.adminRepository.update(
+            userCode,
+            {refreshToken:refreshToken}
+        )
     }
 }

@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Post, Req, Request, Res, UseGuards} from "@nestjs/common";
+import {Body, Controller, Get, Param, Post, Req, Request, Res, UseGuards} from "@nestjs/common";
 import {AuthService} from "./auth.service";
 import {LoginDTO} from "../../dto/user.dto";
 import {Response} from "express";
@@ -32,6 +32,28 @@ export class AuthController {
             sameSite: 'strict',
         });
         res.send({ message: 'Logged in successfully' });
+    }
+
+    @Post('login/:type')
+    async loginOther(@Param('type') type:string,@Body() loginDTO:LoginDTO, @Res({passthrough: true}) res: Response) {
+        if (type==='admin') {
+            const { accessToken, refreshToken } = await this.authService.loginAdmin(loginDTO);
+            const isProduction = this.configService.get<string>('NODE_ENV') === 'production';
+
+            res.cookie('authorization', accessToken, {
+                httpOnly: true,
+                secure: isProduction,
+                sameSite: 'strict',
+            });
+            res.cookie('refreshToken', refreshToken, {
+                httpOnly: true,
+                secure: isProduction,
+                sameSite: 'strict',
+            });
+            return res.send({ message: 'Logged in successfully' });
+        } else {
+            return res.status(404).send({message:'Invalid type'})
+        }
     }
 
     @Post('refresh')
