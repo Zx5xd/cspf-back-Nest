@@ -43,7 +43,7 @@ export class ChatJwtAdapter extends IoAdapter {
                     secret: secretKey
                 });
 
-                if (!existChatRoom.accessUser[payload.sub]) {
+                if (!existChatRoom.accessUser.access.some(code => code===payload.sub)) {
                     return next(new Error('Not Found Access Permission'))
                 }
 

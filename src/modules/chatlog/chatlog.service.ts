@@ -20,8 +20,27 @@ export class ChatLogService {
     await this.chatLogRepository.save(log);
   }
 
-  async getChatLog() {
+  async getChatLog(option:{
+    page:number,
+    limit:number
+  }) {
+    const query = this.chatLogRepository
+        .createQueryBuilder('chatLog')
+        .addSelect('chatRoomID')
+        .leftJoin('chatLog.user', 'user')   // user와 조인
+        .addSelect(['user.userCode', 'user.username', 'user.nickname']) // 필요한 필드만 선택
+        .orderBy('chatLog.createdAt', 'DESC') // 최신순 정렬
+        .skip((option.page - 1) * option.limit)             // 몇 번째부터 가져올지
+        .take(option.limit);                         // 몇 개의 데이터를 가져올지
 
+    const [results, total] = await query.getManyAndCount();
+
+    return {
+      results,
+      total,
+      currentPage: option.page,
+      totalPages: Math.ceil(total / option.limit),
+    };
   }
 
   async getChatLogFilter(option:{

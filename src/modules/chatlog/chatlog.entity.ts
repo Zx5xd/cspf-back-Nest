@@ -13,7 +13,7 @@ export class ChatLogEntity extends BaseEntity {
   chatLogID: number;  // 고유 식별자, 자동 생성됨
 
   @CreateDateColumn({type:'timestamp'})
-  creationTime: Date;
+  createdAt: Date;
 
   @ManyToOne(() => UserEntity, user => user.chatLogs, { nullable: false })
   @JoinColumn({ name: 'chatUserCode' })
