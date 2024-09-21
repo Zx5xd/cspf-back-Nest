@@ -50,9 +50,9 @@ export class AuthController {
                 secure: isProduction,
                 sameSite: 'strict',
             });
-            return res.send({ message: 'Logged in successfully' });
+            res.send({ message: 'Logged in successfully' });
         } else {
-            return res.status(404).send({message:'Invalid type'})
+            res.status(404).send({message:'Invalid type'})
         }
     }
 

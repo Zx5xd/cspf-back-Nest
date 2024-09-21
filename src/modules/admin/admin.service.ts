@@ -18,9 +18,9 @@ export class AdminService {
         return this.adminRepository.findOne({where:{adminCode:adminCode,username:username}})
     }
 
-    async updateRefreshToken(userCode:string,refreshToken:string) {
+    async updateRefreshToken(adminCode:string,refreshToken:string) {
         await this.adminRepository.update(
-            userCode,
+            {adminCode:adminCode},
             {refreshToken:refreshToken}
         )
     }
