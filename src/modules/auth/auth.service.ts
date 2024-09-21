@@ -140,5 +140,11 @@ export class AuthService {
     async removeRefreshToken(userCode: string) {
         await this.userService.updateRefreshToken(userCode, null);
     }
+
+    async removeOtherRefreshToken(userCode: string,type:'admin') {
+        if (type==='admin') {
+            await this.adminService.updateRefreshToken(userCode, null);
+        }
+    }
     
 }
