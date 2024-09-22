@@ -19,7 +19,6 @@ export class ChatJwtAdapter extends IoAdapter {
         const server = super.createIOServer(port, options);
 
         server.use(async (socket:Socket, next)=>{
-            console.log('test')
             const accessToken:string = socket.handshake.query.accessToken as string || socket.handshake.headers['authorization'];
             const roomId = socket.handshake.query.roomId as string | null | undefined;
 
