@@ -55,7 +55,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     async handleImage(@MessageBody() data: { imageBuffer: Buffer, roomId: string },@ConnectedSocket() client: Socket) {
         try {
             const uuid = await this.imageService.saveImage(data.imageBuffer, data.roomId);
-            this.server.to(client.data.roomId).emit('receiveImage', { roomId: data.roomId, uuid:uuid });
+            client.to(client.data.roomId).emit('receiveImage', { roomId: data.roomId, uuid:uuid });
         } catch (error) {
             console.error('Image saving error:', error);
         }
