@@ -1,10 +1,34 @@
-import { Controller, Get, Param, Res, NotFoundException } from '@nestjs/common';
+import {
+    Controller,
+    Get,
+    Param,
+    Res,
+    NotFoundException,
+    Post,
+    UseGuards,
+    Req,
+    UseInterceptors, UploadedFiles, NestInterceptor
+} from '@nestjs/common';
 import { ImageService } from './image.service';
 import { Response } from 'express';
+import {JwtAuthGuard} from "../auth/jwt-auth.guard";
+import { FilesInterceptor } from '@nestjs/platform-express';
+import {MulterOptions} from "@nestjs/platform-express/multer/interfaces/multer-options.interface";
+
+const options: MulterOptions = {
+    dest: './upload',
+};
+function getMulterOptions(): MulterOptions {
+    return {
+        dest: './upload',
+    };
+}
 
 @Controller('images')
 export class ImageController {
-    constructor(private readonly imageService: ImageService) {}
+    constructor(
+      private readonly imageService: ImageService
+    ) {}
 
     @Get(':roomId/:uuid')
     async getImage(
@@ -18,5 +42,17 @@ export class ImageController {
         } catch (error) {
             throw new NotFoundException('Image not found');
         }
+    }
+
+    @Post(':roomId')
+    @UseGuards(JwtAuthGuard)
+    @UseInterceptors(FilesInterceptor('files', 3) as unknown as NestInterceptor)
+    async uploadImage(
+      @Req() req,
+      @Param('roomId') roomId: string,
+      @UploadedFiles() files: Array<Express.Multer.File>
+    ) {
+        console.log(req.user.userCode)
+        console.log(files)
     }
 }

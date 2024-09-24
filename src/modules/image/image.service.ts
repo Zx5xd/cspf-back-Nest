@@ -18,11 +18,11 @@ export class ImageService {
         private readonly chatRoomRepository: Repository<ChatRoomEntity>
     ) {}
 
-    async saveImage(imageBuffer: BufferSource, chatRoomId: string): Promise<string> {
+    async saveImage(imageBuffer: ArrayBuffer, chatRoomId: string): Promise<string> {
         // BufferSource가 Buffer가 아닌 경우 ArrayBuffer로 변환
         const buffer = Buffer.isBuffer(imageBuffer)
             ? imageBuffer
-            : Buffer.from(imageBuffer as ArrayBuffer);
+            : Buffer.from(imageBuffer);
 
         // 파일명 생성
         const filename = `${v4()}-${Date.now()}.webp`;
@@ -68,4 +68,6 @@ export class ImageService {
 
         return image.path;
     }
+
+
 }

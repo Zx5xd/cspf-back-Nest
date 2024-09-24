@@ -19,7 +19,14 @@ export class ChatJwtAdapter extends IoAdapter {
         const server = super.createIOServer(port, options);
 
         server.use(async (socket:Socket, next)=>{
-            const accessToken:string = socket.handshake.query.accessToken as string || socket.handshake.headers['authorization'];
+            // const accessToken:string = socket.handshake.query.accessToken as string || socket.handshake.headers['authorization'];
+            const accessToken: string =
+                socket.handshake.query.accessToken as string ||
+                (socket.handshake.headers.cookie
+                    ?.split('; ')
+                    .find(row => row.startsWith('authorization='))
+                    ?.split('=')[1] || '');  // 쿠키에서 'authorization' 토큰 추출
+
             const roomId = socket.handshake.query.roomId as string | null | undefined;
 
             if (!accessToken) {

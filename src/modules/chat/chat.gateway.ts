@@ -15,7 +15,8 @@ import { Buffer } from 'buffer';
 @WebSocketGateway({
     namespace:'main',
     cors:{
-        origin: '*',
+        origin: ['http://localhost:5173','*'], // 정확한 클라이언트 도메인 명시
+        methods: ['GET', 'POST'], // 허용할 메소드
         credentials: true,
     },
 })
@@ -49,16 +50,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
         await this.chatLogService.addChatMessage(roomId,userCode,msg)
         //this.server.emit('message', { user, message });
-    }
-
-    @SubscribeMessage('image')
-    async handleImage(@MessageBody() data: { imageBuffer: Buffer, roomId: string },@ConnectedSocket() client: Socket) {
-        try {
-            const uuid = await this.imageService.saveImage(data.imageBuffer, data.roomId);
-            client.to(client.data.roomId).emit('receiveImage', { roomId: data.roomId, uuid:uuid });
-        } catch (error) {
-            console.error('Image saving error:', error);
-        }
     }
 
     handleConnection(@ConnectedSocket() client: Socket): any {

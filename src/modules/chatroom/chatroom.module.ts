@@ -10,6 +10,6 @@ import { ChatRoomService } from "./chatroom.service";
     ],
     providers:[ChatRoomService],
     controllers:[ChatRoomController],
-    exports:[ChatRoomService]
+    exports:[ChatRoomService,TypeOrmModule]
 })
 export class ChatRoomModule {}

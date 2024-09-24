@@ -3,10 +3,12 @@ import {TypeOrmModule} from "@nestjs/typeorm";
 import {ImageEntity} from "./image.entity";
 import {ImageService} from "./image.service";
 import {ImageController} from "./image.controller";
+import {ChatRoomModule} from "../chatroom/chatroom.module";
 
 @Module({
     imports:[
-        TypeOrmModule.forFeature([ImageEntity])
+        TypeOrmModule.forFeature([ImageEntity]),
+        ChatRoomModule
     ],
     providers:[ImageService],
     controllers:[ImageController],
