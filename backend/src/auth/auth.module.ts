@@ -1,23 +1,25 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MailService } from 'src/mail/mail.service';
+import { NaverStrategy } from './strategy/naver.strategy';
+import { PassportModule } from '@nestjs/passport';
+import { UsersModule } from '../users/users.module';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
-  imports:[
-    ConfigModule,
+  imports: [
+    PassportModule.register({ defaultStrategy: 'jwt' }), // 기본 전략을 JWT로 설정
     JwtModule.registerAsync({
-      imports:[ConfigModule],
-      useFactory: async(config: ConfigService) => ({
-        secret: config.get('JWT_SECRET'),
-        signOptions: {expiresIn: '15m'},
-      }),
-      inject: [ ConfigService ],
-    })
+      inject: [ConfigService],
+      global: true,
+      useFactory: (config: ConfigService) => ({
+        secret: config.get<string>('JWT_SECRET'),
+        signOptions: { expiresIn: '15m' },
+      })
+    }),
+    UsersModule,
   ],
-  controllers: [AuthController],
-  providers: [AuthService, MailService],
+  providers: [AuthService, NaverStrategy], // NaverStrategy를 providers에 추가
+  exports: [AuthService],
 })
 export class AuthModule {}
