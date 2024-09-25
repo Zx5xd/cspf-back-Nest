@@ -1,7 +1,8 @@
 import React, { useState, ChangeEvent } from 'react';
 import axios from 'axios';
 
-const FileUploadComponent: React.FC = () => {
+const ITTComponent: React.FC = () => {
+  // 이미지 텍스트 추출.
   const [file, setFile] = useState<File | null>(null); // 선택된 파일 상태
   const [message, setMessage] = useState<string>(''); // 업로드 상태 메시지
 
@@ -13,7 +14,15 @@ const FileUploadComponent: React.FC = () => {
   };
 
   // 파일 업로드 함수
-  const handleUpload = async () => {
+  const tesseractUpload = async () => {
+    handleUpload('extract-text');
+  };
+
+  const visionUpload = async () => {
+    handleUpload('detect-text');
+  };
+
+  const handleUpload = async (ITTKind: string) => {
     if (!file) {
       setMessage('Please select a file first.');
       return;
@@ -24,28 +33,30 @@ const FileUploadComponent: React.FC = () => {
 
     try {
       // 파일 업로드 요청
-      const response = await axios.post('http://localhost:3500/image/extract-text', formData, {
+      const response = await axios.post('http://localhost:3500/image/'+ITTKind, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
 
-      setMessage('File uploaded successfully.');
-      console.log('Response:', response.data); // 서버로부터의 응답
+      setMessage(`File uploaded successfully.`);
+      setMessage(JSON.stringify(response.data));// 서버로부터의 응답
+
     } catch (error) {
       console.error('Error uploading file:', error);
       setMessage('Error uploading file.');
     }
-  };
+  }
 
   return (
-    <div>
-      <h2>File Upload</h2>
-      <input type="file" onChange={handleFileChange} />
-      <button onClick={handleUpload}>Upload File</button>
-      {message && <p>{message}</p>}
-    </div>
+      <div>
+        <h2>File Upload</h2>
+        <input type="file" onChange={handleFileChange}/>
+        <button onClick={tesseractUpload}>Tesseract Upload File</button>
+        <button onClick={visionUpload}>Vision Upload File</button>
+        {message && <p>{message}</p>}
+      </div>
   );
 };
 
-export default FileUploadComponent;
+export default ITTComponent;
