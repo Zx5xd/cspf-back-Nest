@@ -14,6 +14,7 @@ import { Response } from 'express';
 import {JwtAuthGuard} from "../auth/jwt-auth.guard";
 import { FilesInterceptor } from '@nestjs/platform-express';
 import {MulterOptions} from "@nestjs/platform-express/multer/interfaces/multer-options.interface";
+import {Buffer} from "buffer";
 
 const options: MulterOptions = {
     dest: './upload',
@@ -38,7 +39,7 @@ export class ImageController {
     ) {
         try {
             const imagePath = await this.imageService.getImageByRoomIdAndUuid(roomId, uuid);
-            res.sendFile(imagePath, { root: '.' });
+            res.sendFile(imagePath);
         } catch (error) {
             throw new NotFoundException('Image not found');
         }
@@ -52,7 +53,21 @@ export class ImageController {
       @Param('roomId') roomId: string,
       @UploadedFiles() files: Array<Express.Multer.File>
     ) {
-        console.log(req.user.userCode)
-        console.log(files)
+        // console.log(req.user.userCode)
+        // console.log(files)
+
+        const savedFileUuids = [];
+
+        for (const file of files) {
+            const filename = file.filename
+            const fileBuffer = file.buffer as Buffer;
+            const savedFileUuid = await this.imageService.saveImage(filename, fileBuffer, roomId);
+            savedFileUuids.push(savedFileUuid); // 각 파일의 UUID 저장
+        }
+
+        return {
+            message: 'Files uploaded and converted to webp successfully',
+            fileUuids: savedFileUuids, // 변환된 파일들의 UUID 반환
+        };
     }
 }

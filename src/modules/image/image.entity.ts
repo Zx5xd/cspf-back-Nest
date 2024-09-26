@@ -1,4 +1,13 @@
-import {BaseEntity, BeforeInsert, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {
+    BaseEntity,
+    BeforeInsert,
+    Column,
+    CreateDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    PrimaryGeneratedColumn
+} from "typeorm";
 import {ChatRoomEntity} from "../chatroom/chatroom.entity";
 import {v4 as uuidv4} from "uuid";
 
@@ -16,6 +25,9 @@ export class ImageEntity extends BaseEntity {
     @ManyToOne(() => ChatRoomEntity, chatRoom => chatRoom.images)
     @JoinColumn({ name: 'chatRoom' })  // 외래 키로 참조
     chatRoom: ChatRoomEntity; // 해당 이미지가 속한 채팅방
+
+    @CreateDateColumn()
+    createdAt: Date;
 
     @BeforeInsert()
     generateUUID() {

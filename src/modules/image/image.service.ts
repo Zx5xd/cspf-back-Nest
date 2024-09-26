@@ -8,6 +8,12 @@ import {join} from 'path';
 import {Buffer} from 'buffer';
 import * as process from "process";
 import {v4} from "uuid";
+import * as sharp from "sharp";
+import * as zlib from "zlib";
+import { promisify } from 'util';
+
+const gzip = promisify(zlib.gzip);
+const gunzip = promisify(zlib.gunzip);
 
 @Injectable()
 export class ImageService {
@@ -18,21 +24,21 @@ export class ImageService {
         private readonly chatRoomRepository: Repository<ChatRoomEntity>
     ) {}
 
-    async saveImage(imageBuffer: ArrayBuffer, chatRoomId: string): Promise<string> {
+    async saveImage(_filename:string, imageBuffer: Buffer, chatRoomId: string): Promise<string> {
         // BufferSource가 Buffer가 아닌 경우 ArrayBuffer로 변환
-        const buffer = Buffer.isBuffer(imageBuffer)
+        /*const buffer = Buffer.isBuffer(imageBuffer)
             ? imageBuffer
-            : Buffer.from(imageBuffer);
+            : Buffer.from(imageBuffer);*/
 
         // 파일명 생성
-        const filename = `${v4()}-${Date.now()}.webp`;
-        const dir = join(process.cwd(), '../../uploads',chatRoomId);
+        const filename = `${Date.now()}_${v4()}.webp`;
+        const dir = join(process.cwd(), './uploads',chatRoomId);
 
         if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir);
+            fs.mkdirSync(dir, { recursive: true });
         }
 
-        // 파일 저장 경로 설정 (uploads 폴더에 저장)
+        /*// 파일 저장 경로 설정 (uploads 폴더에 저장)
         const imagePath = join(dir, chatRoomId, filename);
 
         // 파일 시스템에 이미지 저장
@@ -48,7 +54,31 @@ export class ImageService {
         await this.imageRepository.save(result);
 
         // 파일 경로나 UUID를 반환 (예시로 파일명 반환)
-        return Buffer.from(result.uuid).toString('base64');
+        return Buffer.from(result.uuid).toString('base64');*/
+
+        // 파일 저장 경로 설정 (uploads 폴더에 저장)
+        const imagePath = join(dir, filename);
+
+        try {
+            // Sharp을 이용해 webp로 변환 후 저장
+            await sharp(imageBuffer)
+              .webp({ quality: 80 }) // 변환 품질 설정 (0-100)
+              .toFile(imagePath); // webp로 변환된 파일을 저장
+
+            // DB에 이미지 경로와 정보를 저장하는 로직
+            const result = this.imageRepository.create({
+                chatRoom: { chatRoomID: chatRoomId },
+                path: imagePath,
+                filename: filename,
+            });
+            await this.imageRepository.save(result);
+
+            // 파일 경로나 UUID를 반환 (예시로 파일명 반환)
+            return Buffer.from(result.uuid).toString('base64');
+        } catch (error) {
+            console.error('Error saving image:', error);
+            throw new Error('Image save failed');
+        }
     }
 
     async getImageByRoomIdAndUuid(roomId: string, uuid: string): Promise<string> {
@@ -57,7 +87,9 @@ export class ImageService {
             throw new NotFoundException('Chat room not found');
         }
 
-        const image = chatRoom.images.find(img => img.uuid === uuid);
+        const buffer = Buffer.from(uuid, 'base64').toString('utf8'); // Base64 문자열을 Buffer로 변환
+
+        const image = chatRoom.images.find(img => img.uuid === buffer);
         if (!image) {
             throw new NotFoundException('Image not found in this chat room');
         }
