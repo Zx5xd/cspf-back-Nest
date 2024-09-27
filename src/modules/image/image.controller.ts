@@ -13,22 +13,14 @@ import { ImageService } from './image.service';
 import { Response } from 'express';
 import {JwtAuthGuard} from "../auth/jwt-auth.guard";
 import { FilesInterceptor } from '@nestjs/platform-express';
-import {MulterOptions} from "@nestjs/platform-express/multer/interfaces/multer-options.interface";
 import {Buffer} from "buffer";
-
-const options: MulterOptions = {
-    dest: './upload',
-};
-function getMulterOptions(): MulterOptions {
-    return {
-        dest: './upload',
-    };
-}
+import {ChatGateway} from "../chat/chat.gateway";
 
 @Controller('images')
 export class ImageController {
     constructor(
-      private readonly imageService: ImageService
+      private readonly imageService: ImageService,
+      private readonly chatGateway: ChatGateway
     ) {}
 
     @Get(':roomId/:uuid')
@@ -55,6 +47,8 @@ export class ImageController {
     ) {
         // console.log(req.user.userCode)
         // console.log(files)
+        const host = req.headers['x-forwarded-host'] || req.headers.host;
+        const protocol = req.headers['x-forwarded-proto'] || req.protocol;
 
         const savedFileUuids = [];
 
@@ -62,12 +56,17 @@ export class ImageController {
             const filename = file.filename
             const fileBuffer = file.buffer as Buffer;
             const savedFileUuid = await this.imageService.saveImage(filename, fileBuffer, roomId);
-            savedFileUuids.push(savedFileUuid); // 각 파일의 UUID 저장
+            savedFileUuids.push(`${protocol}://${host}/images/${roomId}/${savedFileUuid}`); // 각 파일의 UUID 저장
         }
+
+        this.chatGateway.sendMessageToRoom(roomId,
+            JSON.stringify({
+                images:savedFileUuids
+            }))
 
         return {
             message: 'Files uploaded and converted to webp successfully',
-            fileUuids: savedFileUuids, // 변환된 파일들의 UUID 반환
+            // fileUuids: savedFileUuids, // 변환된 파일들의 UUID 반환
         };
     }
 }

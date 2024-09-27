@@ -26,7 +26,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     constructor(
         private readonly chatLogService: ChatLogService,
-        private readonly imageService: ImageService
     ) {
         this.logger.log('constructor')
     }
@@ -50,6 +49,12 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
         await this.chatLogService.addChatMessage(roomId,userCode,msg)
         //this.server.emit('message', { user, message });
+    }
+
+    sendMessageToRoom(roomId:string, message: string) {
+        this.server.to(roomId).emit('message',message)
+        // this.logger.log(roomId+':'+message)
+        console.log(roomId+':'+JSON.stringify(message))
     }
 
     handleConnection(@ConnectedSocket() client: Socket): any {

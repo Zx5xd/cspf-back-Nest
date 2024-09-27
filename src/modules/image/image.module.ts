@@ -4,11 +4,13 @@ import {ImageEntity} from "./image.entity";
 import {ImageService} from "./image.service";
 import {ImageController} from "./image.controller";
 import {ChatRoomModule} from "../chatroom/chatroom.module";
+import {ChatModule} from "../chat/chat.module";
 
 @Module({
     imports:[
         TypeOrmModule.forFeature([ImageEntity]),
-        ChatRoomModule
+        ChatRoomModule,
+        ChatModule
     ],
     providers:[ImageService],
     controllers:[ImageController],

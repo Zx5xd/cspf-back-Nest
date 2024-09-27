@@ -13,6 +13,7 @@ import {ChatLogModule} from "./modules/chatlog/chatlog.module";
 import {ChatGateway} from "./modules/chat/chat.gateway";
 import {AdminModule} from "./modules/admin/admin.module";
 import {ImageModule} from "./modules/image/image.module";
+import {ChatModule} from "./modules/chat/chat.module";
 
 @Module({
   imports: [
@@ -44,8 +45,9 @@ import {ImageModule} from "./modules/image/image.module";
       ChatLogModule,
       AdminModule,
       ImageModule,
+      ChatModule
   ],
   controllers: [AppController],
-  providers: [AppService,ChatGateway],
+  providers: [AppService],
 })
 export class AppModule {}
