@@ -9,11 +9,9 @@ import {
 import {Logger} from "@nestjs/common";
 import { Server, Socket } from "socket.io";
 import {ChatLogService} from "../chatlog/chatlog.service";
-import {ImageService} from "../image/image.service";
-import { Buffer } from 'buffer';
+import {ChatService} from "./chat.service";
 
 @WebSocketGateway({
-    namespace:'main',
     cors:{
         origin: ['http://localhost:5173','*'], // 정확한 클라이언트 도메인 명시
         methods: ['GET', 'POST'], // 허용할 메소드
@@ -26,12 +24,12 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     constructor(
         private readonly chatLogService: ChatLogService,
-    ) {
-        this.logger.log('constructor')
-    }
+        private readonly chatService: ChatService
+    ) {}
 
     afterInit(server: any): any {
         this.logger.log('afterInit');
+        this.chatService.setServer(server);
     }
 
     @SubscribeMessage('message')
@@ -39,7 +37,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         const userNickname = client.data.user?.nickname;
         const userCode = client.data.user?.sub;
         const roomId = client.data.roomId;
-        //const user = socket.data.user;  // 미들웨어에서 설정된 사용자 정보 사용
+        // const user = socket.data.user;  // 미들웨어에서 설정된 사용자 정보 사용
         // console.log(`${roomId} - <${userCode}>`+msg);
 
         client.to(roomId).emit('message',{
@@ -51,11 +49,11 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         //this.server.emit('message', { user, message });
     }
 
-    sendMessageToRoom(roomId:string, message: string) {
+    /*sendMessageToRoom(roomId:string, message: string) {
         this.server.to(roomId).emit('message',message)
         // this.logger.log(roomId+':'+message)
         console.log(roomId+':'+JSON.stringify(message))
-    }
+    }*/
 
     handleConnection(@ConnectedSocket() client: Socket): any {
         const userCode = client.data.user?.sub;
@@ -66,7 +64,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             return new Error('Missing user code or room ID');
         }
 
-        client.to(roomId).emit('join',{
+        this.server.to(roomId).emit('join',{
             userCode:client.data.user?.sub,
             nickname:client.data.user?.nickname
         })

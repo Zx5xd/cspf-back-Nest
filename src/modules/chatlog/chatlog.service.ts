@@ -20,6 +20,17 @@ export class ChatLogService {
     await this.chatLogRepository.save(log);
   }
 
+  async addChatMessageList(roomId:string,userCode:string,list:Array<string>) {
+    for (const value of list) {
+      const log = this.chatLogRepository.create({
+        chatRoom:{chatRoomID:roomId},
+        user:{userCode:userCode},
+        chatMessage:value
+      });
+      await this.chatLogRepository.save(log);
+    }
+  }
+
   async getChatLog(option:{
     page:number,
     limit:number

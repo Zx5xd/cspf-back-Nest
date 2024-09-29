@@ -62,7 +62,7 @@ export class ImageService {
         try {
             // Sharp을 이용해 webp로 변환 후 저장
             await sharp(imageBuffer)
-              .webp({ quality: 80 }) // 변환 품질 설정 (0-100)
+              .webp({ quality: 100 }) // 변환 품질 설정 (0-100)
               .toFile(imagePath); // webp로 변환된 파일을 저장
 
             // DB에 이미지 경로와 정보를 저장하는 로직

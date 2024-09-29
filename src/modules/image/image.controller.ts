@@ -14,13 +14,15 @@ import { Response } from 'express';
 import {JwtAuthGuard} from "../auth/jwt-auth.guard";
 import { FilesInterceptor } from '@nestjs/platform-express';
 import {Buffer} from "buffer";
-import {ChatGateway} from "../chat/chat.gateway";
+import {ChatService} from "../chat/chat.service";
+import {ChatLogService} from "../chatlog/chatlog.service";
 
 @Controller('images')
 export class ImageController {
     constructor(
       private readonly imageService: ImageService,
-      private readonly chatGateway: ChatGateway
+      private readonly chatLogService: ChatLogService,
+      private readonly chatService: ChatService
     ) {}
 
     @Get(':roomId/:uuid')
@@ -50,7 +52,9 @@ export class ImageController {
         const host = req.headers['x-forwarded-host'] || req.headers.host;
         const protocol = req.headers['x-forwarded-proto'] || req.protocol;
 
-        const savedFileUuids = [];
+        const userCode = req.user.userCode ?? req.user.adminCode;
+
+        const savedFileUuids:Array<string> = [];
 
         for (const file of files) {
             const filename = file.filename
@@ -58,11 +62,15 @@ export class ImageController {
             const savedFileUuid = await this.imageService.saveImage(filename, fileBuffer, roomId);
             savedFileUuids.push(`${protocol}://${host}/images/${roomId}/${savedFileUuid}`); // 각 파일의 UUID 저장
         }
-
-        this.chatGateway.sendMessageToRoom(roomId,
+        // this.chatService.sendMessageToAll('message','test')
+        this.chatService.sendMessageToRoom(roomId,'image',
             JSON.stringify({
+                userCode:userCode,
                 images:savedFileUuids
-            }))
+            })
+        )
+
+        await this.chatLogService.addChatMessageList(roomId,userCode,savedFileUuids)
 
         return {
             message: 'Files uploaded and converted to webp successfully',
