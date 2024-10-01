@@ -1,4 +1,5 @@
-import {BaseEntity, Column, Entity, PrimaryColumn, Unique} from "typeorm";
+import {BaseEntity, Column, Entity, OneToMany, PrimaryColumn, Unique} from "typeorm";
+import {AnnouncementEntity} from "../announcement/announcement.entity";
 
 @Entity('Admin')
 @Unique(['username'])
@@ -14,4 +15,7 @@ export class AdminEntity extends BaseEntity {
     nickname:string;
     @Column({type:'text', nullable: true})
     refreshToken: string;
+
+    @OneToMany(() => AnnouncementEntity, announcement => announcement.admin)
+    announcements: AnnouncementEntity[];
 }
