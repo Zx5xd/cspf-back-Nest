@@ -17,6 +17,10 @@ export class ChatRoomService {
         return room.chatRoomID;
     }
 
+    async findAll(): Promise<ChatRoomEntity[]> {
+        return await this.chatRoomRepository.find();
+    }
+
     async findOne(roomId:string): Promise<ChatRoomEntity> {
         return await this.chatRoomRepository.findOne({where:{chatRoomID:roomId}});
     }
