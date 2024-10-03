@@ -2,6 +2,7 @@ import {Injectable} from "@nestjs/common";
 import {Repository} from "typeorm";
 import {AnnouncementEntity} from "./announcement.entity";
 import {InjectRepository} from "@nestjs/typeorm";
+import {QueryDeepPartialEntity} from "typeorm/query-builder/QueryPartialEntity";
 
 @Injectable()
 export class AnnouncementService {
@@ -38,6 +39,14 @@ export class AnnouncementService {
 
   async getAnnouncementBoard(id:number) {
     return await this.announcementRepository.findOne({where:{id}})
+  }
+
+  async updateAnnouncementBoard(id:number, content:string) {
+    const updateData: QueryDeepPartialEntity<AnnouncementEntity> = {
+      content: content,
+    };
+    const result = await this.announcementRepository.update(id,updateData);
+    return result.affected > 0;
   }
 
   async deleteAnnouncementBoard(id:number) {

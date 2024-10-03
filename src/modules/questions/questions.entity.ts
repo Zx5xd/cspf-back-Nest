@@ -1,4 +1,5 @@
-import {BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {QuestionsReplyEntity} from "./questions_reply.entity";
 
 @Entity('questions')
 export class QuestionsEntity extends BaseEntity {
@@ -13,4 +14,8 @@ export class QuestionsEntity extends BaseEntity {
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @OneToMany(()=>QuestionsReplyEntity, reply=>reply.boardId)
+  replies:QuestionsReplyEntity[];
+
 }
