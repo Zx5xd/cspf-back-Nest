@@ -24,7 +24,12 @@ export class AnnouncementController {
   @Post()
   async createAnnouncementBoard(@Body() createAnnouncementDTO:AnnouncementDto) {
     const { content } = createAnnouncementDTO;
+    //adminCode 작업을 안한 상태 - 2024/10/04
     const result = await this.announcementService.createAnnouncement('',content)
+
+    return {
+      id: result
+    }
   }
 
   @Patch(':id')
