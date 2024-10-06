@@ -26,7 +26,7 @@ export class QuestionsService {
   }
 
   async findOne(id:number) {
-    const result = await this.questionRepository.findOne({where:{id}})
+   return await this.questionRepository.findOne({where:{id}})
   }
 
   async update(id:number, content:string) {
