@@ -29,6 +29,23 @@ export class QuestionsService {
    return await this.questionRepository.findOne({where:{id}})
   }
 
+  async pagination(page:number,limit:number) {
+    const [data, total] = await this.questionRepository.findAndCount({
+      take: limit,
+      skip: (page - 1) * limit,
+      order: {
+        id: 'DESC',
+      },
+    });
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+    };
+  }
+
   async update(id:number, content:string) {
     const updateData: QueryDeepPartialEntity<QuestionsEntity> = {
       content: content
