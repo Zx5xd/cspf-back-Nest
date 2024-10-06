@@ -1,53 +1,90 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UserModule } from './modules/user/user.module';
-import {ConfigModule} from "@nestjs/config";
-import {TypeOrmModule} from "@nestjs/typeorm";
-import * as process from 'process';
-import * as Joi from "joi";
-import {AuthModule} from "./modules/auth/auth.module";
-import {ChatJwtAdapter} from "./modules/chat/chat-jwt.adapter";
-import {ChatRoomModule} from "./modules/chatroom/chatroom.module";
-import {ChatLogModule} from "./modules/chatlog/chatlog.module";
-import {ChatGateway} from "./modules/chat/chat.gateway";
-import {AdminModule} from "./modules/admin/admin.module";
-import {ImageModule} from "./modules/image/image.module";
-import {ChatModule} from "./modules/chat/chat.module";
+import { ChatGateway } from './chat/chat.gateway';
+import { AniApiService } from './aniapi/aniapi.service';
+import { AniapiController } from './aniapi/aniapi.controller';
+import { LawApiService } from './lawapi/lawapi.service';
+import { LawApiController } from './lawapi/lawapi.controller';
+import { NewsApiService } from './newsapi/newsapi.service';
+import { NewsapiController } from './newsapi/newsapi.controller';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { MailModule } from './mail/mail.module';
+import { AuthModule } from './auth/auth.module';
+import { ImageService } from './image/image.service';
+import { ImageController } from './image/image.controller';
+import { ScripingService } from './scriping/scriping.service';
+import { ScripingController } from './scriping/scriping.controller';
+import { MailauthModule } from './mailauth/mailauth.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import * as process from 'node:process';
+import { AuthController } from './auth/auth.controller';
+import { UsersModule } from './users/users.module';
+import { PetModule } from './pet/pet.module';
 
 @Module({
   imports: [
-      ConfigModule.forRoot({
-          envFilePath: process.env.NODE_ENV === 'dev' ? '.dev.env' : '.prod.env',
-          isGlobal: true,
-          validationSchema: Joi.object({
-              NODE_ENV: Joi.string().valid('dev', 'prod').required(),
-              DB_HOST: Joi.string().required(),
-              DB_PORT: Joi.string().required(),
-              DB_USERNAME: Joi.string().required(),
-              DB_PASSWD: Joi.string().required(),
-              DB_DATABASE: Joi.string().required()
-          })
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    MailModule,
+    MailerModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (config: ConfigService) => ({
+        transport: {
+          host: config.get('MAIL_HOST'),
+          auth: {
+            user: config.get('MAIL_USER'),
+            pass: config.get('MAIL_PASS'),
+          },
+        },
+        defaults: {
+          from: '"nest-modules" <modules@nestjs.com>',
+        },
+        template: {
+          dir: __dirname + '/templates',
+          adapter: new HandlebarsAdapter(),
+          options: {
+            strict: true,
+          },
+        },
       }),
-      TypeOrmModule.forRoot({
-          type: 'mysql',
-          host: process.env.DB_HOST,
-          port: +process.env.DB_PORT,
-          username: process.env.DB_USERNAME,
-          password: process.env.DB_PASSWD,
-          database: process.env.DB_DATABASE,
-          entities: ['dist/**/*.entity.js'],
-          synchronize: true
-      }),
-      UserModule,
-      AuthModule,
-      ChatRoomModule,
-      ChatLogModule,
-      AdminModule,
-      ImageModule,
-      ChatModule
+      inject: [ConfigService],
+    }),
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: process.env.DB_HOST,
+      port: +process.env.DB_PORT,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWD,
+      database: process.env.DB_DATABASE,
+      entities: ['dist/**/*.entity.js'],
+      synchronize: true,
+    }),
+    AuthModule,
+    MailauthModule,
+    UsersModule,
+    PetModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [
+    AppController,
+    AuthController,
+    AniapiController,
+    LawApiController,
+    NewsapiController,
+    ImageController,
+    ScripingController,
+  ],
+  providers: [
+    AppService,
+    ChatGateway,
+    AniApiService,
+    LawApiService,
+    NewsApiService,
+    ImageService,
+    ScripingService,
+  ],
 })
 export class AppModule {}
