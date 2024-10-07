@@ -1,13 +1,16 @@
 import {BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
-import {QuestionsReplyEntity} from "./questions_reply.entity";
+import {QuestionsCommentsEntity} from "./questions_comments.entity";
 
 @Entity('questions')
 export class QuestionsEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id:number;
 
+  @Column({type:'varchar',length:"255", nullable:false})
+  title:string;
+
   @Column({type:'varchar', length:10, nullable:false})
-  code: string;
+  authorCode: string;
 
   @Column({type:'text',nullable:false})
   content: string;
@@ -15,7 +18,7 @@ export class QuestionsEntity extends BaseEntity {
   @CreateDateColumn()
   createdAt: Date;
 
-  @OneToMany(()=>QuestionsReplyEntity, reply=>reply.boardId)
-  replies:QuestionsReplyEntity[];
+  @OneToMany(()=>QuestionsCommentsEntity, reply=>reply.boardId)
+  replies:QuestionsCommentsEntity[];
 
 }

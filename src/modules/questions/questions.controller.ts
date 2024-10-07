@@ -23,7 +23,7 @@ export class QuestionsController {
   @Post()
   async createBoard(@Req() req,questionDto:QuestionsDto) {
     const code = req.user.userCode ?? req.user.adminCode
-    const result = await this.questionsService.createQuestion(code,questionDto.content)
+    const result = await this.questionsService.createQuestion(code,questionDto)
     return {
       id: result,
       message:'question board is create successful.'
@@ -32,7 +32,7 @@ export class QuestionsController {
 
   @Patch(':boardId')
   async editBoard(@Param('boardId') boardId: number,questionDto:QuestionsDto) {
-    const isUpdated = await this.questionsService.update(boardId,questionDto.content);
+    const isUpdated = await this.questionsService.update(boardId,questionDto);
 
     if (!isUpdated) {
       throw new HttpException('Update failed, entity not found.', HttpStatus.NOT_FOUND);

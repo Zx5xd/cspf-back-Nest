@@ -1,8 +1,8 @@
 import {Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 import {QuestionsEntity} from "./questions.entity";
 
-@Entity('questions_reply')
-export class QuestionsReplyEntity{
+@Entity('questions_comments')
+export class QuestionsCommentsEntity{
   @PrimaryGeneratedColumn()
   id:number;
 
