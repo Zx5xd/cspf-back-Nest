@@ -16,9 +16,9 @@ export class QuestionCommentController {
   }
 
   @Get(':commentId')
-  async getComment(@Res res,@Param('commentId') commentId:number):Promise<QuestionsCommentsEntity> {
+  async getComment(@Res() res,@Param('commentId') commentId:number):Promise<QuestionsCommentsEntity> {
     const authorCode:string = res.user.userCode ?? res.user.adminCode;
-    return await this.questionsService.findBoardComment(commentId)
+    return await this.questionsService.findBoardComment(commentId,authorCode)
   }
 
   @UseGuards(JwtAuthGuard)

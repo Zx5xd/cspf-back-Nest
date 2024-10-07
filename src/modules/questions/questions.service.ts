@@ -1,7 +1,7 @@
 import {ForbiddenException, Injectable} from "@nestjs/common";
 import {InjectRepository} from "@nestjs/typeorm";
 import {QuestionsEntity} from "./questions.entity";
-import {Repository} from "typeorm";
+import {Repository, UpdateResult} from "typeorm";
 import {QuestionsCommentsEntity} from "./questions_comments.entity";
 import {QueryDeepPartialEntity} from "typeorm/query-builder/QueryPartialEntity";
 import {QuestionsDto} from "../../dto/questions.dto";
@@ -16,9 +16,9 @@ export class QuestionsService {
   ) {}
 
   //게시판 기능
-  async createQuestion(authorCode:string, questionDto:QuestionsDto) {
+  async createQuestion(authorCode:string, questionDto:QuestionsDto):Promise<number> {
     const {title,content} = questionDto;
-    const result = await this.questionRepository.create({title,authorCode,content})
+    const result:QuestionsEntity = await this.questionRepository.create({title,authorCode,content})
     await this.questionRepository.save(result)
     return result.id;
   }
@@ -27,7 +27,7 @@ export class QuestionsService {
     return await this.questionRepository.find();
   }
 
-  async findOne(id:number) {
+  async findOne(id:number):Promise<QuestionsEntity> {
    return await this.questionRepository.findOne({where:{id}})
   }
 
@@ -48,21 +48,21 @@ export class QuestionsService {
     };
   }
 
-  async update(id:number, questionsDto:QuestionsDto) {
+  async update(id:number, questionsDto:QuestionsDto):Promise<boolean> {
     // const updateData: QueryDeepPartialEntity<QuestionsEntity> = {
     //   content: content
     // }
-    const result = await this.questionRepository.update(id,questionsDto);
+    const result:UpdateResult = await this.questionRepository.update(id,questionsDto);
     return result.affected > 0;
   }
 
-  async delete(id:number) {
+  async delete(id:number):Promise<void> {
     await this.questionRepository.delete(id);
   }
 
   //게시판 댓글 기능
-  async createComment(boardId:number, authorCode:string, content:string) {
-    const result = await this.questionCommentsRepository.create({boardId,authorCode,content});
+  async createComment(boardId:number, authorCode:string, content:string):Promise<QuestionsCommentsEntity> {
+    const result:QuestionsCommentsEntity = await this.questionCommentsRepository.create({boardId,authorCode,content});
     await this.questionCommentsRepository.save(result);
 
     return result
@@ -81,7 +81,7 @@ export class QuestionsService {
     const updateData: QueryDeepPartialEntity<QuestionsCommentsEntity> = {
       content: content
     }
-    const result = await this.questionCommentsRepository.update(commentId,updateData)
+    const result:UpdateResult = await this.questionCommentsRepository.update(commentId,updateData)
     return result.affected > 0;
   }
 
@@ -90,7 +90,7 @@ export class QuestionsService {
     await this.questionCommentsRepository.delete(commentId);
   }
 
-  async existAccessComment(id:number,authorCode:string):Promise<boolean> {
+  async existAccessComment(id:number,authorCode:string) {
     const result:QuestionsCommentsEntity = await this.questionCommentsRepository.findOne({where:{id,authorCode}})
     if (!result) {
       throw new ForbiddenException('Access denied');
