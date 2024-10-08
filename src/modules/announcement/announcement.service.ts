@@ -1,8 +1,9 @@
-import {Injectable} from "@nestjs/common";
+import {Injectable, UnauthorizedException} from "@nestjs/common";
 import {Repository} from "typeorm";
 import {AnnouncementEntity} from "./announcement.entity";
 import {InjectRepository} from "@nestjs/typeorm";
 import {QueryDeepPartialEntity} from "typeorm/query-builder/QueryPartialEntity";
+import {AnnouncementDto} from "../../dto/announcement.dto";
 
 @Injectable()
 export class AnnouncementService {
@@ -11,8 +12,12 @@ export class AnnouncementService {
     private readonly announcementRepository:Repository<AnnouncementEntity>
   ) {}
 
-  async createAnnouncement(adminCode:string,content:string) {
-    const result = await this.announcementRepository.create({admin:{adminCode:adminCode},content:content});
+  async createAnnouncement(adminCode:string,announcementDto:AnnouncementDto) {
+    if (!adminCode) {
+      throw new UnauthorizedException();
+    }
+    const {title,content} = announcementDto;
+    const result = await this.announcementRepository.create({admin:{adminCode:adminCode},title,content});
     await this.announcementRepository.save(result);
 
     return result.id

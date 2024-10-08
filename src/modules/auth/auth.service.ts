@@ -69,7 +69,8 @@ export class AuthService {
         if (!user) {
             throw new UnauthorizedException('Invalid credentials');
         }
-        const payload = { username: user.username, sub: user.userCode, role: 'admin' };
+        // const payload = { username: user.username, sub: user.userCode, role: 'admin' };
+        const payload = { username: user.username, sub: user.adminCode };
 
         const accessToken = this.token(payload,'15m')
         const refreshToken = this.token(payload, '7d')

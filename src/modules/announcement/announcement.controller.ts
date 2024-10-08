@@ -1,6 +1,19 @@
-import {Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post, Query} from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Query, Req,
+  UseGuards
+} from "@nestjs/common";
 import {AnnouncementService} from "./announcement.service";
 import {AnnouncementDto, AnnouncementFilterDto} from "../../dto/announcement.dto";
+import {JwtAuthGuard} from "../auth/jwt-auth.guard";
 
 @Controller('announcement')
 export class AnnouncementController {
@@ -21,11 +34,11 @@ export class AnnouncementController {
     return await this.announcementService.getAnnouncementBoard(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
-  async createAnnouncementBoard(@Body() createAnnouncementDTO:AnnouncementDto) {
-    const { content } = createAnnouncementDTO;
-    //adminCode 작업을 안한 상태 - 2024/10/04
-    const result = await this.announcementService.createAnnouncement('',content)
+  async createAnnouncementBoard(@Req() req,@Body() createAnnouncementDTO:AnnouncementDto) {
+    const adminCode:string = req.user?.userCode;
+    const result = await this.announcementService.createAnnouncement(adminCode,createAnnouncementDTO)
 
     return {
       id: result

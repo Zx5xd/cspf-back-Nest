@@ -24,7 +24,8 @@ export class QuestionsService {
   }
 
   async findAll() {
-    return await this.questionRepository.find();
+    return await this.questionRepository.createQueryBuilder('questions')
+      .select(['questions.id','questions.title','questions.authorCode','questions.createdAt']).getMany();
   }
 
   async findOne(id:number):Promise<QuestionsEntity> {
@@ -48,15 +49,23 @@ export class QuestionsService {
     };
   }
 
-  async update(id:number, questionsDto:QuestionsDto):Promise<boolean> {
+  async update(code:string, id:number, questionsDto:QuestionsDto):Promise<boolean> {
     // const updateData: QueryDeepPartialEntity<QuestionsEntity> = {
     //   content: content
     // }
+    const exist:QuestionsEntity = await this.questionRepository.findOne({where:{id,authorCode:code}})
+    if (!exist) {
+      throw new ForbiddenException('Access denied or empty');
+    }
     const result:UpdateResult = await this.questionRepository.update(id,questionsDto);
     return result.affected > 0;
   }
 
-  async delete(id:number):Promise<void> {
+  async delete(authorCode:string,id:number):Promise<void> {
+    const exist:QuestionsEntity = await this.questionRepository.findOne({where:{id,authorCode}})
+    if (!exist) {
+      throw new ForbiddenException('Access denied or empty, question board is delete failed.');
+    }
     await this.questionRepository.delete(id);
   }
 
@@ -93,7 +102,7 @@ export class QuestionsService {
   async existAccessComment(id:number,authorCode:string) {
     const result:QuestionsCommentsEntity = await this.questionCommentsRepository.findOne({where:{id,authorCode}})
     if (!result) {
-      throw new ForbiddenException('Access denied');
+      throw new ForbiddenException('Access denied or empty');
     }
   }
 }

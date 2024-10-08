@@ -1,4 +1,16 @@
-import {Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post, Req, UseGuards} from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards
+} from "@nestjs/common";
 import {QuestionsService} from "./questions.service";
 import {QuestionsDto} from "../../dto/questions.dto";
 import {JwtAuthGuard} from "../auth/jwt-auth.guard";
@@ -21,8 +33,8 @@ export class QuestionsController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  async createBoard(@Req() req,questionDto:QuestionsDto) {
-    const code = req.user.userCode ?? req.user.adminCode
+  async createBoard(@Req() req,@Body() questionDto:QuestionsDto) {
+    const code = req.user.userCode ?? req.user.adminCode;
     const result = await this.questionsService.createQuestion(code,questionDto)
     return {
       id: result,
@@ -30,9 +42,11 @@ export class QuestionsController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':boardId')
-  async editBoard(@Param('boardId') boardId: number,questionDto:QuestionsDto) {
-    const isUpdated = await this.questionsService.update(boardId,questionDto);
+  async editBoard(@Req() req,@Param('boardId') boardId: number,@Body() questionDto:QuestionsDto) {
+    const code = req.user.userCode ?? req.user.adminCode
+    const isUpdated = await this.questionsService.update(code,boardId,questionDto);
 
     if (!isUpdated) {
       throw new HttpException('Update failed, entity not found.', HttpStatus.NOT_FOUND);
@@ -41,9 +55,11 @@ export class QuestionsController {
     return { success: true };
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':boardId')
-  async deleteBoard(@Param('boardId') boardId: number) {
-    await this.questionsService.delete(boardId);
+  async deleteBoard(@Req() req,@Param('boardId') boardId: number) {
+    const code = req.user.userCode ?? req.user.adminCode
+    await this.questionsService.delete(code,boardId);
     return { success: true };
   }
 }
