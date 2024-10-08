@@ -14,6 +14,8 @@ import {ChatGateway} from "./modules/chat/chat.gateway";
 import {AdminModule} from "./modules/admin/admin.module";
 import {ImageModule} from "./modules/image/image.module";
 import {ChatModule} from "./modules/chat/chat.module";
+import {AnnouncementModule} from "./modules/announcement/announcement.module";
+import {QuestionsModule} from "./modules/questions/questions.module";
 
 @Module({
   imports: [
@@ -45,7 +47,9 @@ import {ChatModule} from "./modules/chat/chat.module";
       ChatLogModule,
       AdminModule,
       ImageModule,
-      ChatModule
+      ChatModule,
+      AnnouncementModule,
+      QuestionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
