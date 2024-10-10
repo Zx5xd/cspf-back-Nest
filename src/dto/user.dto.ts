@@ -60,3 +60,34 @@ export class CreateUserDto {
     @Length(1, 1)
     petOwnership?: string;
 }
+
+export class UpdateUserDTO {
+    @IsString()
+    @IsNotEmpty()
+    @Length(1, 255)
+    password: string;
+
+    @IsString()
+    @IsNotEmpty()
+    @Length(1, 255)
+    nickname: string;
+
+    @IsEmail()
+    @IsNotEmpty()
+    @Length(1, 255)
+    email: string;
+
+    @IsString()
+    @IsNotEmpty()
+    @Length(1, 255)
+    addr: string;
+
+    @IsPhoneNumber('KR')
+    @IsNotEmpty()
+    phone: string;
+
+    @IsString()
+    @IsOptional()
+    @Length(1, 1)
+    petOwnership?: string;
+}

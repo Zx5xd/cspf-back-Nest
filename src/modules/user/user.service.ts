@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import {Repository} from "typeorm";
+import {Repository, UpdateResult} from "typeorm";
 import {UserEntity} from "./user.entity";
 import {InjectRepository} from "@nestjs/typeorm";
-import {CreateUserDto} from "../../dto/user.dto";
+import {CreateUserDto, UpdateUserDTO} from "../../dto/user.dto";
 
 @Injectable()
 export class UserService {
@@ -55,6 +55,16 @@ export class UserService {
             userCode,
             {refreshToken:refreshToken}
         )
+    }
+
+    async updateUser(userCode:string,userDto:UpdateUserDTO) {
+        const result:UpdateResult = await this.userRepository.update(userCode, userDto)
+
+        if (result.affected > 0) {
+            return { success: true, message: '계정이 성공적으로 수정되었습니다' };
+        } else {
+            return { success: false, message: '계정이 존재하지 않거나 수정할 수 없어 실패했습니다' };
+        }
     }
 
     async deleteUser(userCode:string) {
