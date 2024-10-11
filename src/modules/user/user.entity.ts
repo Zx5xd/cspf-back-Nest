@@ -1,4 +1,4 @@
-import {Entity, Column, PrimaryGeneratedColumn, Unique, CreateDateColumn, PrimaryColumn, OneToMany} from 'typeorm';
+import {Entity, Column, Unique, CreateDateColumn, PrimaryColumn, OneToMany} from 'typeorm';
 import {ChatLogEntity} from "../chatlog/chatlog.entity";
 
 @Entity('User')
@@ -37,6 +37,9 @@ export class UserEntity {
 
     @Column({ type: 'char', length: 1, nullable: true })
     petOwnership: string | null;
+
+    @Column({ type: 'text', nullable: true})
+    imageUrl: string | null;
 
     @CreateDateColumn({ type: 'timestamp' })
     createdTime: Date;

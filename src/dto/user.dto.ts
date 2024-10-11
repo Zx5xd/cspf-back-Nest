@@ -59,6 +59,11 @@ export class CreateUserDto {
     @IsOptional()
     @Length(1, 1)
     petOwnership?: string;
+
+    @IsString()
+    @IsOptional()
+    @Length(1,512)
+    imageUrl?: string | null;
 }
 
 export class UpdateUserDTO {
@@ -90,4 +95,9 @@ export class UpdateUserDTO {
     @IsOptional()
     @Length(1, 1)
     petOwnership?: string;
+
+    @IsString()
+    @IsOptional()
+    @Length(1,512)
+    imageUrl?: string | null;
 }
