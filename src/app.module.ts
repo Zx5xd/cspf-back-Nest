@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ChatGateway } from './chat/chat.gateway';
-import { AniApiService } from './aniapi/aniapi.service';
-import { AniapiController } from './aniapi/aniapi.controller';
-import { LawApiService } from './lawapi/lawapi.service';
-import { LawApiController } from './lawapi/lawapi.controller';
-import { NewsApiService } from './newsapi/newsapi.service';
-import { NewsapiController } from './newsapi/newsapi.controller';
+import { ChatGateway } from './voicechat/chat.gateway';
+import { AniApiService } from './API/aniapi/aniapi.service';
+import { AniapiController } from './API/aniapi/aniapi.controller';
+import { LawApiService } from './API/lawapi/lawapi.service';
+import { LawApiController } from './API/lawapi/lawapi.controller';
+import { NewsApiService } from './API/newsapi/newsapi.service';
+import { NewsapiController } from './API/newsapi/newsapi.controller';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
@@ -23,6 +23,9 @@ import * as process from 'node:process';
 import { AuthController } from './auth/auth.controller';
 import { UsersModule } from './users/users.module';
 import { PetModule } from './pet/pet.module';
+import { ExpertModule } from './expert/expert.module';
+import { ImageExtractController } from './API/image-extract/image-extract.controller';
+import { ImageExtractService } from './API/image-extract/image-extract.service';
 
 @Module({
   imports: [
@@ -67,6 +70,7 @@ import { PetModule } from './pet/pet.module';
     MailauthModule,
     UsersModule,
     PetModule,
+    ExpertModule,
   ],
   controllers: [
     AppController,
@@ -76,6 +80,7 @@ import { PetModule } from './pet/pet.module';
     NewsapiController,
     ImageController,
     ScripingController,
+      ImageExtractController
   ],
   providers: [
     AppService,
@@ -85,6 +90,7 @@ import { PetModule } from './pet/pet.module';
     NewsApiService,
     ImageService,
     ScripingService,
+      ImageExtractService,
   ],
 })
 export class AppModule {}

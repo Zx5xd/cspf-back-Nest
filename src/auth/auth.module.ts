@@ -6,6 +6,10 @@ import { PassportModule } from '@nestjs/passport';
 import { UsersModule } from '../users/users.module';
 import { ConfigService } from '@nestjs/config';
 import { GoogleStrategy } from './strategy/google.strategy';
+import {ExpertModule} from "../expert/expert.module";
+import {ExpertService} from "../expert/expert.service";
+import {TypeOrmModule} from "@nestjs/typeorm";
+import {ExpertEntity} from "../expert/entities/expert.entity";
 
 @Module({
   imports: [
@@ -18,6 +22,7 @@ import { GoogleStrategy } from './strategy/google.strategy';
         signOptions: { expiresIn: '15m' },
       })
     }),
+    TypeOrmModule.forFeature([ExpertEntity]),
     UsersModule,
   ],
   providers: [AuthService, NaverStrategy, GoogleStrategy], // NaverStrategy를 providers에 추가

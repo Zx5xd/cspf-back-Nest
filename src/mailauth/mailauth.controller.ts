@@ -36,10 +36,10 @@ export class MailauthController {
   // 인증 코드 검증 요청 처리
   @Post('mailVerify')
   async verify(@Req() req: Request, @Body('code') code: string) {
-    console.log(req.body);
-    console.log(req.cookies['emailToken']);
+    // console.log(req.body);
+    // console.log(req.cookies['emailToken']);
     const token = req.cookies['emailToken'];
-    console.log(`mailVerify: ${token} ${code}`);
+    // console.log(`mailVerify: ${token} ${code}`);
 
     const isValid = await this.mailauthService.verifyCode(token, code);
 

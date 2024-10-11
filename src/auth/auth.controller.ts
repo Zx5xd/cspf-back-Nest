@@ -1,20 +1,38 @@
 // src/auth/auth.controller.ts
-import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { Request, Response } from 'express';
 import { GoogleUserService } from '../users/google-user/google-user.service';
 import { UsersService } from '../users/users.service';
-import {NaverUserService} from "../users/naver-user/naver-user.service";
+import { NaverUserService } from '../users/naver-user/naver-user.service';
+import { expertLoginDto } from '../expert/dto/expert.dto';
+import { ExpertService } from '../expert/expert.service';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly googleUserService: GoogleUserService,
-    private readonly userService: UsersService,
+    private readonly expertService: ExpertService,
     private readonly naverUserService: NaverUserService,
   ) {}
+
+  @Post('login/expert')
+  login(@Body() loginDto: expertLoginDto) {
+    console.log(loginDto);
+    const result = this.authService.expertLogin(loginDto);
+
+    return result;
+  }
 
   // 네이버 로그인 URL
   @Get('google')

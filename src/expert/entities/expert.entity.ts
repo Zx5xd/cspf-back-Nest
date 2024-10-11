@@ -1,0 +1,37 @@
+import { Entity, PrimaryColumn, Column, Unique, Relation, JoinColumn, OneToOne } from 'typeorm';
+import {ExpertProfileEntity} from "./expertProfile.entity";
+
+@Entity('Expert')
+@Unique(['username'])
+export class ExpertEntity {
+  @PrimaryColumn({ type: 'varchar', length: 10 })
+  expertCode: string;
+
+  @Column({ type: 'varchar', length: 255 })
+  username: string;
+
+  @Column({ type: 'varchar', length: 255 })
+  password: string;
+
+  @Column({ type: 'varchar', length: 255 })
+  name: string;
+
+  @Column({ type: 'varchar', length: 255 })
+  company: string;
+
+  @Column({ type: 'varchar', length: 255 })
+  email: string;
+
+  @Column({ type: 'varchar', length: 20 })
+  phone: string;
+
+  @Column({ type: 'int' })
+  credentialStatus: number;
+
+  // @Column({type:'text', nullable: true})
+  // refreshToken: string;
+
+  @OneToOne(() => ExpertProfileEntity)
+  @JoinColumn()
+  profile: ExpertProfileEntity;
+}
