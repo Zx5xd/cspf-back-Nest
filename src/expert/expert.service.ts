@@ -64,6 +64,7 @@ export class ExpertService {
       return {
         success: false,
         message: '해당 아이디는 사용 중 입니다.',
+        expertDto: existingUser,
       };
     } else {
       return {

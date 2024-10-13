@@ -1,5 +1,13 @@
-import { Entity, PrimaryColumn, Column, Unique, Relation, JoinColumn, OneToOne } from 'typeorm';
-import {ExpertProfileEntity} from "./expertProfile.entity";
+import {
+  Entity,
+  PrimaryColumn,
+  Column,
+  Unique,
+  Relation,
+  JoinColumn,
+  OneToOne,
+} from 'typeorm';
+import { ExpertProfileEntity } from './expertProfile.entity';
 
 @Entity('Expert')
 @Unique(['username'])
@@ -25,8 +33,14 @@ export class ExpertEntity {
   @Column({ type: 'varchar', length: 20 })
   phone: string;
 
-  @Column({ type: 'int' })
+  @Column({ type: 'int', default: 0 })
   credentialStatus: number;
+
+  @Column({ type: 'varchar', length: 512, nullable: true })
+  image: string;
+
+  @Column({ type: 'varchar', length: 512, nullable: true })
+  certImage: string;
 
   // @Column({type:'text', nullable: true})
   // refreshToken: string;

@@ -26,6 +26,10 @@ import { PetModule } from './pet/pet.module';
 import { ExpertModule } from './expert/expert.module';
 import { ImageExtractController } from './API/image-extract/image-extract.controller';
 import { ImageExtractService } from './API/image-extract/image-extract.service';
+import { ExpertEntity } from './expert/entities/expert.entity';
+import { ExpertProfileEntity } from './expert/entities/expertProfile.entity';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -66,6 +70,7 @@ import { ImageExtractService } from './API/image-extract/image-extract.service';
       entities: ['dist/**/*.entity.js'],
       synchronize: true,
     }),
+    TypeOrmModule.forFeature([ExpertEntity]),
     AuthModule,
     MailauthModule,
     UsersModule,
@@ -80,7 +85,7 @@ import { ImageExtractService } from './API/image-extract/image-extract.service';
     NewsapiController,
     ImageController,
     ScripingController,
-      ImageExtractController
+    ImageExtractController,
   ],
   providers: [
     AppService,
@@ -90,7 +95,7 @@ import { ImageExtractService } from './API/image-extract/image-extract.service';
     NewsApiService,
     ImageService,
     ScripingService,
-      ImageExtractService,
+    ImageExtractService,
   ],
 })
 export class AppModule {}

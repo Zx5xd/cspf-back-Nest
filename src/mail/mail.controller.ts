@@ -1,16 +1,26 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { MailService } from './mail.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthService } from 'src/auth/auth.service';
+import { ExpertEntity } from '../expert/entities/expert.entity';
+
+export interface sendMailDto {
+  email: string;
+  userCode: string;
+  name: string;
+}
 
 @Controller('mail')
 export class MailController {
-    constructor(private readonly userService: MailService) {}
+  constructor(private readonly mailService: MailService) {}
 
-    // @Get()
-    // @ApiTags('Auth')
-    // @ApiOperation({ summary: '이메일 보내기' })
-    // async createUser() {
-    //     return this.userService.sendEmail();
-    // }
+  @Get('certDenial')
+  async certDenial(@Query() expertDto: any) {
+    return this.mailService.sendCertDenialEmail(expertDto);
+  }
+
+  @Get('createSuccess')
+  async createSuccess(@Query() expertDto: any) {
+    return this.mailService.createSuccess(expertDto);
+  }
 }

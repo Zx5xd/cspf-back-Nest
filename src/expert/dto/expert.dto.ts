@@ -56,8 +56,20 @@ export class expertDto {
 
   @IsString()
   @IsOptional()
-  @Length(1, 10)
-  CredentialStatus: boolean;
+  @Length(1)
+  CredentialStatus: number;
+
+  @IsString()
+  @Length(1, 512)
+  @Expose()
+  @Transform(({ value }) => (value === null ? undefined : value))
+  image: string;
+
+  @IsString()
+  @Length(1, 512)
+  @Expose()
+  @Transform(({ value }) => (value === null ? undefined : value))
+  certImage: string;
 }
 
 export class updateExpertDto {

@@ -24,7 +24,7 @@ export class MailauthService {
     };
 
     // 이메일 전송
-    await this.mailService.sendEmail(userEmail, payload);
+    await this.mailService.sendAuthEmail(userEmail, payload);
 
     return payload;
   }

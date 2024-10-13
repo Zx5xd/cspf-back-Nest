@@ -1,11 +1,21 @@
 import {
-  Controller, Get,
-  Post, Req, Res,
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post, Query,
+  Req,
+  Res,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { ImageExtractService } from './image-extract.service';
 import { FileInterceptor } from '@nestjs/platform-express';
+import * as fs from 'fs';
+import { promisify } from 'util';
+import { join } from 'path';
+
+const readFile = promisify(fs.readFile);
 
 @Controller('imgextract')
 export class ImageExtractController {
@@ -13,8 +23,25 @@ export class ImageExtractController {
 
   @Get()
   getTest(@Req() req, @Res() res) {
-   console.log('getTest');
+    console.log('getTest');
   }
+
+  @Post('certVision')
+  async getCertVision(@Body() img: any) {
+    // const jsonString = JSON.stringify(img.img);
+    // const imagePath = join(process.cwd(), img.img);
+    // const decode = Buffer.from(img, 'base64').toString('utf-8');
+
+    const imagePath = img.img;
+
+    console.log(imagePath);
+
+    // 이미지 파일을 버퍼로 읽기
+    const imageBuffer = await readFile(imagePath);
+
+    return this.imageExtractService.detextTextFromImage(imageBuffer);
+  }
+
 
   @Post('detect-text')
   @UseInterceptors(FileInterceptor('file'))
