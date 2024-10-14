@@ -37,7 +37,8 @@ export class ChatLogService {
   }) {
     const query = this.chatLogRepository
         .createQueryBuilder('chatLog')
-        .addSelect('chatRoomID')
+        .leftJoin('chatLog.chatRoom','chatRoom')
+        .addSelect(['chatRoom.chatRoomID'])
         .leftJoin('chatLog.user', 'user')   // user와 조인
         .addSelect(['user.userCode', 'user.username', 'user.nickname']) // 필요한 필드만 선택
         .orderBy('chatLog.createdAt', 'DESC') // 최신순 정렬
@@ -46,8 +47,20 @@ export class ChatLogService {
 
     const [results, total] = await query.getManyAndCount();
 
+    const formattedResults = results.map((chatLog) => ({
+      chatLogID: chatLog.chatLogID,
+      createdAt: chatLog.createdAt,
+      chatMessage: chatLog.chatMessage,
+      chatRoomID: chatLog.chatRoom.chatRoomID, // chatRoomID를 별도로 추출
+      user: {
+        userCode: chatLog.user.userCode,
+        username: chatLog.user.username,
+        nickname: chatLog.user.nickname,
+      },
+    }));
+
     return {
-      results,
+      results: formattedResults,
       total,
       currentPage: option.page,
       totalPages: Math.ceil(total / option.limit),
@@ -64,14 +77,30 @@ export class ChatLogService {
         .createQueryBuilder('chatLog')
         .innerJoinAndSelect('chatLog.chatRoom', 'chatRoom')
         .where('chatRoom.chatRoomID = :chatRoomID', { chatRoomID })
+        .leftJoin('chatLog.chatRoom','chatRoom')
+        .addSelect(['chatRoom.chatRoomID'])
+        .leftJoin('chatLog.user', 'user')   // user와 조인
+        .addSelect(['user.userCode', 'user.username', 'user.nickname']) // 필요한 필드만 선택
         .orderBy('chatLog.createdAt', 'DESC') // 최신순 정렬
         .skip((option.page - 1) * option.limit)
         .take(option.limit);
 
     const [results, total] = await query.getManyAndCount();
 
+    const formattedResults = results.map((chatLog) => ({
+      chatLogID: chatLog.chatLogID,
+      createdAt: chatLog.createdAt,
+      chatMessage: chatLog.chatMessage,
+      chatRoomID: chatLog.chatRoom.chatRoomID, // chatRoomID를 별도로 추출
+      user: {
+        userCode: chatLog.user.userCode,
+        username: chatLog.user.username,
+        nickname: chatLog.user.nickname,
+      },
+    }));
+
     return {
-      results,
+      results: formattedResults,
       total,
       currentPage: option.page,
       totalPages: Math.ceil(total / option.limit),
