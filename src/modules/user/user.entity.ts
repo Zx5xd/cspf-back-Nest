@@ -1,5 +1,6 @@
 import {Entity, Column, Unique, CreateDateColumn, PrimaryColumn, OneToMany} from 'typeorm';
 import {ChatLogEntity} from "../chatlog/chatlog.entity";
+import {ChatImageEntity, ImageEntity} from "../image/image.entity";
 
 @Entity('User')
 @Unique(['username'])
@@ -43,6 +44,12 @@ export class UserEntity {
 
     @CreateDateColumn({ type: 'timestamp' })
     createdTime: Date;
+
+    @OneToMany(()=> ChatImageEntity, chatImage => chatImage.user)
+    chatImages: ChatImageEntity[];
+
+    @OneToMany(()=> ImageEntity, img => img.user)
+    images: ImageEntity[];
 
     @OneToMany(() => ChatLogEntity, chatLog => chatLog.user)
     chatLogs: ChatLogEntity[];
