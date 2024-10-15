@@ -29,6 +29,23 @@ export class ChatRoomService {
         return await this.chatRoomRepository.findOne({where:{}});
     }
 
+    async findUserCreateRooms(userCode:string):Promise<ChatRoomEntity[]> {
+        return await this.chatRoomRepository
+          .createQueryBuilder("chatRoom")
+          .where("chatRoom.accessUser IS NOT NULL")
+          .andWhere("JSON_EXTRACT(chatRoom.accessUser, '$.owner') = :userCode", { userCode })
+          .getMany();
+    }
+
+    async findUserAccessRooms(userCode:string):Promise<ChatRoomEntity[]> {
+        return await this.chatRoomRepository
+          .createQueryBuilder("chatRoom")
+          .where("chatRoom.accessUser IS NOT NULL")
+          .andWhere("JSON_CONTAINS(chatRoom.accessUser->'$.access', :userCode)", { userCode: `"${userCode}"` })
+          .getMany();
+
+    }
+
     async consultEndUpdate(updateData: Partial<ChatRoomEntity>): Promise<void> {
         await this.chatRoomRepository.update({consultEndTime:new Date()},updateData);
     }

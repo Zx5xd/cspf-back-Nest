@@ -25,6 +25,26 @@ export class ChatRoomController {
 
     @Get()
     async getRooms(): Promise<ChatRoomEntity[]> {
-        return this.chatRoomService.findAll();
+        return await this.chatRoomService.findAll();
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('/user/owner')
+    async getUserCreateRooms(@Request() req: any) {
+        const userCode = req.user.userCode;
+        const result:ChatRoomEntity[] = await this.chatRoomService.findUserCreateRooms(userCode);
+        return {
+            content: result
+        }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('/user/access')
+    async getUserAccessRooms(@Request() req: any) {
+        const userCode = req.user.userCode;
+        const result:ChatRoomEntity[] = await this.chatRoomService.findUserAccessRooms(userCode);
+        return {
+            content: result
+        }
     }
 }
