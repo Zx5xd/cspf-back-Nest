@@ -11,8 +11,8 @@ import {
 import {ChatRoomEntity} from "../chatroom/chatroom.entity";
 import {v4 as uuidv4} from "uuid";
 
-@Entity('Image')
-export class ImageEntity extends BaseEntity {
+@Entity('ChatImage')
+export class ChatImageEntity extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     uuid: string;
 

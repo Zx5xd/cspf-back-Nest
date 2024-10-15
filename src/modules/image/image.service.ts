@@ -1,5 +1,5 @@
 import {Injectable, NotFoundException} from "@nestjs/common";
-import {ImageEntity} from "./image.entity";
+import {ChatImageEntity} from "./image.entity";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
 import {ChatRoomEntity} from "../chatroom/chatroom.entity";
@@ -18,11 +18,44 @@ const gunzip = promisify(zlib.gunzip);
 @Injectable()
 export class ImageService {
     constructor(
-        @InjectRepository(ImageEntity)
-        private readonly imageRepository: Repository<ImageEntity>,
+        @InjectRepository(ChatImageEntity)
+        private readonly chatImageRepository: Repository<ChatImageEntity>,
         @InjectRepository(ChatRoomEntity)
         private readonly chatRoomRepository: Repository<ChatRoomEntity>
     ) {}
+
+    async imageProcess(uri:string,imgBuffer:Buffer):Promise<{filename:string,directory:string}> {
+        const filename = `${Date.now()}_${v4()}.webp`
+        const dir = join(process.cwd(), uri);
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+        }
+        const imagePath:string = join(dir, filename);
+        await sharp(imgBuffer).webp({quality:100}).toFile(imagePath);
+
+        return {
+            filename,
+            directory:dir
+        }
+    }
+
+    async saveChatImage(filename:string,imgBuffer:Buffer, chatRoomId:string):Promise<string> {
+        try {
+            const file = await this.imageProcess(join("./uploads","chatImage",chatRoomId),imgBuffer);
+
+            const result:ChatImageEntity = this.chatImageRepository.create({
+                chatRoom: { chatRoomID: chatRoomId },
+                path: file.directory,
+                filename: filename
+            });
+            await this.chatImageRepository.save(result);
+
+            return Buffer.from(result.uuid).toString('base64');
+        } catch (err) {
+            console.error('Error saving image:', err);
+            throw new Error('Image save failed');
+        }
+    }
 
     async saveImage(_filename:string, imageBuffer: Buffer, chatRoomId: string): Promise<string> {
         // BufferSource가 Buffer가 아닌 경우 ArrayBuffer로 변환
@@ -66,12 +99,12 @@ export class ImageService {
               .toFile(imagePath); // webp로 변환된 파일을 저장
 
             // DB에 이미지 경로와 정보를 저장하는 로직
-            const result = this.imageRepository.create({
+            const result = this.chatImageRepository.create({
                 chatRoom: { chatRoomID: chatRoomId },
                 path: imagePath,
                 filename: filename,
             });
-            await this.imageRepository.save(result);
+            await this.chatImageRepository.save(result);
 
             // 파일 경로나 UUID를 반환 (예시로 파일명 반환)
             return Buffer.from(result.uuid).toString('base64');

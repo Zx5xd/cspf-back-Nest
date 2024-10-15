@@ -59,7 +59,7 @@ export class ImageController {
         for (const file of files) {
             const filename = file.filename
             const fileBuffer = file.buffer as Buffer;
-            const savedFileUuid = await this.imageService.saveImage(filename, fileBuffer, roomId);
+            const savedFileUuid = await this.imageService.saveChatImage(filename, fileBuffer, roomId);
             savedFileUuids.push(`${protocol}://${host}/images/${roomId}/${savedFileUuid}`); // 각 파일의 UUID 저장
         }
         // this.chatService.sendMessageToAll('message','test')
