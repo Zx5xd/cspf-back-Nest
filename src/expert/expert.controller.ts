@@ -16,6 +16,7 @@ export class ExpertController {
 
   @Post()
   create(@Body() createExpertProp: any) {
+    console.log(createExpertProp);
     return this.expertService.create(createExpertProp);
   }
 

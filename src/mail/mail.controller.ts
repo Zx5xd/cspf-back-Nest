@@ -20,7 +20,7 @@ export class MailController {
   }
 
   @Get('createSuccess')
-  async createSuccess(@Query() expertDto: any) {
-    return this.mailService.createSuccess(expertDto);
+  async createSuccess(@Query() userDto: any) {
+    return this.mailService.createSuccess(userDto);
   }
 }

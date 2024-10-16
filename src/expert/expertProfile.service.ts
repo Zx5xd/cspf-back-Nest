@@ -17,13 +17,13 @@ export class ExpertProfileService {
   async create(createExpertProp: any) {
     const { expertCode: expert, ...profileInputData } = createExpertProp;
 
-    console.log(expert);
+    console.log(profileInputData);
 
     const profile_yn = await this.expertRepository.findOne({
       where: [expert],
       relations: ['profile'],
     });
-    console.log(profile_yn);
+    // console.log(`profile`+ JSON.stringify(profile_yn));
     if (profile_yn.profile) {
       this.update(profile_yn.profile.id, profileInputData);
     } else {
@@ -63,6 +63,7 @@ export class ExpertProfileService {
   }
 
   update(id: string, updateDto: ExpertProfileEntity) {
+    console.log(`update ${id} ${JSON.stringify(updateDto)}`);
     return this.expertProfileRepository.update(id, updateDto);
   }
 }

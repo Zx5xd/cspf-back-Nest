@@ -12,7 +12,6 @@ import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { Request, Response } from 'express';
 import { GoogleUserService } from '../users/google-user/google-user.service';
-import { UsersService } from '../users/users.service';
 import { NaverUserService } from '../users/naver-user/naver-user.service';
 import { expertLoginDto } from '../expert/dto/expert.dto';
 import { ExpertService } from '../expert/expert.service';
@@ -42,6 +41,20 @@ export class AuthController {
     console.log('auth/google 진입');
   }
 
+  @Post('google')
+  @UseGuards(AuthGuard('google')) // Naver 전략 사용
+  async appgoogleLogin() {
+    // Guard가 작동하여 네이버 로그인 페이지로 리다이렉트함
+    console.log('auth/google 진입');
+  }
+  //
+  // @Get('appGoogle')
+  // @UseGuards(AuthGuard('AppGoogle')) // Naver 전략 사용
+  // async appGoogleLogin() {
+  //   // Guard가 작동하여 네이버 로그인 페이지로 리다이렉트함
+  //   console.log('auth/appGoogle 진입');
+  // }
+
   // 네이버 로그인 콜백
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
@@ -60,6 +73,28 @@ export class AuthController {
     // JWT 토큰을 포함하여 프론트엔드로 리디렉션
     res.redirect(`http://localhost:5173/auth/google/callback?token=${jwt}`);
   }
+
+  // // 네이버 로그인 콜백
+  // @Get('appGoogle/callback')
+  // @UseGuards(AuthGuard('AppGoogle'))
+  // async AppgoogleLoginCallback(@Req() req: Request, @Res() res: Response) {
+  //   console.log('google/callback 진입');
+  //
+  //   const { user } = req; // 네이버 로그인 성공 후의 사용자 정보
+  //
+  //   const userFind = this.googleUserService.findOrCreate(user);
+  //
+  //   console.log('userFind: ', userFind);
+  //
+  //   // JWT 토큰 생성 및 사용자 정보를 프론트엔드에 전달
+  //   const jwt = this.authService.googleJwtToken(user);
+  //
+  //   // JWT 토큰을 포함하여 프론트엔드로 리디렉션
+  //   res.send({
+  //     jwt: jwt,
+  //     success: true,
+  //   });
+  // }
 
   // 네이버 로그인 URL
   @Get('naver')

@@ -2,36 +2,49 @@ import { Injectable } from '@nestjs/common';
 import { ImageAnnotatorClient } from '@google-cloud/vision';
 import { AniApiService } from '../aniapi/aniapi.service';
 import * as Tesseract from 'tesseract.js';
+import { PetService } from '../../pet/pet.service';
 
 @Injectable()
 export class ImageExtractService {
   private readonly visionClient: ImageAnnotatorClient;
 
-  constructor(private readonly aniService: AniApiService) {
+  constructor(
+    private readonly aniService: AniApiService,
+    private readonly petService: PetService,
+  ) {
     this.visionClient = new ImageAnnotatorClient({
       keyFilename: process.env.GOOGLE_VISION_API_KEY,
     });
   }
 
-  async detextTextFromImage(imageBuffer: Buffer): Promise<string | any[]> {
+  async detextTextFromImage(imageBuffer: Buffer): Promise<string | any> {
     // vision 이용
-    const [result] = await this.visionClient.textDetection(imageBuffer);
-    const detection = result.fullTextAnnotation.text.split('\n');
-    //
-    // let owner: string;
-    // let petId: string;
-    //
-    // // ':'을 기준으로 key-value 쌍을 객체에 추가
-    // detection.forEach((detect) => {
-    //   const [key, value] = detect.split(':');
-    //   if (key === '보호자') owner = value.trim();
-    //   if (key === '등록번호') petId = value.trim();
-    // });
-    //
-    // const aniInfo = await this.aniService.getAniInfo(owner, petId);
-    // console.log('image aniInfo', aniInfo);
+    const [resultVison] = await this.visionClient.textDetection(imageBuffer);
+    const detection = resultVison.fullTextAnnotation.text.split('\n');
 
-    return detection;
+    let owner: string;
+    let petId: string;
+    let birth: string;
+
+    console.log(`detect-text: ${detection}`);
+
+    // ':'을 기준으로 key-value 쌍을 객체에 추가
+    detection.forEach((detect) => {
+      const [key, value] = detect.split(':') ?? detect.split(' ');
+      if (key === '보호자') owner = value.trim();
+      if (key === '등록번호') petId = value.trim();
+      if (key === '생일' || key === '생년월일') birth = value.trim();
+    });
+    console.log(`보호자: ${owner}, 등록번호: ${petId}, 생일: ${birth}`);
+
+    const aniInfoData = await this.aniService.getAniInfo(owner, petId);
+    aniInfoData.Birthday = birth;
+    console.log('image aniInfo', aniInfoData);
+
+    const resultDB = this.petService.create(aniInfoData);
+    console.log('result', resultDB);
+
+    return resultDB;
   }
 
   async extractTextFromImage(imageBuffer: Buffer): Promise<string> {
