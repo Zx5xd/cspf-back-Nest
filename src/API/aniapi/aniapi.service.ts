@@ -1,7 +1,7 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import axios from 'axios';
 import * as xml2js from 'xml2js';
-import {petDto} from "../../pet/dto/pet.dto";
+import {petDto} from "../../dto/pet.dto";
 
 @Injectable()
 export class AniApiService {

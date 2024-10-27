@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ChatGateway } from './voicechat/chat.gateway';
+import { ChatGateway } from './utils/voicechat/chat.gateway';
 import { AniApiService } from './API/aniapi/aniapi.service';
 import { AniapiController } from './API/aniapi/aniapi.controller';
 import { LawApiService } from './API/lawapi/lawapi.service';
@@ -11,25 +11,24 @@ import { NewsapiController } from './API/newsapi/newsapi.controller';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { MailModule } from './mail/mail.module';
-import { AuthModule } from './auth/auth.module';
-import { ImageService } from './image/image.service';
-import { ImageController } from './image/image.controller';
-import { ScripingService } from './scriping/scriping.service';
-import { ScripingController } from './scriping/scriping.controller';
-import { MailauthModule } from './mailauth/mailauth.module';
+import { MailModule } from './utils/mail/mail.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { ImageService } from './modules/image/image.service';
+import { ImageController } from './modules/image/image.controller';
+import { ScripingService } from './utils/scriping/scriping.service';
+import { ScripingController } from './utils/scriping/scriping.controller';
+import { MailauthModule } from './utils/mailauth/mailauth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as process from 'node:process';
-import { AuthController } from './auth/auth.controller';
-import { UsersModule } from './users/users.module';
-import { PetModule } from './pet/pet.module';
-import { ExpertModule } from './expert/expert.module';
+import { AuthController } from './modules/auth/auth.controller';
+import { UsersModule } from './modules/users/users.module';
+import { PetModule } from './modules/pet/pet.module';
+import { ExpertModule } from './modules/expert/expert.module';
 import { ImageExtractController } from './API/image-extract/image-extract.controller';
 import { ImageExtractService } from './API/image-extract/image-extract.service';
-import { ExpertEntity } from './expert/entities/expert.entity';
-import { ExpertProfileEntity } from './expert/entities/expertProfile.entity';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
+import { ExpertEntity } from './modules/expert/expert.entity';
+import { ResvModule } from './resv/resv.module';
+import { ChatComplaintModule } from './modules/chat-complaint/chat-complaint.module';
 
 @Module({
   imports: [
@@ -51,7 +50,7 @@ import { join } from 'path';
           from: '"nest-modules" <modules@nestjs.com>',
         },
         template: {
-          dir: __dirname + '/templates',
+          dir: __dirname + '**/**/templates',
           adapter: new HandlebarsAdapter(),
           options: {
             strict: true,
@@ -76,6 +75,8 @@ import { join } from 'path';
     UsersModule,
     PetModule,
     ExpertModule,
+    ResvModule,
+    ChatComplaintModule,
   ],
   controllers: [
     AppController,

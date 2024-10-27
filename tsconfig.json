@@ -30,6 +30,7 @@
 },
   "include": [
     "src/**/*.ts",
-    "src/mail/templates/*.hbs"  // .hbs 파일 포함
+    "src/utils/mail/templates/*.hbs"
+    // .hbs 파일 포함
   ]
 }
