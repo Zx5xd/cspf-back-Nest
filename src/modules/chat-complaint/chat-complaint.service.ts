@@ -30,10 +30,18 @@ export class ChatComplaintService {
     return this.chatCompRepository.find();
   }
 
+  getComplaintList() {
+    return this.chatCompRepository.find({ where: { processingStatus: 0 } });
+  }
+
   async processComplaintById(id: number, processCode: number) {
     const comp = await this.chatCompRepository.findOne({
       where: { id },
     });
+
+    if (comp.processingStatus === 1) {
+      return null;
+    }
 
     if (processCode == 1) {
       // 가해자 userCode 흭득

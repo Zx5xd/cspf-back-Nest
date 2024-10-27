@@ -16,6 +16,11 @@ export class ChatComplaintController {
     return this.chatComplaintService.getAllComplaint();
   }
 
+  @Get('compList')
+  getComplaintList() {
+    return this.chatComplaintService.getComplaintList();
+  }
+
   @Get(':compId')
   getComplaintById(@Param('compId') compId: number) {
     return this.chatComplaintService.getComplaintById(compId);
