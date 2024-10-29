@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Post, Req, Res} from "@nestjs/common";
+import { Controller, Get, Req, Res} from "@nestjs/common";
 import {AdminService} from "./admin.service";
 import {JwtService} from "@nestjs/jwt";
 import {ConfigService} from "@nestjs/config";
@@ -13,6 +13,7 @@ export class AdminController {
 
     @Get()
     async existAdmin(@Req() req, @Res() res) {
+        console.log(req)
         const secretKey = this.configService.get<string>('SECRET_KEY');
         const authorization = req.cookies['authorization']
         if (!authorization) {

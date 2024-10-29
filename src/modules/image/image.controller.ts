@@ -7,12 +7,12 @@ import {
     Post,
     UseGuards,
     Req,
-    UseInterceptors, UploadedFiles, NestInterceptor
+    UseInterceptors, UploadedFiles, NestInterceptor, UploadedFile, InternalServerErrorException
 } from '@nestjs/common';
 import { ImageService } from './image.service';
 import { Response } from 'express';
 import {JwtAuthGuard} from "../auth/jwt-auth.guard";
-import { FilesInterceptor } from '@nestjs/platform-express';
+import {FileInterceptor, FilesInterceptor} from '@nestjs/platform-express';
 import {Buffer} from "buffer";
 import {ChatService} from "../chat/chat.service";
 import {ChatLogService} from "../chatlog/chatlog.service";
@@ -76,5 +76,27 @@ export class ImageController {
             message: 'Files uploaded and converted to webp successfully',
             // fileUuids: savedFileUuids, // 변환된 파일들의 UUID 반환
         };
+    }
+
+
+    // 마이그레이션
+    @Get(':expertCode')
+    getExpertCertImage(@Param('expertCode') expertCode: string) {
+        return this.imageService.getExpertCertImage(expertCode);
+    }
+
+    @Post('cert')
+    @UseInterceptors(FileInterceptor('file'))
+    async expertCertImageUpload(
+        @UploadedFile() file: Express.Multer.File, // 여기에서 @UploadedFile()이 매개변수 `file` 앞에 있어야 합니다.
+    ) {
+        try {
+            console.log(file);
+
+            return this.imageService.signupCertImage(file.buffer);
+        } catch (error) {
+            console.error('Error while saving image:', error);
+            throw new InternalServerErrorException('Unable to save the image');
+        }
     }
 }

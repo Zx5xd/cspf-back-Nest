@@ -5,17 +5,31 @@ import * as process from "process";
 import {LoginDTO} from "../../dto/user.dto";
 import * as bcrypt from 'bcrypt';
 import {AdminService} from "../admin/admin.service";
+import {ExpertService} from "../expert/expert.service";
 
 @Injectable()
 export class AuthService {
     constructor(
         private readonly userService: UserService,
+        private readonly expertService: ExpertService,
         private readonly adminService: AdminService,
         private readonly jwtService: JwtService,
     ) {}
 
     async validateUser(username: string, password: string): Promise<any> {
         const user = await this.userService.getUserById(username);
+        if (!user) {
+            throw new UnauthorizedException();
+        }
+        if (user && user.password === password) {  // 비밀번호 비교는 해싱을 사용하는 것이 좋습니다.
+            const { password, ...result } = user;
+            return result;
+        }
+        return null;
+    }
+
+    async validateExpert(username: string, password: string): Promise<any> {
+        const user = await this.expertService.getExpertById(username);
         if (!user) {
             throw new UnauthorizedException();
         }
@@ -57,6 +71,25 @@ export class AuthService {
 
         const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
         await this.userService.updateRefreshToken(user.userCode,hashedRefreshToken)
+
+        return {
+            accessToken,
+            refreshToken
+        };
+    }
+
+    async loginExpert(loginDto: LoginDTO) {
+        const user = await this.validateExpert(loginDto.username, loginDto.password);
+        if (!user) {
+            throw new UnauthorizedException('Invalid credentials');
+        }
+        const payload = { username: user.username, sub: user.expertCode };
+
+        const accessToken = this.token(payload,'15m')
+        const refreshToken = this.token(payload, '7d')
+
+        const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
+        await this.userService.updateRefreshToken(user.expertCode,hashedRefreshToken)
 
         return {
             accessToken,
@@ -147,5 +180,31 @@ export class AuthService {
             await this.adminService.updateRefreshToken(userCode, null);
         }
     }
-    
+
+    // 마이그레이션
+    // Naver JWT 토큰 생성
+    naverJwtToken(user: any) {
+        const payload = {
+            naverId: user.naverId,
+            email: user.email,
+            name: user.name,
+            nickname: user.nickname,
+            mobile: user.mobile,
+        };
+        console.log(`payload: ${JSON.stringify(payload)}`);
+        return this.jwtService.sign(payload); // 사용자 정보를 payload로 포함하여 토큰 생성
+    }
+
+    // Google JWT 토큰 생성
+    googleJwtToken(user: any) {
+        const payload = {
+            familyName: user.familyName,
+            givenName: user.givenName,
+            email: user.email,
+            provider: user.provider,
+            providerId: user.providerId,
+        };
+        console.log(`payload: ${JSON.stringify(payload)}`);
+        return this.jwtService.sign(payload); // 사용자 정보를 payload로 포함하여 토큰 생성
+    }
 }

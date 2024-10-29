@@ -2,10 +2,11 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  CreateDateColumn, BaseEntity, ManyToOne, JoinColumn
+  CreateDateColumn, BaseEntity, ManyToOne, JoinColumn, OneToMany
 } from "typeorm";
 import { UserEntity } from "../user/user.entity";
 import { ChatRoomEntity } from "../chatroom/chatroom.entity";
+import {ChatComplaintEntity} from "../chat-complaint/chatcomp.entity";
 
 @Entity('ChatLog')
 export class ChatLogEntity extends BaseEntity {
@@ -22,6 +23,9 @@ export class ChatLogEntity extends BaseEntity {
   @ManyToOne(() => ChatRoomEntity, chatRoom => chatRoom.chatLogs, { nullable: false })
   @JoinColumn({ name: 'chatRoomID' })  // 외래 키로 참조
   chatRoom: ChatRoomEntity;
+
+  @OneToMany(() => ChatComplaintEntity, chatCompaint => chatCompaint.chatLogs)
+  chatCompaints: ChatComplaintEntity[];
 
   @Column({ type: 'text' })
   chatMessage: string;  // 채팅 메시지 저장

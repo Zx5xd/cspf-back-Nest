@@ -1,5 +1,6 @@
 import {Entity, Column, Unique, CreateDateColumn, PrimaryColumn, OneToMany} from 'typeorm';
 import {ChatLogEntity} from "../chatlog/chatlog.entity";
+import {PetEntity} from "../pet/pet.entity";
 
 @Entity('User')
 @Unique(['username'])
@@ -46,4 +47,7 @@ export class UserEntity {
 
     @OneToMany(() => ChatLogEntity, chatLog => chatLog.user)
     chatLogs: ChatLogEntity[];
+
+    @OneToMany(() => PetEntity, pet => pet.owner)
+    pets: PetEntity[];
 }

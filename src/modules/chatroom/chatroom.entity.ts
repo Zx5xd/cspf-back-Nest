@@ -3,6 +3,7 @@ import {accessUsers} from "../../types/chatroomTypes";
 import {ChatLogEntity} from "../chatlog/chatlog.entity";
 import { v4 as uuidv4 } from 'uuid';
 import {ChatImageEntity} from "../image/image.entity";
+import {ChatComplaintEntity} from "../chat-complaint/chatcomp.entity";
 
 @Entity('ChatRoom')
 export class ChatRoomEntity extends BaseEntity {
@@ -30,6 +31,9 @@ export class ChatRoomEntity extends BaseEntity {
 
     @OneToMany(() => ChatImageEntity, image => image.chatRoom)
     images: ChatImageEntity[]; // ChatRoom에서 업로드된 이미지들
+
+    @OneToMany(() => ChatComplaintEntity, chatComplaint => chatComplaint.chatRoomId)
+    chatComplaints: ChatComplaintEntity[];
 
     @BeforeInsert()
     generateUUID() {

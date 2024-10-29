@@ -32,6 +32,13 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         this.chatService.setServer(server);
     }
 
+    @SubscribeMessage('signal')
+    handleSignal(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
+        client
+            .to(data.room)
+            .emit('signal', { signal: data.signal, from: client.id });
+    }
+
     @SubscribeMessage('message')
     async handleMessage(@MessageBody() msg: string, @ConnectedSocket() client: Socket): Promise<void> {
         const userNickname = client.data.user?.nickname;

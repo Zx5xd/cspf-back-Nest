@@ -1,12 +1,12 @@
-import {forwardRef, Module} from "@nestjs/common";
+import {Module} from "@nestjs/common";
 import {AuthController} from "./auth.controller";
 import {AuthService} from "./auth.service";
 import {JwtModule} from "@nestjs/jwt";
 import {UserModule} from "../user/user.module";
 import {JwtStrategy} from "./jwt.strategy";
-import process from "process";
 import {ConfigModule, ConfigService} from "@nestjs/config";
 import {AdminModule} from "../admin/admin.module";
+import {ExpertModule} from "../expert/expert.module";
 
 @Module({
     imports:[
@@ -26,6 +26,7 @@ import {AdminModule} from "../admin/admin.module";
             }),
         }),
         UserModule,
+        ExpertModule,
         AdminModule
     ],
     providers:[AuthService, JwtStrategy],

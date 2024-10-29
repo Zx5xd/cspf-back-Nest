@@ -16,6 +16,7 @@ import {ImageModule} from "./modules/image/image.module";
 import {ChatModule} from "./modules/chat/chat.module";
 import {AnnouncementModule} from "./modules/announcement/announcement.module";
 import {QuestionsModule} from "./modules/questions/questions.module";
+import {ExpertEntity} from "./modules/expert/expert.entity";
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import {QuestionsModule} from "./modules/questions/questions.module";
           entities: ['dist/**/*.entity.js'],
           synchronize: true
       }),
+      TypeOrmModule.forFeature([ExpertEntity]),
       UserModule,
       AuthModule,
       ChatRoomModule,
