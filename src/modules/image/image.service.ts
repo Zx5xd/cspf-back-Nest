@@ -1,5 +1,5 @@
 import {Injectable, NotFoundException} from "@nestjs/common";
-import {ChatImageEntity, ImageEntity, ImageType} from "./image.entity";
+import {ChatImageEntity, ImageEntity} from "./image.entity";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
 import {ChatRoomEntity} from "../chatroom/chatroom.entity";
@@ -37,13 +37,16 @@ export class ImageService {
 
         return {
             filename,
-            directory:dir
+            directory:imagePath
         }
     }
 
     async saveChatImage(filename:string,imgBuffer:Buffer, chatRoomId:string, userCode:string):Promise<string> {
         try {
-            const file = await this.imageProcess(join("./uploads","chatImage",chatRoomId),imgBuffer);
+            const file = await this.imageProcess(
+              join("./uploads","chatImage",chatRoomId),
+              imgBuffer
+            );
 
             const result:ChatImageEntity = this.chatImageRepository.create({
                 chatRoom: { chatRoomID: chatRoomId },
@@ -60,17 +63,36 @@ export class ImageService {
         }
     }
 
-    async saveDefaultImage(type:ImageType,filename:string, imgBuffer:Buffer, userCode:string) {
+    async saveProfileImage(imgBuffer:Buffer, userCode:string) {
         try {
             const file = await this.imageProcess(
-              join("./uploads",type+"Image"),
+              join("./uploads","profileImage"),
               imgBuffer
             );
 
             const result:ImageEntity = this.imageRepository.create({
-                type,
+                user:{userCode},
+                path: file.directory,
+            });
+
+            await this.imageRepository.save(result);
+
+            return result.uuid;
+        } catch (err) {
+            console.error('Error saving image:', err);
+            throw new Error('Image save failed');
+        }
+    }
+
+    async saveDefaultImage(filename:string, imgBuffer:Buffer, userCode:string) {
+        try {
+            const file = await this.imageProcess(
+              join("./uploads","Image"),
+              imgBuffer
+            );
+
+            const result:ImageEntity = this.imageRepository.create({
                 path:file.directory,
-                filename,
                 user:{userCode}
             });
             await this.imageRepository.save(result);

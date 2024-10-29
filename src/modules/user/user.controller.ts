@@ -1,16 +1,35 @@
-import {Body, Controller, Delete, Get, Param, Post, Put, Req, Res, UseGuards} from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    NestInterceptor,
+    Param,
+    Post,
+    Put,
+    Req,
+    Res, UploadedFile,
+    UseGuards,
+    UseInterceptors
+} from '@nestjs/common';
 import { UserService } from "./user.service";
 import { UserEntity } from "./user.entity";
 import {CreateUserDto, UpdateUserDTO} from "../../dto/user.dto";
 import {JwtAuthGuard} from "../auth/jwt-auth.guard";
+import {FileInterceptor} from "@nestjs/platform-express";
+import {Buffer} from "buffer";
 
 @Controller('user')
 export class UserController {
-    constructor(private readonly userService: UserService) {}
+    constructor(
+      private readonly userService: UserService
+    ) {}
 
     @Post()
-    async create(@Body() createUserDTO: CreateUserDto) {
-        return await this.userService.create(createUserDTO);
+    @UseInterceptors(FileInterceptor('img') as unknown as NestInterceptor)
+    async create(@Body() createUserDTO: CreateUserDto,
+                 @UploadedFile() profileImage?: Express.Multer.File) {
+        return await this.userService.create(createUserDTO, profileImage.buffer as Buffer);
     }
 
     @UseGuards(JwtAuthGuard)

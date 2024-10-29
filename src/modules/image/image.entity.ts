@@ -12,11 +12,6 @@ import {ChatRoomEntity} from "../chatroom/chatroom.entity";
 import {v4 as uuidv4} from "uuid";
 import {UserEntity} from "../user/user.entity";
 
-export enum ImageType {
-    EXPERT = 'expert',
-    USER = 'user',
-}
-
 @Entity('ChatImage')
 export class ChatImageEntity extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
@@ -45,16 +40,10 @@ export class ChatImageEntity extends BaseEntity {
     }
 }
 
-@Entity('Image')
+@Entity('ProfileImage')
 export class ImageEntity extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     uuid: string;
-
-    @Column({type:'enum',enum:ImageType, nullable:false})
-    type:ImageType;
-
-    @Column({type:'text',nullable:false})
-    filename: string;
 
     @Column({type:'text',nullable:false})
     path: string;

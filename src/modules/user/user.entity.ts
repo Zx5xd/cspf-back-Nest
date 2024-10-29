@@ -45,6 +45,9 @@ export class UserEntity {
     @CreateDateColumn({ type: 'timestamp' })
     createdTime: Date;
 
+    @Column({type: 'varchar', length: 255, nullable: true})
+    profileImg: string;
+
     @OneToMany(()=> ChatImageEntity, chatImage => chatImage.user)
     chatImages: ChatImageEntity[];
 
