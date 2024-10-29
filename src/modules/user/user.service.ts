@@ -1,18 +1,21 @@
-import { Injectable } from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import {Repository, UpdateResult} from "typeorm";
 import {UserEntity} from "./user.entity";
 import {InjectRepository} from "@nestjs/typeorm";
 import {CreateUserDto, UpdateUserDTO} from "../../dto/user.dto";
+import {ImageService} from "../image/image.service";
+import {Buffer} from "buffer";
 
 @Injectable()
 export class UserService {
 
     constructor(
         @InjectRepository(UserEntity)
-        private readonly userRepository:Repository<UserEntity>
+        private readonly userRepository:Repository<UserEntity>,
+        private readonly imageService: ImageService
     ) {}
 
-    async create(userDto:CreateUserDto) {
+    async create(userDto:CreateUserDto, imgBuffer:Buffer) {
         const existingUser = await this.userRepository.findOne({where:[{username:userDto.username},{email:userDto.email}]})
         if (existingUser) {
             return { success: false, message: '해당 아이디 또는 이메일은 사용 중 입니다.' };
@@ -29,9 +32,14 @@ export class UserService {
             const newCode = latestCode + 1;
             userCode = `U${newCode.toString().padStart(8, '0')}`;
         }
-
+        console.log('test')
         const user = await this.userRepository.create({...userDto,userCode,});
         await this.userRepository.save(user);
+        if (imgBuffer != null) {
+            user.profileImg = await this.imageService.saveProfileImage(imgBuffer, userCode);
+            await this.userRepository.save(user);
+        }
+
         return { success: true, message: '계정 생성 성공' };
     }
 

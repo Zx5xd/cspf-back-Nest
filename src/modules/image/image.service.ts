@@ -1,5 +1,5 @@
 import {Injectable, NotFoundException} from "@nestjs/common";
-import {ChatImageEntity} from "./image.entity";
+import {ChatImageEntity, ImageEntity} from "./image.entity";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
 import {ChatRoomEntity} from "../chatroom/chatroom.entity";
@@ -21,6 +21,8 @@ export class ImageService {
     constructor(
         @InjectRepository(ChatImageEntity)
         private readonly chatImageRepository: Repository<ChatImageEntity>,
+        @InjectRepository(ImageEntity)
+        private readonly imageRepository: Repository<ImageEntity>,
         @InjectRepository(ChatRoomEntity)
         private readonly chatRoomRepository: Repository<ChatRoomEntity>,
         @InjectRepository(ExpertEntity)
@@ -38,18 +40,22 @@ export class ImageService {
 
         return {
             filename,
-            directory:dir
+            directory:imagePath
         }
     }
 
-    async saveChatImage(filename:string,imgBuffer:Buffer, chatRoomId:string):Promise<string> {
+    async saveChatImage(filename:string,imgBuffer:Buffer, chatRoomId:string, userCode:string):Promise<string> {
         try {
-            const file = await this.imageProcess(join("./uploads","chatImage",chatRoomId),imgBuffer);
+            const file = await this.imageProcess(
+              join("./uploads","chatImage",chatRoomId),
+              imgBuffer
+            );
 
             const result:ChatImageEntity = this.chatImageRepository.create({
                 chatRoom: { chatRoomID: chatRoomId },
                 path: file.directory,
-                filename: filename
+                filename,
+                user:{userCode}
             });
             await this.chatImageRepository.save(result);
 
@@ -60,6 +66,50 @@ export class ImageService {
         }
     }
 
+    async saveProfileImage(imgBuffer:Buffer, userCode:string) {
+        try {
+            const file = await this.imageProcess(
+              join("./uploads","profileImage"),
+              imgBuffer
+            );
+
+            const result:ImageEntity = this.imageRepository.create({
+                user:{userCode},
+                path: file.directory,
+            });
+
+            await this.imageRepository.save(result);
+
+            return result.uuid;
+        } catch (err) {
+            console.error('Error saving image:', err);
+            throw new Error('Image save failed');
+        }
+    }
+
+    async saveDefaultImage(filename:string, imgBuffer:Buffer, userCode:string) {
+        try {
+            const file = await this.imageProcess(
+              join("./uploads","Image"),
+              imgBuffer
+            );
+
+            const result:ImageEntity = this.imageRepository.create({
+                path:file.directory,
+                user:{userCode}
+            });
+            await this.imageRepository.save(result);
+
+            return Buffer.from(result.uuid).toString('base64');
+        } catch (err) {
+            console.error('Error saving image:', err);
+            throw new Error('Image save failed');
+        }
+    }
+
+    /**
+     * @deprecated 해당 함수는 File System과 DB 작업을 분리하기 위해 지원이 종료되었습니다.
+     */
     async saveImage(_filename:string, imageBuffer: Buffer, chatRoomId: string): Promise<string> {
         // BufferSource가 Buffer가 아닌 경우 ArrayBuffer로 변환
         /*const buffer = Buffer.isBuffer(imageBuffer)
