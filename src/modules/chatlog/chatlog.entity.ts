@@ -15,7 +15,7 @@ export class ChatLogEntity extends BaseEntity {
   @CreateDateColumn({type:'timestamp'})
   createdAt: Date;
 
-  @ManyToOne(() => UserEntity, user => user.chatLogs, { nullable: false })
+  @ManyToOne(() => UserEntity, user => user.chatLogs, { nullable: true })
   @JoinColumn({ name: 'chatUserCode' })
   user: UserEntity;
 
@@ -25,4 +25,7 @@ export class ChatLogEntity extends BaseEntity {
 
   @Column({ type: 'text' })
   chatMessage: string;  // 채팅 메시지 저장
+
+  @Column({type:'varchar', length:512, nullable: true})
+  chatImageUrl: string;
 }

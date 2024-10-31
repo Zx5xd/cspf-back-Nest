@@ -25,7 +25,7 @@ export class ChatLogService {
       const log = this.chatLogRepository.create({
         chatRoom:{chatRoomID:roomId},
         user:{userCode:userCode},
-        chatMessage:value
+        chatImageUrl:value
       });
       await this.chatLogRepository.save(log);
     }
