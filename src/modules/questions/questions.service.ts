@@ -23,16 +23,16 @@ export class QuestionsService {
     return result.id;
   }
 
-  async findAll() {
+  /*async findAll() {
     return await this.questionRepository.createQueryBuilder('questions')
       .select(['questions.id','questions.title','questions.authorCode','questions.createdAt']).getMany();
-  }
+  }*/
 
   async findOne(id:number):Promise<QuestionsEntity> {
    return await this.questionRepository.findOne({where:{id}})
   }
 
-  async pagination(page:number,limit:number) {
+  async pagination(page:number=1,limit:number = 20) {
     const [data, total] = await this.questionRepository.findAndCount({
       take: limit,
       skip: (page - 1) * limit,

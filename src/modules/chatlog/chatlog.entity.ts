@@ -23,7 +23,7 @@ export class ChatLogEntity extends BaseEntity {
   @JoinColumn({ name: 'chatRoomID' })  // 외래 키로 참조
   chatRoom: ChatRoomEntity;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'text', nullable: true })
   chatMessage: string;  // 채팅 메시지 저장
 
   @Column({type:'varchar', length:512, nullable: true})
