@@ -4,9 +4,10 @@ import {
   Column,
   Unique,
   JoinColumn,
-  OneToOne,
+  OneToOne, OneToMany,
 } from 'typeorm';
 import { ExpertProfileEntity } from './expertProfile.entity';
+import {ChatLogEntity} from "../chatlog/chatlog.entity";
 
 @Entity('Expert')
 @Unique(['username'])
@@ -50,4 +51,7 @@ export class ExpertEntity {
   @OneToOne(() => ExpertProfileEntity)
   @JoinColumn()
   profile?: ExpertProfileEntity;
+
+  @OneToMany(() => ChatLogEntity, chatLog => chatLog.user)
+  chatLogs: ChatLogEntity[];
 }

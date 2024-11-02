@@ -6,6 +6,7 @@ import {
 } from "typeorm";
 import { UserEntity } from "../user/user.entity";
 import { ChatRoomEntity } from "../chatroom/chatroom.entity";
+import {ExpertEntity} from "../expert/expert.entity";
 
 @Entity('ChatLog')
 export class ChatLogEntity extends BaseEntity {
@@ -18,6 +19,13 @@ export class ChatLogEntity extends BaseEntity {
   @ManyToOne(() => UserEntity, user => user.chatLogs, { nullable: true })
   @JoinColumn({ name: 'chatUserCode' })
   user: UserEntity;
+
+  @ManyToOne(()=> ExpertEntity, expert => expert.chatLogs, {nullable: true})
+  @JoinColumn({name: 'chatExpertCode'})
+  expert: ExpertEntity;
+
+  @Column({type:'varchar',length:8})
+  type: 'USER' | 'EXPERT';
 
   @ManyToOne(() => ChatRoomEntity, chatRoom => chatRoom.chatLogs, { nullable: false })
   @JoinColumn({ name: 'chatRoomID' })  // 외래 키로 참조
