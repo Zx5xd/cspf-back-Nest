@@ -35,7 +35,7 @@ export class ChatLogEntity extends BaseEntity {
   @OneToMany(() => ChatComplaintEntity, chatCompaint => chatCompaint.chatLogs)
   chatCompaints: ChatComplaintEntity[];
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: 'text' , nullable: true})
   chatMessage: string;  // 채팅 메시지 저장
 
   @Column({type:'varchar', length:512, nullable: true})

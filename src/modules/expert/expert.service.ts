@@ -61,8 +61,17 @@ export class ExpertService {
     return this.expertRepository.find();
   }
 
-  async getExpertById(username: string): Promise<ExpertEntity> {
-    return await this.expertRepository.findOne({ where: { username } });
+  async expertList(type:string) {
+    const test = await this.expertRepository
+        .createQueryBuilder('expert')
+        .where('expert.expertCode LIKE :type', { type: `${type}%` })
+        .getMany();
+    console.log(test)
+    return test
+  }
+
+  async getExpertByUsername(username: string): Promise<ExpertEntity> {
+    return await this.expertRepository.findOne({ where: { username }, relations: ['profile'] });
   }
 
   async findOne(username: string) {
@@ -85,8 +94,12 @@ export class ExpertService {
     }
   }
 
-  update(id: string, updateDto: updateExpertDto) {
-    return this.expertRepository.update(id, updateDto);
+  async update(id: string, updateDto: Partial<ExpertEntity>) {
+    const expert = await this.expertRepository.findOne({where: {expertCode: id}})
+
+    const updatedExpert = { ...expert, ...updateDto };
+
+    return this.expertRepository.save(updatedExpert);
   }
 
   delete(id: string) {

@@ -5,10 +5,12 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
+  Delete, UseGuards, Req, Res,
 } from '@nestjs/common';
 import { ExpertService } from './expert.service';
 import { updateExpertDto } from '../../dto/expert.dto';
+import {JwtAuthGuard} from "../auth/jwt-auth.guard";
+import {ExpertEntity} from "./expert.entity";
 
 @Controller('expert')
 export class ExpertController {
@@ -20,7 +22,7 @@ export class ExpertController {
     return this.expertService.create(createExpertProp);
   }
 
-  @Get()
+  @Get('/findAll')
   findAll() {
     return this.expertService.findAll();
   }
@@ -30,9 +32,29 @@ export class ExpertController {
     return this.expertService.findOne(username);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDto: updateExpertDto) {
+  @Get('/type/:type')
+  attList(@Param('type') type: string) {
+    console.log(type)
+    if(type === 'lawyer'){
+      return this.expertService.expertList('L');
+    }
+    if(type === 'Insurance'){
+      return this.expertService.expertList('I');
+    }
+    if(type === 'Veterinarian'){
+      return this.expertService.expertList('V');
+    }
+  }
 
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  expertProfile(@Req() req:any){
+    return this.expertService.getExpertByUsername(req.user.username);
+  }
+
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateDto: Partial<ExpertEntity>) {
+    // console.log(`expert Update`,id, updateDto);
     return this.expertService.update(id, updateDto);
   }
 

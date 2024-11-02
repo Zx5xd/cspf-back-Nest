@@ -13,7 +13,7 @@ import {ChatService} from "./chat.service";
 
 @WebSocketGateway({
     cors:{
-        origin: ['http://localhost:5173','*'], // 정확한 클라이언트 도메인 명시
+        origin: true, // 정확한 클라이언트 도메인 명시
         methods: ['GET', 'POST'], // 허용할 메소드
         credentials: true,
     },
@@ -45,7 +45,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         const userCode = client.data.user?.sub;
         const roomId = client.data.roomId;
         // const user = socket.data.user;  // 미들웨어에서 설정된 사용자 정보 사용
-        // console.log(`${roomId} - <${userCode}>`+msg);
+        console.log(`${roomId} - <${userNickname}>`+msg);
 
         client.to(roomId).emit('message',{
             sender:userNickname,

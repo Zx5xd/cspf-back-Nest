@@ -51,6 +51,7 @@ export class ImageService {
               imgBuffer
             );
 
+
             const result:ChatImageEntity = this.chatImageRepository.create({
                 chatRoom: { chatRoomID: chatRoomId },
                 path: file.directory,
@@ -174,8 +175,9 @@ export class ImageService {
         }
 
         const buffer = Buffer.from(uuid, 'base64').toString('utf8'); // Base64 문자열을 Buffer로 변환
-
+        console.log('buffer',buffer)
         const image = chatRoom.images.find(img => img.uuid === buffer);
+        console.log('getImage',image)
         if (!image) {
             throw new NotFoundException('Image not found in this chat room');
         }

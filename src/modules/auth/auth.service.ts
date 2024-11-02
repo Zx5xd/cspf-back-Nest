@@ -29,7 +29,7 @@ export class AuthService {
     }
 
     async validateExpert(username: string, password: string): Promise<any> {
-        const user = await this.expertService.getExpertById(username);
+        const user = await this.expertService.getExpertByUsername(username);
         if (!user) {
             throw new UnauthorizedException();
         }

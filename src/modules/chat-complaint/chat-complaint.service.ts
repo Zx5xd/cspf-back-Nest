@@ -63,7 +63,7 @@ export class ChatComplaintService {
               name: perExpert.name,
               userCode: perExpert.expertCode,
             }),
-            await this.expertRepository.delete(perExpert))
+            await this.expertRepository.delete(perExpert.expertCode))
           : await this.expertRepository.save({
               ...perExpert,
               warnCount: perExpert.warnCount + 1,

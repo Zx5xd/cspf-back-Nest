@@ -2,7 +2,8 @@ import {
   Body,
   Controller,
   Get,
-  Post,
+  Param,
+  Post, Query,
   Req,
   Res,
   UploadedFile,
@@ -12,12 +13,18 @@ import { ImageExtractService } from './image-extract.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as fs from 'fs';
 import { promisify } from 'util';
+import { join } from 'path';
 
 const readFile = promisify(fs.readFile);
 
 @Controller('imgextract')
 export class ImageExtractController {
   constructor(private readonly imageExtractService: ImageExtractService) {}
+
+  @Get()
+  getTest(@Req() req, @Res() res) {
+    console.log('getTest');
+  }
 
   @Post('certVision')
   async getCertVision(@Body() img: any) {

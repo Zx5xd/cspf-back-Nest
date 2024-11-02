@@ -48,7 +48,7 @@ export class ImageController {
       @UploadedFiles() files: Array<Express.Multer.File>
     ) {
         // console.log(req.user.userCode)
-        // console.log(files)
+        console.log(files)
         const host = req.headers['x-forwarded-host'] || req.headers.host;
         const protocol = req.headers['x-forwarded-proto'] || req.protocol;
 
@@ -57,7 +57,8 @@ export class ImageController {
         const savedFileUuids:Array<string> = [];
 
         for (const file of files) {
-            const filename = file.filename
+            // const filename = file.
+            const filename = file.originalname
             const fileBuffer = file.buffer as Buffer;
             const savedFileUuid = await this.imageService.saveChatImage(filename, fileBuffer, roomId, userCode);
             savedFileUuids.push(`${protocol}://${host}/images/${roomId}/${savedFileUuid}`); // 각 파일의 UUID 저장

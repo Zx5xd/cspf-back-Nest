@@ -14,7 +14,13 @@ import {ImageModule} from "./modules/image/image.module";
 import {ChatModule} from "./modules/chat/chat.module";
 import {AnnouncementModule} from "./modules/announcement/announcement.module";
 import {QuestionsModule} from "./modules/questions/questions.module";
+import {ExpertEntity} from "./modules/expert/expert.entity";
+import { NewsapiModule } from './API/newsapi/newsapi.module';
+import {AniapiModule} from "./API/aniapi/aniapi.module";
+import {LawapiModule} from "./API/lawapi/lawapi.module";
 import {ExpertModule} from "./modules/expert/expert.module";
+import {MailauthModule} from "./utils/mailauth/mailauth.module";
+import {MailModule} from "./utils/mail/mail.module";
 
 @Module({
   imports: [
@@ -50,7 +56,12 @@ import {ExpertModule} from "./modules/expert/expert.module";
       ChatModule,
       AnnouncementModule,
       QuestionsModule,
+      NewsapiModule,
+      AniapiModule,
+      LawapiModule,
       ExpertModule,
+      MailauthModule,
+      MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

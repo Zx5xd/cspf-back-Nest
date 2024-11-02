@@ -33,7 +33,7 @@ export class NewsApiService {
         const news_data = response.data;
         // console.log(news_data.items);
 
-        for(const key in news_data.items) {
+        for (const key in news_data.items) {
           if (Object.prototype.hasOwnProperty.call(news_data.items, key)) {
             const dateVar = new Date(news_data.items[key].pubDate);
             const formatDate = `${dateVar.getFullYear()}년 ${
@@ -46,8 +46,9 @@ export class NewsApiService {
             //     : delete news_data.items[key];
             // }
           }
-        }// console.log(news_data.items.filter(Boolean));
-        return news_data; // 데이터를 반환합니다.
+          // console.log(news_data.items.filter(Boolean));
+          return news_data; // 데이터를 반환합니다.
+        }
       } else {
         throw new HttpException(
             `Error fetching data from Naver API: ${response.status}`,

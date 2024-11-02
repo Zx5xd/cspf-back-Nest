@@ -31,6 +31,7 @@ export class ChatLogService {
   }
 
   async addChatMessageList(roomId:string,userCode:string,list:Array<string>) {
+    console.log('addChatMessageList, ',roomId,userCode,list);
     for (const value of list) {
       const log = this.chatLogRepository.create({
         chatRoom:{chatRoomID:roomId},
