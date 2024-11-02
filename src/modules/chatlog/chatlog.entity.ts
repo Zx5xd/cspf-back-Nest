@@ -7,6 +7,7 @@ import {
 import { UserEntity } from "../user/user.entity";
 import { ChatRoomEntity } from "../chatroom/chatroom.entity";
 import {ChatComplaintEntity} from "../chat-complaint/chatcomp.entity";
+import {ExpertEntity} from "../expert/expert.entity";
 
 @Entity('ChatLog')
 export class ChatLogEntity extends BaseEntity {
@@ -20,6 +21,13 @@ export class ChatLogEntity extends BaseEntity {
   @JoinColumn({ name: 'chatUserCode' })
   user: UserEntity;
 
+  @ManyToOne(()=> ExpertEntity, expert => expert.chatLogs, {nullable: true})
+  @JoinColumn({name: 'chatExpertCode'})
+  expert: ExpertEntity;
+
+  @Column({type:'varchar',length:8})
+  type: 'USER' | 'EXPERT';
+
   @ManyToOne(() => ChatRoomEntity, chatRoom => chatRoom.chatLogs, { nullable: false })
   @JoinColumn({ name: 'chatRoomID' })  // 외래 키로 참조
   chatRoom: ChatRoomEntity;
@@ -27,7 +35,7 @@ export class ChatLogEntity extends BaseEntity {
   @OneToMany(() => ChatComplaintEntity, chatCompaint => chatCompaint.chatLogs)
   chatCompaints: ChatComplaintEntity[];
 
-  @Column({ type: 'text' })
+  @Column({ type: 'text', nullable: true })
   chatMessage: string;  // 채팅 메시지 저장
 
   @Column({type:'varchar', length:512, nullable: true})

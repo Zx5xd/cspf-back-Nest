@@ -4,9 +4,10 @@ import {
   Column,
   Unique,
   JoinColumn,
-  OneToOne,
+  OneToOne, OneToMany,
 } from 'typeorm';
 import { ExpertProfileEntity } from './expertProfile.entity';
+import {ChatLogEntity} from "../chatlog/chatlog.entity";
 
 @Entity('Expert')
 @Unique(['username'])
@@ -33,21 +34,24 @@ export class ExpertEntity {
   phone: string;
 
   @Column({ type: 'int', default: 0 })
-  credentialStatus: number;
+  credentialStatus?: number;
 
   @Column({ type: 'int', default: 0 })
-  warnCount: number;
+  warnCount?: number;
 
   @Column({ type: 'varchar', length: 512, nullable: true })
-  image: string;
+  image?: string;
 
   @Column({ type: 'varchar', length: 512, nullable: true })
-  certImage: string;
+  certImage?: string;
 
   @Column({type:'text', nullable: true})
-  refreshToken: string;
+  refreshToken?: string;
 
   @OneToOne(() => ExpertProfileEntity)
   @JoinColumn()
-  profile: ExpertProfileEntity;
+  profile?: ExpertProfileEntity;
+
+  @OneToMany(() => ChatLogEntity, chatLog => chatLog.user)
+  chatLogs: ChatLogEntity[];
 }

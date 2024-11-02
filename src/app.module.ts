@@ -7,16 +7,14 @@ import {TypeOrmModule} from "@nestjs/typeorm";
 import * as process from 'process';
 import * as Joi from "joi";
 import {AuthModule} from "./modules/auth/auth.module";
-import {ChatJwtAdapter} from "./modules/chat/chat-jwt.adapter";
 import {ChatRoomModule} from "./modules/chatroom/chatroom.module";
 import {ChatLogModule} from "./modules/chatlog/chatlog.module";
-import {ChatGateway} from "./modules/chat/chat.gateway";
 import {AdminModule} from "./modules/admin/admin.module";
 import {ImageModule} from "./modules/image/image.module";
 import {ChatModule} from "./modules/chat/chat.module";
 import {AnnouncementModule} from "./modules/announcement/announcement.module";
 import {QuestionsModule} from "./modules/questions/questions.module";
-import {ExpertEntity} from "./modules/expert/expert.entity";
+import {ExpertModule} from "./modules/expert/expert.module";
 
 @Module({
   imports: [
@@ -52,6 +50,7 @@ import {ExpertEntity} from "./modules/expert/expert.entity";
       ChatModule,
       AnnouncementModule,
       QuestionsModule,
+      ExpertModule,
   ],
   controllers: [AppController],
   providers: [AppService],

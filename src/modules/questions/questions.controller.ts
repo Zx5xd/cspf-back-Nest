@@ -7,7 +7,7 @@ import {
   HttpStatus,
   Param,
   Patch,
-  Post,
+  Post, Query,
   Req,
   UseGuards
 } from "@nestjs/common";
@@ -22,8 +22,8 @@ export class QuestionsController {
   ) {}
 
   @Get()
-  async findAll() {
-    return await this.questionsService.findAll()
+  async finaPagination(@Query('page') page:number, @Query('limit') limit?:number) {
+    return this.questionsService.pagination(page, limit);
   }
 
   @Get(':boardId')

@@ -15,7 +15,7 @@ export class ExpertProfileService {
   ) {}
 
   async create(createExpertProp: any) {
-    const { expertCode: expert, ...profileInputData } = createExpertProp;
+    const { expertCode: expert, profileInputData } = createExpertProp;
 
     console.log(profileInputData);
 

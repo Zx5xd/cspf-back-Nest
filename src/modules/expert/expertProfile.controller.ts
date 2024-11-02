@@ -8,13 +8,14 @@ import {
 } from '@nestjs/common';
 import { ExpertProfileService } from './expertProfile.service';
 import { ExpertProfileEntity } from './expertProfile.entity';
+import {ExpertProfileDto} from "../../dto/expertProfile.dto";
 
 @Controller('expertProfile')
 export class ExpertProfileController {
   constructor(private readonly expertProfileServ: ExpertProfileService) {}
 
   @Post()
-  create(@Body() createExpertProp: any) {
+  create(@Body() createExpertProp: ExpertProfileDto) {
     // 수신할 데이터 : expertCode, ExpertProfileDto .
     return this.expertProfileServ.create(createExpertProp);
   }

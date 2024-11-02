@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { expertDto, updateExpertDto } from '../../dto/expert.dto';
+import { expertDto as ExpertDTO, updateExpertDto } from '../../dto/expert.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ExpertEntity } from './expert.entity';
@@ -12,7 +12,7 @@ export class ExpertService {
   ) {}
 
   async create(expertProp: any) {
-    const expertDto: expertDto = expertProp;
+    const expertDto: ExpertDTO = expertProp;
 
     const existingUser = await this.expertRepository.findOne({
       where: [{ username: expertDto.username }, { email: expertDto.email }],
@@ -41,9 +41,16 @@ export class ExpertService {
     }
 
     const user = this.expertRepository.create({
-      ...expertDto,
-      expertCode,
+      expertCode: expertCode,
+      username: expertDto.username,
+      password: expertDto.password,
+      name: expertDto.name,
+      company: expertDto.company,
+      email: expertDto.email,
+      phone: expertDto.phone,
+      image: expertDto.image,
     });
+
     console.log('Repository create 완료', user);
     await this.expertRepository.save(user);
 
