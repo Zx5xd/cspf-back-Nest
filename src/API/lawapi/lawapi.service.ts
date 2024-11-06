@@ -48,4 +48,15 @@ export class LawApiService {
 
     return this.fetchAndParseXML(url);
   }
+
+  // 법률 API를 호출하여 데이터를 가져오는 함수
+  async getCaseLawPage(query: string, page:string): Promise<any> {
+    const url = `https://www.law.go.kr/DRF/lawSearch.do?OC=${encodeURIComponent(
+        this.oc,
+    )}&target=prec&type=XML&query=${encodeURIComponent(query)}&page=${encodeURIComponent(page)}`;
+
+    console.log(`getCaseLaw URL : ${url}`);
+
+    return this.fetchAndParseXML(url);
+  }
 }

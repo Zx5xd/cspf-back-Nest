@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { ExpertProfileEntity } from './expertProfile.entity';
 import {ChatLogEntity} from "../chatlog/chatlog.entity";
+import {ChatImageEntity} from "../image/image.entity";
 
 @Entity('Expert')
 @Unique(['username'])
@@ -51,6 +52,9 @@ export class ExpertEntity {
   @OneToOne(() => ExpertProfileEntity)
   @JoinColumn()
   profile?: ExpertProfileEntity;
+
+  @OneToMany(()=> ChatImageEntity, chatImage => chatImage.expert)
+  chatImages: ChatImageEntity[];
 
   @OneToMany(() => ChatLogEntity, chatLog => chatLog.user)
   chatLogs: ChatLogEntity[];

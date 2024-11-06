@@ -13,31 +13,46 @@ export class ChatLogService {
 
   async addChatMessage(roomId:string,userCode:string,msg:string) {
     const type = userCode.charAt(0) == 'U';
+    console.log(type)
     let log:ChatLogEntity;
     if (type) {
       log = this.chatLogRepository.create({
         chatRoom:{chatRoomID:roomId},
         user:{userCode:userCode},
-        chatMessage:msg
+        chatMessage:msg,
+        type:'USER'
       });
     } else {
       log = this.chatLogRepository.create({
         chatRoom:{chatRoomID:roomId},
         expert:{expertCode:userCode},
-        chatMessage:msg
+        chatMessage:msg,
+        type:'EXPERT'
       });
     }
     await this.chatLogRepository.save(log);
   }
 
   async addChatMessageList(roomId:string,userCode:string,list:Array<string>) {
-    console.log('addChatMessageList, ',roomId,userCode,list);
+    // console.log('addChatMessageList, ',roomId,userCode,list);
+    const type = userCode.charAt(0) == 'U';
     for (const value of list) {
-      const log = this.chatLogRepository.create({
-        chatRoom:{chatRoomID:roomId},
-        user:{userCode:userCode},
-        chatImageUrl:value
-      });
+      let log:ChatLogEntity;
+      if(type){
+        log = this.chatLogRepository.create({
+          chatRoom:{chatRoomID:roomId},
+          user:{userCode:userCode},
+          chatImageUrl:value,
+          type:'USER'
+        });
+      }else {
+        log = this.chatLogRepository.create({
+          chatRoom:{chatRoomID:roomId},
+          expert:{expertCode:userCode},
+          chatImageUrl:value,
+          type:'EXPERT'
+        });
+      }
       await this.chatLogRepository.save(log);
     }
   }
@@ -80,21 +95,28 @@ export class ChatLogService {
 
   async getChatLogFilter(option:{
     roomId:string,
-    page:number,
-    limit:number
+    page?:number,
+    limit?:number
   }) {
+
+    const page = option.page || 1;
+    const limit = option.limit || 20;
+
+    // console.log('chatFilter Service, ', option.page, option.limit)
     const chatRoomID = option.roomId
     const query = this.chatLogRepository
         .createQueryBuilder('chatLog')
         .innerJoinAndSelect('chatLog.chatRoom', 'chatRoom')
         .where('chatRoom.chatRoomID = :chatRoomID', { chatRoomID })
-        .leftJoin('chatLog.chatRoom','chatRoom')
-        .addSelect(['chatRoom.chatRoomID'])
+        // .leftJoin('chatLog.chatRoom','chatRoom')
+        // .addSelect(['chatRoom.chatRoomID'])
         .leftJoin('chatLog.user', 'user')   // user와 조인
         .addSelect(['user.userCode', 'user.username', 'user.nickname']) // 필요한 필드만 선택
+        .leftJoin('chatLog.expert', 'expert')   // user와 조인
+        .addSelect(['expert.expertCode', 'expert.username', 'expert.name']) // 필요한 필드만 선택
         .orderBy('chatLog.createdAt', 'DESC') // 최신순 정렬
-        .skip((option.page - 1) * option.limit)
-        .take(option.limit);
+        .skip((page - 1) * limit)
+        .take(limit);
 
     const [results, total] = await query.getManyAndCount();
 
@@ -102,12 +124,19 @@ export class ChatLogService {
       chatLogID: chatLog.chatLogID,
       createdAt: chatLog.createdAt,
       chatMessage: chatLog.chatMessage,
+      chatImageUrl: chatLog.chatImageUrl,
       chatRoomID: chatLog.chatRoom.chatRoomID, // chatRoomID를 별도로 추출
-      user: {
+      user: chatLog.user ? {
         userCode: chatLog.user.userCode,
         username: chatLog.user.username,
         nickname: chatLog.user.nickname,
-      },
+      } : null,
+      expert: chatLog.expert ? {
+        expertCode: chatLog.expert.expertCode,
+        username: chatLog.expert.username,
+        name: chatLog.expert.name,
+      } : null,
+      type: chatLog.type
     }));
 
     return {

@@ -15,7 +15,14 @@ interface laws {
 export class ScripingService {
   async scrapeNewssite(url: string): Promise<any> {
     try {
-      const { data } = await axios.get(url);
+      const { data } = await axios.get(url,{
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        },
+        httpsAgent: new (require('https').Agent)({
+          rejectUnauthorized: false // SSL 인증서 검증 비활성화 (보안 위험)
+        })
+      });
       // console.log(`News axios data: ${JSON.stringify(data)}`);
 
       const $ = cheerio.load(data);

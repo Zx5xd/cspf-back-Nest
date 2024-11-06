@@ -34,6 +34,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     @SubscribeMessage('signal')
     handleSignal(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
+        console.log('chat signal', data)
         client
             .to(data.room)
             .emit('signal', { signal: data.signal, from: client.id });
@@ -45,7 +46,11 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         const userCode = client.data.user?.sub;
         const roomId = client.data.roomId;
         // const user = socket.data.user;  // 미들웨어에서 설정된 사용자 정보 사용
-        console.log(`${roomId} - <${userNickname}>`+msg);
+        // console.log(`${roomId} - <${userCode}>`+msg);
+
+        client.emit('newMessage',{
+            roomId: roomId,
+        })
 
         client.to(roomId).emit('message',{
             sender:userNickname,
@@ -71,6 +76,8 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
             return new Error('Missing user code or room ID');
         }
 
+        console.log('handleConnection', client.id, userCode, roomId);
+
         this.server.to(roomId).emit('join',{
             userCode:client.data.user?.sub,
             nickname:client.data.user?.nickname
@@ -78,6 +85,9 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     }
 
     handleDisconnect(@ConnectedSocket() client: Socket): any {
+
+        console.log('handleDisconnect');
+
         client.to(client.data.roomId).emit('leave',{
             userCode:client.data.user?.sub,
             nickname:client.data.user?.nickname

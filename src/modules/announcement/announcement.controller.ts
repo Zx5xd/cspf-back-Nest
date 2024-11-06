@@ -24,6 +24,7 @@ export class AnnouncementController {
   @Get('pages')
   async getAnnouncements(@Query() filterDTO:AnnouncementFilterDto) {
     const {page,limit} = filterDTO;
+    console.log(page, limit);
     return await this.announcementService.getAnnouncements(page, limit);
   }
 

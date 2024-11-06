@@ -49,6 +49,7 @@ export class ExpertService {
       email: expertDto.email,
       phone: expertDto.phone,
       image: expertDto.image,
+      certImage: expertDto.certImage
     });
 
     console.log('Repository create 완료', user);

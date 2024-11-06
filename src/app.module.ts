@@ -21,6 +21,9 @@ import {LawapiModule} from "./API/lawapi/lawapi.module";
 import {ExpertModule} from "./modules/expert/expert.module";
 import {MailauthModule} from "./utils/mailauth/mailauth.module";
 import {MailModule} from "./utils/mail/mail.module";
+import {APP_GUARD} from "@nestjs/core";
+import {JwtAuthGuard} from "./modules/auth/jwt-auth.guard";
+import {ImageExtractModule} from "./API/image-extract/image-extract.module";
 
 @Module({
   imports: [
@@ -59,6 +62,7 @@ import {MailModule} from "./utils/mail/mail.module";
       NewsapiModule,
       AniapiModule,
       LawapiModule,
+      ImageExtractModule,
       ExpertModule,
       MailauthModule,
       MailModule,

@@ -1,8 +1,14 @@
 import {AuthGuard} from "@nestjs/passport";
 import {ExecutionContext, Injectable, UnauthorizedException} from "@nestjs/common";
+import {Reflector} from "@nestjs/core";
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
+    constructor(private reflector: Reflector) {
+        // console.log('JwtAuthGuard constructor called');
+        super();
+    }
+
     canActivate(context: ExecutionContext) {
         // 기본 AuthGuard의 동작을 유지합니다.
         return super.canActivate(context);
