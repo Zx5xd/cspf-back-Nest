@@ -7,7 +7,7 @@ import {
     Post,
     UseGuards,
     Req,
-    UseInterceptors, UploadedFiles, NestInterceptor, UploadedFile, InternalServerErrorException
+    UseInterceptors, UploadedFiles, NestInterceptor, UploadedFile, InternalServerErrorException, SetMetadata
 } from '@nestjs/common';
 import { ImageService } from './image.service';
 import { Response } from 'express';
@@ -39,11 +39,15 @@ export class ImageController {
         }
     }
 
-
     // 마이그레이션
     @Get(':expertCode')
-    getExpertCertImage(@Param('expertCode') expertCode: string) {
-        return this.imageService.getExpertCertImage(expertCode);
+    async getExpertCertImage(@Param('expertCode') expertCode: string) {
+        try {
+            const imagePath = await this.imageService.getExpertCertImage(expertCode);
+            return imagePath;
+        } catch (error) {
+            throw new NotFoundException('Image not found');
+        }
     }
 
     @Post('cert')
@@ -52,7 +56,6 @@ export class ImageController {
         @UploadedFile() file: Express.Multer.File, // 여기에서 @UploadedFile()이 매개변수 `file` 앞에 있어야 합니다.
     ) {
         try {
-            console.log('cert file, ', file);
 
             return this.imageService.signupCertImage(file.buffer);
         } catch (error) {
@@ -61,6 +64,8 @@ export class ImageController {
         }
     }
 
+
+    // 채팅 이미지 저장
     @Post(':roomId')
     @UseGuards(JwtAuthGuard)
     @UseInterceptors(FilesInterceptor('files', 3) as unknown as NestInterceptor)
@@ -70,11 +75,12 @@ export class ImageController {
       @UploadedFiles() files: Array<Express.Multer.File>
     ) {
         // console.log(req.user.userCode)
-        // console.log(files)
+        console.log(files)
         const host = req.headers['x-forwarded-host'] || req.headers.host;
         const protocol = req.headers['x-forwarded-proto'] || req.protocol;
 
         const userCode = req.user.userCode ?? req.user.adminCode;
+        const type = userCode.charAt(0);
 
         const savedFileUuids:Array<string> = [];
 
@@ -82,7 +88,7 @@ export class ImageController {
             // const filename = file.
             const filename = file.originalname
             const fileBuffer = file.buffer as Buffer;
-            const savedFileUuid = await this.imageService.saveChatImage(filename, fileBuffer, roomId, userCode);
+            const savedFileUuid = await this.imageService.saveChatImage(filename, fileBuffer, roomId, userCode, type);
             savedFileUuids.push(`${protocol}://${host}/images/${roomId}/${savedFileUuid}`); // 각 파일의 UUID 저장
         }
         // this.chatService.sendMessageToAll('message','test')
@@ -100,6 +106,8 @@ export class ImageController {
             // fileUuids: savedFileUuids, // 변환된 파일들의 UUID 반환
         };
     }
+
+
 
 
 

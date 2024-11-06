@@ -25,6 +25,9 @@ import {PetModule} from "./modules/pet/pet.module";
 import {VetReservationModule} from "@/modules/expert/vet-reservation/vet-reservation.module";
 import {LawyerchatModule} from "@/modules/expert/lawyerchat/lawyerchat.module";
 import {InsurerchatModule} from "@/modules/expert/insurerchat/insurerchat.module";
+import {APP_GUARD} from "@nestjs/core";
+import {JwtAuthGuard} from "./modules/auth/jwt-auth.guard";
+import {ImageExtractModule} from "./API/image-extract/image-extract.module";
 
 @Module({
   imports: [
@@ -67,6 +70,7 @@ import {InsurerchatModule} from "@/modules/expert/insurerchat/insurerchat.module
       InsurerchatModule,
       AniapiModule,
       LawapiModule,
+      ImageExtractModule,
       ExpertModule,
       MailauthModule,
       MailModule,

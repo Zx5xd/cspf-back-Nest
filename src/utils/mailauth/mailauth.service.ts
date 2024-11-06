@@ -31,7 +31,7 @@ export class MailauthService {
 
   setToken(payload: any, expiresIn: string) {
     return this.jwtService.sign(payload, {
-      secret: process.env.JWT_SECRET,
+      secret: process.env.JWT_EMAIL_SECRET,
       expiresIn: expiresIn,
     });
   }
@@ -39,6 +39,7 @@ export class MailauthService {
   // 인증 코드 검증
   async verifyCode(token: string, inputCode: string): Promise<boolean> {
     try {
+      console.log(`token: ${token}, inputCode: ${inputCode}`);
       const decoded = this.jwtService.verify(token); // 토큰 검증 및 디코딩
       console.log('decoded: ', decoded, ', input Code: ', inputCode);
       return decoded.code === inputCode; // 입력한 코드가 토큰에 포함된 코드와 일치하는지 확인

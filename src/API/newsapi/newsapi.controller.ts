@@ -18,4 +18,17 @@ export class NewsapiController {
       });
     }
   }
+
+  @Get()
+  async searchNewsPage(@Query('query') query: string, @Query('page') page: string, @Res() res: Response) {
+    try {
+      const result = await this.newsApiService.getNewsSearchPage(query, page);
+      res.json(JSON.stringify(result));
+    } catch (error) {
+      res.status(HttpStatus.BAD_REQUEST).json({
+        message: 'Failed to fetch',
+        error: error.message,
+      });
+    }
+  }
 }

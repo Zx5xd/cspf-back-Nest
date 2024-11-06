@@ -11,6 +11,7 @@ import {
 import {ChatRoomEntity} from "../chatroom/chatroom.entity";
 import {v4 as uuidv4} from "uuid";
 import {UserEntity} from "../user/user.entity";
+import {ExpertEntity} from "../expert/expert.entity";
 
 @Entity('ChatImage')
 export class ChatImageEntity extends BaseEntity {
@@ -27,9 +28,16 @@ export class ChatImageEntity extends BaseEntity {
     @JoinColumn({ name: 'chatRoom' })  // 외래 키로 참조
     chatRoom: ChatRoomEntity; // 해당 이미지가 속한 채팅방
 
-    @ManyToOne(() => UserEntity, user => user.chatImages)
+    @ManyToOne(() => UserEntity, user => user.chatImages, { nullable: true })
     @JoinColumn({ name: 'userCode' })  // 외래 키로 참조
     user: UserEntity;
+
+    @ManyToOne(() => ExpertEntity, expert => expert.chatImages, {nullable: true})
+    @JoinColumn({ name: 'expertCode' })  // 외래 키로 참조
+    expert: ExpertEntity;
+
+    @Column({type:'varchar',length:8})
+    type: 'USER' | 'EXPERT';
 
     @CreateDateColumn()
     createdAt: Date;

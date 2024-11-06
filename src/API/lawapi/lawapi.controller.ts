@@ -19,4 +19,19 @@ export class LawApiController {
       });
     }
   }
+
+  @Get()
+  async caseLawAPIPage(@Query('query') query: string, @Query('page') page:string, @Res() res: Response) {
+    try {
+      console.log(`query ${query} page ${page}`);
+      const result = await this.lawApiService.getCaseLawPage(query, page);
+      console.log(result)
+      res.json(JSON.stringify(result));
+    } catch (error) {
+      res.status(HttpStatus.BAD_REQUEST).json({
+        message: 'Failed to fetch or parse XML data',
+        error: error.message,
+      });
+    }
+  }
 }
