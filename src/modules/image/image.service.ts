@@ -248,6 +248,7 @@ export class ImageService {
             // });
 
             // 파일 경로나 UUID를 반환 (예시로 파일명 반환)
+            console.log(typeof Buffer.from(svimagePath).toString('base64'))
             return Buffer.from(svimagePath).toString('base64');
         } catch (error) {
             console.error('Error saving image:', error);

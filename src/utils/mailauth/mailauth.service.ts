@@ -31,7 +31,7 @@ export class MailauthService {
 
   setToken(payload: any, expiresIn: string) {
     return this.jwtService.sign(payload, {
-      secret: process.env.SECRET_KEY,
+      secret: process.env.JWT_SECRET,
       expiresIn: expiresIn,
     });
   }

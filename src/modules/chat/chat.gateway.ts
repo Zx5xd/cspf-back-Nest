@@ -66,10 +66,12 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         const userCode = client.data.user?.sub;
         const roomId = client.data.roomId;
 
-        if (!userCode || !roomId) {
-            client.disconnect(true);  // 연결 종료
-            return new Error('Missing user code or room ID');
-        }
+        console.log(client.id, userCode)
+
+        // if (!userCode || !roomId) {
+        //     client.disconnect(true);  // 연결 종료
+        //     return new Error('Missing user code or room ID');
+        // }
 
         this.server.to(roomId).emit('join',{
             userCode:client.data.user?.sub,

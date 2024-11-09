@@ -23,6 +23,7 @@ export class QuestionsController {
 
   @Get()
   async finaPagination(@Query('page') page:number, @Query('limit') limit?:number) {
+    console.log('questions page')
     return this.questionsService.pagination(page, limit);
   }
 

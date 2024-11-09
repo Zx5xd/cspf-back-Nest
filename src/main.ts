@@ -27,6 +27,6 @@ async function bootstrap() {
     credentials: true
   });
 
-  await app.listen(3800);
+  await app.listen(3500);
 }
 bootstrap();

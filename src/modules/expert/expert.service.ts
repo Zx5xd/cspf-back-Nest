@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { expertDto as ExpertDTO, updateExpertDto } from '../../dto/expert.dto';
+import { expertDto as ExpertDTO } from '../../dto/expert.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ExpertEntity } from './expert.entity';
@@ -49,6 +49,7 @@ export class ExpertService {
       email: expertDto.email,
       phone: expertDto.phone,
       image: expertDto.image,
+      certImage: expertDto.certImage
     });
 
     console.log('Repository create 완료', user);

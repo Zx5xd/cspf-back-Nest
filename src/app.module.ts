@@ -21,6 +21,7 @@ import {LawapiModule} from "./API/lawapi/lawapi.module";
 import {ExpertModule} from "./modules/expert/expert.module";
 import {MailauthModule} from "./utils/mailauth/mailauth.module";
 import {MailModule} from "./utils/mail/mail.module";
+import {PetModule} from "./modules/pet/pet.module";
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import {MailModule} from "./utils/mail/mail.module";
       TypeOrmModule.forFeature([ExpertEntity]),
       UserModule,
       AuthModule,
+      PetModule,
       ChatRoomModule,
       ChatLogModule,
       AdminModule,

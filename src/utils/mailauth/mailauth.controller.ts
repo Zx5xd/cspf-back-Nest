@@ -39,7 +39,7 @@ export class MailauthController {
     // console.log(req.body);
     // console.log(req.cookies['emailToken']);
     const token = req.cookies['emailToken'];
-    // console.log(`mailVerify: ${token} ${code}`);
+    console.log(`mailVerify: ${token} ${code}`);
 
     const isValid = await this.mailauthService.verifyCode(token, code);
 

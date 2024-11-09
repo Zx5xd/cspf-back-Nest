@@ -5,10 +5,9 @@ import {
   Body,
   Patch,
   Param,
-  Delete, UseGuards, Req, Res,
+  Delete, UseGuards, Req,
 } from '@nestjs/common';
 import { ExpertService } from './expert.service';
-import { updateExpertDto } from '../../dto/expert.dto';
 import {JwtAuthGuard} from "../auth/jwt-auth.guard";
 import {ExpertEntity} from "./expert.entity";
 
@@ -18,7 +17,7 @@ export class ExpertController {
 
   @Post()
   create(@Body() createExpertProp: any) {
-    console.log(createExpertProp);
+    console.log('Expert create Prop ', createExpertProp);
     return this.expertService.create(createExpertProp);
   }
 
@@ -35,7 +34,7 @@ export class ExpertController {
   @Get('/type/:type')
   attList(@Param('type') type: string) {
     console.log(type)
-    if(type === 'lawyer'){
+    if(type === 'Lawyer'){
       return this.expertService.expertList('L');
     }
     if(type === 'Insurance'){

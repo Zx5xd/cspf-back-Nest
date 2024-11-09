@@ -4,8 +4,8 @@ import {
   Delete,
   Get,
   Param,
-  Post,
-  UploadedFile,
+  Post, Query, Req,
+  UploadedFile, UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { PetService } from './pet.service';
@@ -13,6 +13,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ImageExtractService } from '../../API/image-extract/image-extract.service';
 import { AniApiService } from '../../API/aniapi/aniapi.service';
 import { regPetDataDto } from '../../dto/pet.dto';
+import {JwtAuthGuard} from "../auth/jwt-auth.guard";
 
 @Controller('pet')
 export class PetController {
@@ -23,12 +24,33 @@ export class PetController {
   ) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file'))
-  async createImage(@UploadedFile() file: Express.Multer.File) {
+  async createImage(@UploadedFile() file: Express.Multer.File, @Req() req) {
+    const userCode = req.user.userCode;
+    console.log('pet Token-user: ',req.user);
+
     const visionData = await this.imageExtractService.detextImageToPetDataBase(
       file.buffer,
     );
     const { owner, petId, birth } = visionData;
+
+    const aniInfoData = await this.aniService.getAniInfo(owner, petId);
+    console.log(aniInfoData);
+    aniInfoData.Birthday = birth;
+    aniInfoData.owner = userCode;
+    console.log('image aniInfo', aniInfoData);
+
+    return this.petService.create(aniInfoData);
+  }
+
+  @Get()
+  async createPet(@Query() queryData: any) {
+    // const visionData = await this.imageExtractService.detextImageToPetDataBase(
+    //     file.buffer,
+    // );
+    console.log(queryData)
+    const { owner, petId, birth } = queryData;
 
     const aniInfoData = await this.aniService.getAniInfo(owner, petId);
     console.log(aniInfoData);

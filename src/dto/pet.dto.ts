@@ -35,6 +35,10 @@ export class petDto{
     @IsNotEmpty()
     aprGbNm: string; // 승인여부
 
+    @IsString()
+    @IsNotEmpty()
+    owner: string;
+
 }
 
 export class regPetDataDto{
