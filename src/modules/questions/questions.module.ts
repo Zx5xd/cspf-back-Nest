@@ -1,10 +1,10 @@
 import {Module} from "@nestjs/common";
 import {TypeOrmModule} from "@nestjs/typeorm";
-import {QuestionsEntity} from "./questions.entity";
-import {QuestionsController} from "./questions.controller";
-import {QuestionsCommentsEntity} from "./questions_comments.entity";
-import {QuestionsService} from "./questions.service";
-import {QuestionCommentController} from "./question_comments.controller";
+import {QuestionsEntity} from "@/modules/questions/questions.entity";
+import {QuestionsCommentsEntity} from "@/modules/questions/questions_comments.entity";
+import {QuestionsController} from "@/modules/questions/questions.controller";
+import {QuestionCommentController} from "@/modules/questions/question_comments.controller";
+import {QuestionsService} from "@/modules/questions/questions.service";
 
 @Module({
   imports:[TypeOrmModule.forFeature([QuestionsEntity,QuestionsCommentsEntity])],

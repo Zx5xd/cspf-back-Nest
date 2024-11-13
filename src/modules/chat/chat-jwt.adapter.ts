@@ -19,9 +19,11 @@ export class ChatJwtAdapter extends IoAdapter {
         const server = super.createIOServer(port, options);
 
         server.use(async (socket:Socket, next)=>{
-            // const accessToken:string = socket.handshake.query.accessToken as string || socket.handshake.headers['authorization'];
+            console.log("socket address: ",socket.handshake.address)
+            // const accessToken:string = socket.handshake.query.accessToken as string ||  socket.handshake.auth.authorization;
             const accessToken: string =
                 socket.handshake.query.accessToken as string ||
+                socket.handshake.auth.authorization ||
                 (socket.handshake.headers.cookie
                     ?.split('; ')
                     .find(row => row.startsWith('authorization='))

@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { ChatComplaintService } from './chat-complaint.service';
-import { ChatComplaintController } from './chat-complaint.controller';
 import {TypeOrmModule} from "@nestjs/typeorm";
-import {ExpertEntity} from "../expert/expert.entity";
-import {ChatComplaintEntity} from "./chatcomp.entity";
-import {MailService} from "../../utils/mail/mail.service";
+import {ChatComplaintEntity} from "@/modules/chat-complaint/chatcomp.entity";
+import {ExpertEntity} from "@/modules/expert/expert.entity";
+import {ChatComplaintController} from "@/modules/chat-complaint/chat-complaint.controller";
+import {ChatComplaintService} from "@/modules/chat-complaint/chat-complaint.service";
+import {MailService} from "@/utils/mail/mail.service";
 
 @Module({
   imports: [TypeOrmModule.forFeature([ChatComplaintEntity, ExpertEntity])],

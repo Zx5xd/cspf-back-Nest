@@ -1,7 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
-import {ChatLogEntity} from "./chatlog.entity";
-import {Repository} from "typeorm";
+import {LessThan, LessThanOrEqual, Repository} from "typeorm";
+import {ChatLogEntity} from "@/modules/chatlog/chatlog.entity";
 
 @Injectable()
 export class ChatLogService {
@@ -147,4 +147,25 @@ export class ChatLogService {
     };
   }
 
+  async complainChat(option: {
+    chatLog: number,
+    roomId: string,
+  }) {
+    const chatEntity = await this.chatLogRepository.findOne({
+      where: {chatLogID: option.chatLog}
+    })
+
+    console.log('cpChat, ', option);
+
+    const chckMessages : ChatLogEntity[] = await this.chatLogRepository.find({
+      where: {chatLogID: LessThanOrEqual(option.chatLog),chatRoom:{chatRoomID:option.roomId}},
+      // where: {chatRoom: {chatRoomID: option.roomId}, createdAt: LessThanOrEqual(chatEntity.createdAt),},
+      order: {chatLogID: 'desc'},
+      take: 20,
+    })
+
+    console.log('chck,', chckMessages);
+
+    return chckMessages
+  }
 }

@@ -1,15 +1,29 @@
 import {Controller, Get, HttpException, HttpStatus, Query, Req, UseGuards} from "@nestjs/common";
-import { ChatLogService } from "./chatlog.service";
-import {JwtAuthGuard} from "../auth/jwt-auth.guard";
-import {AdminService} from "../admin/admin.service";
-import {AdminEntity} from "../admin/admin.entity";
-
+import {ChatLogService} from "@/modules/chatlog/chatlog.service";
+import {AdminService} from "@/modules/admin/admin.service";
+import {JwtAuthGuard} from "@/modules/auth/jwt-auth.guard";
+import {AdminEntity} from "@/modules/admin/admin.entity";
 @Controller('chatLog')
 export class ChatLogController{
   constructor(
       private readonly chatLogService: ChatLogService,
       private readonly adminService: AdminService
   ) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/complain')
+  async getComplainChat(@Req() req, @Query() option) {
+    const {userCode, username} = req.user;
+    const existAdmin: AdminEntity | undefined = await this.adminService.findOne(userCode, username)
+
+    console.log(option)
+
+    if (!existAdmin) {
+      throw new HttpException('You do not have permission to access.', HttpStatus.UNAUTHORIZED);
+    }
+
+    return await this.chatLogService.complainChat(option);
+  }
 
   /*
     http 요청시 query로 http://주소/chatLog?page=1&limit=20 형식으로 하거나 http://주소/chatLog로 보내면 된다.
@@ -58,8 +72,8 @@ export class ChatLogController{
 
 
       } else{
-        // throw new HttpException('You do not have permission to access.', HttpStatus.UNAUTHORIZED);
-        console.log('you do not have roomId')
+        throw new HttpException('You do not have permission to access.', HttpStatus.UNAUTHORIZED);
+        // console.log('you do not have roomId')
       }
 
 

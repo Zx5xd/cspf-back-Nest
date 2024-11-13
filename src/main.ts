@@ -26,7 +26,8 @@ async function bootstrap() {
 
   app.enableCors({
     origin: true,
-    credentials: true
+    credentials: true,
+    exposedHeaders: "Cookie"
   });
 
   app.useStaticAssets(join(__dirname, '..', '/uploads'), {

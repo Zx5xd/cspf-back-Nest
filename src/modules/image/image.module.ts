@@ -1,12 +1,12 @@
 import {Module} from "@nestjs/common";
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {ChatImageEntity, ImageEntity} from "./image.entity";
-import {ImageService} from "./image.service";
-import {ImageController} from "./image.controller";
-import {ChatRoomModule} from "../chatroom/chatroom.module";
-import {ChatModule} from "../chat/chat.module";
-import {ChatLogModule} from "../chatlog/chatlog.module";
-import {ExpertModule} from "../expert/expert.module";
+import {ImageService} from "@/modules/image/image.service";
+import {ImageController} from "@/modules/image/image.controller";
+import {ChatRoomModule} from "@/modules/chatroom/chatroom.module";
+import {ChatModule} from "@/modules/chat/chat.module";
+import {ChatLogModule} from "@/modules/chatlog/chatlog.module";
+import {ExpertModule} from "@/modules/expert/expert.module";
 
 @Module({
     imports:[

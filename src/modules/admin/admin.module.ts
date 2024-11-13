@@ -1,10 +1,10 @@
 import {Module} from "@nestjs/common";
-import {AdminService} from "./admin.service";
 import {TypeOrmModule} from "@nestjs/typeorm";
-import {AdminEntity} from "./admin.entity";
-import {AdminController} from "./admin.controller";
 import {JwtModule} from "@nestjs/jwt";
 import {ConfigModule, ConfigService} from "@nestjs/config";
+import {AdminEntity} from "@/modules/admin/admin.entity";
+import {AdminController} from "@/modules/admin/admin.controller";
+import {AdminService} from "@/modules/admin/admin.service";
 
 @Module({
     imports:[

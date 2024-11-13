@@ -1,9 +1,9 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { ChatLogEntity } from "./chatlog.entity";
-import { ChatLogService } from "./chatlog.service";
-import { ChatLogController } from "./chatlog.controller";
-import {AdminModule} from "../admin/admin.module";
+import {ChatLogEntity} from "@/modules/chatlog/chatlog.entity";
+import {AdminModule} from "@/modules/admin/admin.module";
+import {ChatLogService} from "@/modules/chatlog/chatlog.service";
+import {ChatLogController} from "@/modules/chatlog/chatlog.controller";
 
 @Module({
   imports:[

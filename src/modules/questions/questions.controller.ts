@@ -11,9 +11,9 @@ import {
   Req,
   UseGuards
 } from "@nestjs/common";
-import {QuestionsService} from "./questions.service";
-import {QuestionsDto} from "../../dto/questions.dto";
-import {JwtAuthGuard} from "../auth/jwt-auth.guard";
+import {QuestionsService} from "@/modules/questions/questions.service";
+import {JwtAuthGuard} from "@/modules/auth/jwt-auth.guard";
+import {QuestionsDto} from "@/dto/questions.dto";
 
 @Controller('questions')
 export class QuestionsController {

@@ -1,7 +1,7 @@
 import { Controller, Get, Req, Res} from "@nestjs/common";
-import {AdminService} from "./admin.service";
 import {JwtService} from "@nestjs/jwt";
 import {ConfigService} from "@nestjs/config";
+import {AdminService} from "@/modules/admin/admin.service";
 
 @Controller('admin')
 export class AdminController {

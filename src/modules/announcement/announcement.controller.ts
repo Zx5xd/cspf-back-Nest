@@ -11,9 +11,9 @@ import {
   Query, Req,
   UseGuards
 } from "@nestjs/common";
-import {AnnouncementService} from "./announcement.service";
-import {AnnouncementDto, AnnouncementFilterDto} from "../../dto/announcement.dto";
-import {JwtAuthGuard} from "../auth/jwt-auth.guard";
+import {AnnouncementService} from "@/modules/announcement/announcement.service";
+import {AnnouncementDto, AnnouncementFilterDto} from "@/dto/announcement.dto";
+import {JwtAuthGuard} from "@/modules/auth/jwt-auth.guard";
 
 @Controller('announcement')
 export class AnnouncementController {

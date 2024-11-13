@@ -9,13 +9,13 @@ import {
     Req,
     UseInterceptors, UploadedFiles, NestInterceptor, UploadedFile, InternalServerErrorException, SetMetadata
 } from '@nestjs/common';
-import { ImageService } from './image.service';
+import { ImageService } from '@/modules/image/image.service';
 import { Response } from 'express';
-import {JwtAuthGuard} from "../auth/jwt-auth.guard";
+import {JwtAuthGuard} from "@/modules/auth/jwt-auth.guard";
 import {FileInterceptor, FilesInterceptor} from '@nestjs/platform-express';
 import {Buffer} from "buffer";
-import {ChatService} from "../chat/chat.service";
-import {ChatLogService} from "../chatlog/chatlog.service";
+import {ChatService} from "@/modules/chat/chat.service";
+import {ChatLogService} from "@/modules/chatlog/chatlog.service";
 
 
 

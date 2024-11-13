@@ -46,7 +46,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         const userCode = client.data.user?.sub;
         const roomId = client.data.roomId;
         // const user = socket.data.user;  // 미들웨어에서 설정된 사용자 정보 사용
-        // console.log(`${roomId} - <${userCode}>`+msg);
+        console.log(`${roomId} - <${userCode}>`+msg);
 
         client.emit('newMessage',{
             roomId: roomId,

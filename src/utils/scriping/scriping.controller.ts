@@ -1,5 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { ScripingService } from './scriping.service';
+import {ScripingService} from "@/utils/scriping/scriping.service";
 
 @Controller('scrip')
 export class ScripingController {
@@ -7,6 +7,7 @@ export class ScripingController {
 
   @Post('news')
   async scripNews(@Body('url') url: string) {
+    console.log('script url')
     console.log(`sc controller : ${url}`);
     return this.scripingService.scrapeNewssite(url);
   }

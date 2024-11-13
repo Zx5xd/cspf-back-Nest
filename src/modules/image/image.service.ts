@@ -1,8 +1,8 @@
 import {Injectable, NotFoundException} from "@nestjs/common";
-import {ChatImageEntity, ImageEntity} from "./image.entity";
+import {ChatImageEntity, ImageEntity} from "@/modules/image/image.entity";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
-import {ChatRoomEntity} from "../chatroom/chatroom.entity";
+import {ChatRoomEntity} from "@/modules/chatroom/chatroom.entity";
 import * as fs from 'fs';
 import {join} from 'path';
 import {Buffer} from 'buffer';
@@ -11,7 +11,7 @@ import {v4} from "uuid";
 import * as sharp from "sharp";
 import * as zlib from "zlib";
 import { promisify } from 'util';
-import {ExpertEntity} from "../expert/expert.entity";
+import {ExpertEntity} from "@/modules/expert/expert.entity";
 
 const gzip = promisify(zlib.gzip);
 const gunzip = promisify(zlib.gunzip);

@@ -1,8 +1,8 @@
-import {Controller, Get, Post, Request, UseGuards} from "@nestjs/common";
-import { ChatRoomService } from "./chatroom.service";
-import { JwtAuthGuard } from "../auth/jwt-auth.guard";
-import { accessUsers } from "../../types/chatroomTypes";
-import {ChatRoomEntity} from "./chatroom.entity";
+import {Body, Controller, Get, Post, Request, UseGuards} from "@nestjs/common";
+import {ChatRoomService} from "@/modules/chatroom/chatroom.service";
+import {JwtAuthGuard} from "@/modules/auth/jwt-auth.guard";
+import {accessUsers} from "@/types/chatroomTypes";
+import {ChatRoomEntity} from "@/modules/chatroom/chatroom.entity";
 
 @Controller('chatRoom')
 export class ChatRoomController {
@@ -10,10 +10,11 @@ export class ChatRoomController {
 
     @UseGuards(JwtAuthGuard)
     @Post()
-    async createRoom(@Request() req: any) {
+    async createRoom(@Request() req: any, @Body() expertCode:string ) {
+
         const accessUser:accessUsers = {
             owner:req.user.userCode,
-            access:[req.user.userCode,],
+            access:[req.user.userCode,expertCode],
             invite:[]
         }
 
@@ -33,9 +34,9 @@ export class ChatRoomController {
     async getUserCreateRooms(@Request() req: any) {
         const userCode = req.user.userCode;
         const result:ChatRoomEntity[] = await this.chatRoomService.findUserCreateRooms(userCode);
-        return {
+        return ([{
             content: result
-        }
+        }])
     }
 
     @UseGuards(JwtAuthGuard)

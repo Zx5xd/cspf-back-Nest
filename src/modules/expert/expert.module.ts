@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { ExpertService } from './expert.service';
-import { ExpertController } from './expert.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ExpertEntity } from './expert.entity';
-import { ExpertProfileEntity } from './expertProfile.entity';
-import { ExpertProfileController } from './expertProfile.controller';
-import { ExpertProfileService } from './expertProfile.service';
+import {ExpertEntity} from "@/modules/expert/expert.entity";
+import {ExpertProfileEntity} from "@/modules/expert/expertProfile.entity";
+import {ExpertProfileController} from "@/modules/expert/expertProfile.controller";
+import {ExpertProfileService} from "@/modules/expert/expertProfile.service";
+import {ExpertService} from "@/modules/expert/expert.service";
+import {ExpertController} from "@/modules/expert/expert.controller";
 
 @Module({
   imports: [TypeOrmModule.forFeature([ExpertEntity, ExpertProfileEntity])],

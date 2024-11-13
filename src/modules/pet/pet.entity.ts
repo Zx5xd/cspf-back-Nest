@@ -1,5 +1,6 @@
-import {Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, Unique} from 'typeorm';
+import {Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, Unique} from 'typeorm';
 import {UserEntity} from "../user/user.entity";
+import {InsurerchatEntity} from "../expert/insurerchat/insurerchat.entity";
 
 @Entity('Pet')
 @Unique(['dogRegNo'])
@@ -31,4 +32,7 @@ export class PetEntity {
   @ManyToOne(() => UserEntity, user => user.userCode)
   @JoinColumn({name:'OwnerCode'})
   owner: string;
+
+  @OneToMany(() => InsurerchatEntity, insChat => insChat.pet)
+  insChatReqs: InsurerchatEntity[];
 }

@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { ChatComplaintService } from './chat-complaint.service';
-import { chatComplaintDto } from '../../dto/chatComplaint.dto';
+import {ChatComplaintService} from "@/modules/chat-complaint/chat-complaint.service";
+import {chatComplaintDto} from "@/dto/chatComplaint.dto";
 
 @Controller('chatComplaint')
 export class ChatComplaintController {

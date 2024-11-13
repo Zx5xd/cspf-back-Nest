@@ -6,9 +6,9 @@ import {
   Patch,
   Param,
 } from '@nestjs/common';
-import { ExpertProfileService } from './expertProfile.service';
-import { ExpertProfileEntity } from './expertProfile.entity';
-import {ExpertProfileDto} from "../../dto/expertProfile.dto";
+import {ExpertProfileService} from "@/modules/expert/expertProfile.service";
+import {ExpertProfileDto} from "@/dto/expertProfile.dto";
+import {ExpertProfileEntity} from "@/modules/expert/expertProfile.entity";
 
 @Controller('expertProfile')
 export class ExpertProfileController {

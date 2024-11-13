@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { expertDto as ExpertDTO, updateExpertDto } from '../../dto/expert.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ExpertEntity } from './expert.entity';
+import {ExpertEntity} from "@/modules/expert/expert.entity";
+import {expertDto as ExpertDTO} from "@/dto/expert.dto";
 
 @Injectable()
 export class ExpertService {

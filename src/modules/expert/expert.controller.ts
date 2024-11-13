@@ -7,10 +7,9 @@ import {
   Param,
   Delete, UseGuards, Req, Res,
 } from '@nestjs/common';
-import { ExpertService } from './expert.service';
-import { updateExpertDto } from '../../dto/expert.dto';
-import {JwtAuthGuard} from "../auth/jwt-auth.guard";
-import {ExpertEntity} from "./expert.entity";
+import {ExpertService} from "@/modules/expert/expert.service";
+import {JwtAuthGuard} from "@/modules/auth/jwt-auth.guard";
+import {ExpertEntity} from "@/modules/expert/expert.entity";
 
 @Controller('expert')
 export class ExpertController {

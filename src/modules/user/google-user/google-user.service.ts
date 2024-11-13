@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { GoogleUsersEntity } from './google-user.entity';
+import {GoogleUsersEntity} from "@/modules/user/google-user/google-user.entity";
 
 @Injectable()
 export class GoogleUserService {

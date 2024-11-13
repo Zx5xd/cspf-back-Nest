@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { petDto } from '../../dto/pet.dto';
+import { petDto } from '@/dto/pet.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { PetEntity } from './pet.entity';
+import { PetEntity } from '@/modules/pet/pet.entity';
 
 @Injectable()
 export class PetService {
