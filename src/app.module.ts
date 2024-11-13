@@ -22,6 +22,9 @@ import {ExpertModule} from "./modules/expert/expert.module";
 import {MailauthModule} from "./utils/mailauth/mailauth.module";
 import {MailModule} from "./utils/mail/mail.module";
 import {PetModule} from "./modules/pet/pet.module";
+import {VetReservationModule} from "@/modules/expert/vet-reservation/vet-reservation.module";
+import {LawyerchatModule} from "@/modules/expert/lawyerchat/lawyerchat.module";
+import {InsurerchatModule} from "@/modules/expert/insurerchat/insurerchat.module";
 
 @Module({
   imports: [
@@ -59,6 +62,9 @@ import {PetModule} from "./modules/pet/pet.module";
       AnnouncementModule,
       QuestionsModule,
       NewsapiModule,
+      VetReservationModule,
+      LawyerchatModule,
+      InsurerchatModule,
       AniapiModule,
       LawapiModule,
       ExpertModule,

@@ -12,21 +12,25 @@ export class ChatLogService {
   ) {}
 
   async addChatMessage(roomId:string,userCode:string,msg:string) {
-    const type = userCode.charAt(0) == 'U';
+    const type = userCode.charAt(0) === 'U';
     let log:ChatLogEntity;
     if (type) {
       log = this.chatLogRepository.create({
         chatRoom:{chatRoomID:roomId},
         user:{userCode:userCode},
-        chatMessage:msg
+        chatMessage:msg,
+        type:'USER'
       });
     } else {
       log = this.chatLogRepository.create({
         chatRoom:{chatRoomID:roomId},
         expert:{expertCode:userCode},
-        chatMessage:msg
+        chatMessage:msg,
+        type:'EXPERT'
       });
     }
+
+    console.log(log)
     await this.chatLogRepository.save(log);
   }
 

@@ -66,8 +66,9 @@ export class ExpertService {
     const test = await this.expertRepository
         .createQueryBuilder('expert')
         .where('expert.expertCode LIKE :type', { type: `${type}%` })
+        .andWhere('expert.credentialStatus = :status', {status: 1})
         .getMany();
-    console.log(test)
+    // console.log(test)
     return test
   }
 

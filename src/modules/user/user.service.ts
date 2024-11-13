@@ -15,7 +15,7 @@ export class UserService {
         private readonly imageService: ImageService
     ) {}
 
-    async create(userDto:CreateUserDto, imgBuffer:Buffer) {
+    async create(userDto:CreateUserDto, imgBuffer?:Buffer) {
         const existingUser = await this.userRepository.findOne({where:[{username:userDto.username},{email:userDto.email}]})
         if (existingUser) {
             return { success: false, message: '해당 아이디 또는 이메일은 사용 중 입니다.' };

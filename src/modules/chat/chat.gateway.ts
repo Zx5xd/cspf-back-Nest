@@ -41,9 +41,10 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     @SubscribeMessage('message')
     async handleMessage(@MessageBody() msg: string, @ConnectedSocket() client: Socket): Promise<void> {
-        const userNickname = client.data.user?.nickname;
+        const userNickname = client.data.user?.sub.nickname ?? client.data.user.sub.name;
         const userCode = client.data.user?.sub;
         const roomId = client.data.roomId;
+        console.log('message client, ', client.data.user)
         // const user = socket.data.user;  // 미들웨어에서 설정된 사용자 정보 사용
         console.log(`${roomId} - <${userNickname}>`+msg);
 
@@ -68,10 +69,10 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
         console.log(client.id, userCode)
 
-        // if (!userCode || !roomId) {
-        //     client.disconnect(true);  // 연결 종료
-        //     return new Error('Missing user code or room ID');
-        // }
+        if (!userCode || !roomId) {
+            client.disconnect(true);  // 연결 종료
+            return new Error('Missing user code or room ID');
+        }
 
         this.server.to(roomId).emit('join',{
             userCode:client.data.user?.sub,
