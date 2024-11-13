@@ -1,8 +1,5 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { MailService } from './mail.service';
-// import { ApiOperation, ApiTags } from '@nestjs/swagger';
-// import { AuthService } from 'src/modules/auth/auth.service';
-// import { ExpertEntity } from '../../modules/expert/expert.entity';
+import {MailService} from "@/utils/mail/mail.service";
 
 export interface sendMailDto {
   email: string;

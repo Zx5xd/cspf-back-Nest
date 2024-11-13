@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { NaverUserEntity } from './naver-user.entity';
+import {NaverUserEntity} from "@/modules/user/naver-user/naver-user.entity";
 
 @Injectable()
 export class NaverUserService {

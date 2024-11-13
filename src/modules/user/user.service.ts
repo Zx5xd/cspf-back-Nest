@@ -1,10 +1,10 @@
 import {Injectable} from '@nestjs/common';
 import {Repository, UpdateResult} from "typeorm";
-import {UserEntity} from "./user.entity";
 import {InjectRepository} from "@nestjs/typeorm";
-import {CreateUserDto, UpdateUserDTO} from "../../dto/user.dto";
-import {ImageService} from "../image/image.service";
 import {Buffer} from "buffer";
+import {UserEntity} from "@/modules/user/user.entity";
+import {ImageService} from "@/modules/image/image.service";
+import {CreateUserDto, UpdateUserDTO} from "@/dto/user.dto";
 
 @Injectable()
 export class UserService {

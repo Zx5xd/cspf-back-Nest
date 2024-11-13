@@ -1,6 +1,4 @@
 import {Body, Controller, Get, Param, Post, Req, Request, Res, UseGuards} from "@nestjs/common";
-import {AuthService} from "./auth.service";
-import {LoginDTO} from "../../dto/user.dto";
 import {Request as ExpressRequest, Response} from "express";
 import process from "process";
 import {JwtStrategy} from "./jwt.strategy";
@@ -8,8 +6,10 @@ import {JwtService} from "@nestjs/jwt";
 import {ConfigService} from "@nestjs/config";
 import {JwtAuthGuard} from "./jwt-auth.guard";
 import {AuthGuard} from "@nestjs/passport";
-import {NaverUserService} from "../user/naver-user/naver-user.service";
-import {GoogleUserService} from "../user/google-user/google-user.service";
+import {NaverUserService} from "@/modules/user/naver-user/naver-user.service";
+import {GoogleUserService} from "@/modules/user/google-user/google-user.service";
+import {AuthService} from "@/modules/auth/auth.service";
+import {LoginDTO} from "@/dto/user.dto";
 
 @Controller('auth')
 export class AuthController {
@@ -225,5 +225,12 @@ export class AuthController {
 
         // JWT 토큰을 포함하여 프론트엔드로 리디렉션
         res.redirect(`http://localhost:5173/auth/naver/callback?token=${jwt}`);
+    }
+
+    @Get()
+    @UseGuards(JwtAuthGuard)
+    authCheck(@Req() req, @Res() res) {
+        console.log(req.user)
+        return res.send({message: 'ing...'});
     }
 }

@@ -1,8 +1,8 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { ChatRoomEntity } from "./chatroom.entity";
-import { ChatRoomController } from "./chatroom.controller";
-import { ChatRoomService } from "./chatroom.service";
+import {ChatRoomEntity} from "@/modules/chatroom/chatroom.entity";
+import {ChatRoomService} from "@/modules/chatroom/chatroom.service";
+import {ChatRoomController} from "@/modules/chatroom/chatroom.controller";
 
 @Module({
     imports:[

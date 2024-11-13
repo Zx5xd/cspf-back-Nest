@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { expertDto as ExpertDTO } from '../../dto/expert.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ExpertEntity } from './expert.entity';
+import {ExpertEntity} from "@/modules/expert/expert.entity";
+import {expertDto as ExpertDTO} from "@/dto/expert.dto";
 
 @Injectable()
 export class ExpertService {
@@ -66,9 +66,8 @@ export class ExpertService {
     const test = await this.expertRepository
         .createQueryBuilder('expert')
         .where('expert.expertCode LIKE :type', { type: `${type}%` })
-        .andWhere('expert.credentialStatus = :status', {status: 1})
         .getMany();
-    // console.log(test)
+    console.log(test)
     return test
   }
 

@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { PetService } from './pet.service';
-import { PetController } from './pet.controller';
+import { PetService } from '@/modules/pet/pet.service';
+import { PetController } from '@/modules/pet/pet.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PetEntity } from './pet.entity';
-import { ImageExtractService } from '../../API/image-extract/image-extract.service';
-import { AniApiService } from '../../API/aniapi/aniapi.service';
+import { PetEntity } from '@/modules/pet/pet.entity';
+import { ImageExtractService } from '@/API/image-extract/image-extract.service';
+import { AniApiService } from '@/API/aniapi/aniapi.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([PetEntity])],

@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { GoogleUserService } from './google-user.service';
+import {GoogleUserService} from "@/modules/user/google-user/google-user.service";
 
 @Controller('googleuser')
 export class GoogleUserController {

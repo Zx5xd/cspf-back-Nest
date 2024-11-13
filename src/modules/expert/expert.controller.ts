@@ -5,11 +5,11 @@ import {
   Body,
   Patch,
   Param,
-  Delete, UseGuards, Req,
+  Delete, UseGuards, Req, Res,
 } from '@nestjs/common';
-import { ExpertService } from './expert.service';
-import {JwtAuthGuard} from "../auth/jwt-auth.guard";
-import {ExpertEntity} from "./expert.entity";
+import {ExpertService} from "@/modules/expert/expert.service";
+import {JwtAuthGuard} from "@/modules/auth/jwt-auth.guard";
+import {ExpertEntity} from "@/modules/expert/expert.entity";
 
 @Controller('expert')
 export class ExpertController {
@@ -33,8 +33,8 @@ export class ExpertController {
 
   @Get('/type/:type')
   attList(@Param('type') type: string) {
-    // console.log(type)
-    if(type === 'Lawyer'){
+    console.log(type)
+    if(type === 'lawyer'){
       return this.expertService.expertList('L');
     }
     if(type === 'Insurance'){

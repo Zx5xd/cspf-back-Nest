@@ -1,10 +1,10 @@
 import {ForbiddenException, Injectable} from "@nestjs/common";
 import {InjectRepository} from "@nestjs/typeorm";
-import {QuestionsEntity} from "./questions.entity";
 import {Repository, UpdateResult} from "typeorm";
-import {QuestionsCommentsEntity} from "./questions_comments.entity";
 import {QueryDeepPartialEntity} from "typeorm/query-builder/QueryPartialEntity";
-import {QuestionsDto} from "../../dto/questions.dto";
+import {QuestionsEntity} from "@/modules/questions/questions.entity";
+import {QuestionsCommentsEntity} from "@/modules/questions/questions_comments.entity";
+import {QuestionsDto} from "@/dto/questions.dto";
 
 @Injectable()
 export class QuestionsService {

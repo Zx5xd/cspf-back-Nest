@@ -1,7 +1,7 @@
 import {Injectable} from "@nestjs/common";
 import {InjectRepository} from "@nestjs/typeorm";
-import {AdminEntity} from "./admin.entity";
 import {Repository} from "typeorm";
+import {AdminEntity} from "@/modules/admin/admin.entity";
 
 @Injectable()
 export class AdminService {

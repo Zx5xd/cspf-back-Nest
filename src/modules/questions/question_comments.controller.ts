@@ -10,10 +10,10 @@ import {
   Post, Req,
   UseGuards
 } from "@nestjs/common";
-import {QuestionsService} from "./questions.service";
-import {CommentDto} from "../../dto/comment.dto";
-import {JwtAuthGuard} from "../auth/jwt-auth.guard";
-import {QuestionsCommentsEntity} from "./questions_comments.entity";
+import {QuestionsService} from "@/modules/questions/questions.service";
+import {QuestionsCommentsEntity} from "@/modules/questions/questions_comments.entity";
+import {JwtAuthGuard} from "@/modules/auth/jwt-auth.guard";
+import {CommentDto} from "@/dto/comment.dto";
 
 @Controller('comment')
 export class QuestionCommentController {

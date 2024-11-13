@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { MailauthService } from './mailauth.service';
-import { MailauthController } from './mailauth.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { MailService } from '../mail/mail.service';
+import {MailauthController} from "@/utils/mailauth/mailauth.controller";
+import {MailService} from "@/utils/mail/mail.service";
+import {MailauthService} from "@/utils/mailauth/mailauth.service";
 
 @Module({
   imports: [

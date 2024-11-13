@@ -1,7 +1,6 @@
 import { Body, Controller, Post, Req, Res } from '@nestjs/common';
-import { MailauthService } from './mailauth.service';
 import { Request, Response } from 'express';
-// import { cookie } from 'request';
+import {MailauthService} from "@/utils/mailauth/mailauth.service";
 
 @Controller('mailauth')
 export class MailauthController {

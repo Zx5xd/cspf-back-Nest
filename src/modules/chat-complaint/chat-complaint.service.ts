@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ChatComplaintEntity } from './chatcomp.entity';
-import { chatComplaintDto } from '../../dto/chatComplaint.dto';
-import { ExpertEntity } from '../expert/expert.entity';
-import { MailService } from '../../utils/mail/mail.service';
+import {ChatComplaintEntity} from "@/modules/chat-complaint/chatcomp.entity";
+import {ExpertEntity} from "@/modules/expert/expert.entity";
+import {MailService} from "@/utils/mail/mail.service";
+import {chatComplaintDto} from "@/dto/chatComplaint.dto";
 
 @Injectable()
 export class ChatComplaintService {
@@ -23,6 +23,7 @@ export class ChatComplaintService {
   getComplaintById(id: number) {
     return this.chatCompRepository.findOne({
       where: { id },
+      relations: ['chatLogs', 'chatRoomId']
     });
   }
 

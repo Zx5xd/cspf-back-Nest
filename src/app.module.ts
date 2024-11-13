@@ -1,33 +1,34 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { UserModule } from './modules/user/user.module';
+import { AppController } from '@/app.controller';
+import { AppService } from '@/app.service';
+import { UserModule } from '@/modules/user/user.module';
 import {ConfigModule} from "@nestjs/config";
 import {TypeOrmModule} from "@nestjs/typeorm";
 import * as process from 'process';
 import * as Joi from "joi";
-import {AuthModule} from "./modules/auth/auth.module";
-import {ChatRoomModule} from "./modules/chatroom/chatroom.module";
-import {ChatLogModule} from "./modules/chatlog/chatlog.module";
-import {AdminModule} from "./modules/admin/admin.module";
-import {ImageModule} from "./modules/image/image.module";
-import {ChatModule} from "./modules/chat/chat.module";
-import {AnnouncementModule} from "./modules/announcement/announcement.module";
-import {QuestionsModule} from "./modules/questions/questions.module";
-import {ExpertEntity} from "./modules/expert/expert.entity";
-import { NewsapiModule } from './API/newsapi/newsapi.module';
-import {AniapiModule} from "./API/aniapi/aniapi.module";
-import {LawapiModule} from "./API/lawapi/lawapi.module";
-import {ExpertModule} from "./modules/expert/expert.module";
-import {MailauthModule} from "./utils/mailauth/mailauth.module";
-import {MailModule} from "./utils/mail/mail.module";
-import {PetModule} from "./modules/pet/pet.module";
-import {VetReservationModule} from "@/modules/expert/vet-reservation/vet-reservation.module";
-import {LawyerchatModule} from "@/modules/expert/lawyerchat/lawyerchat.module";
-import {InsurerchatModule} from "@/modules/expert/insurerchat/insurerchat.module";
+import {AuthModule} from "@/modules/auth/auth.module";
+import {ChatRoomModule} from "@/modules/chatroom/chatroom.module";
+import {ChatLogModule} from "@/modules/chatlog/chatlog.module";
+import {AdminModule} from "@/modules/admin/admin.module";
+import {ImageModule} from "@/modules/image/image.module";
+import {ChatModule} from "@/modules/chat/chat.module";
+import {AnnouncementModule} from "@/modules/announcement/announcement.module";
+import {QuestionsModule} from "@/modules/questions/questions.module";
+import {ExpertEntity} from "@/modules/expert/expert.entity";
+import { NewsapiModule } from '@/API/newsapi/newsapi.module';
+import {AniapiModule} from "@/API/aniapi/aniapi.module";
+import {LawapiModule} from "@/API/lawapi/lawapi.module";
+import {ExpertModule} from "@/modules/expert/expert.module";
+import {MailauthModule} from "@/utils/mailauth/mailauth.module";
+import {MailModule} from "@/utils/mail/mail.module";
 import {APP_GUARD} from "@nestjs/core";
-import {JwtAuthGuard} from "./modules/auth/jwt-auth.guard";
-import {ImageExtractModule} from "./API/image-extract/image-extract.module";
+import {JwtAuthGuard} from "@/modules/auth/jwt-auth.guard";
+import {ImageExtractModule} from "@/API/image-extract/image-extract.module";
+import { InsurerchatModule } from '@/modules/expert/insurerchat/insurerchat.module';
+import { LawyerchatModule } from '@/modules/expert/lawyerchat/lawyerchat.module';
+import { VetReservationModule } from '@/modules/expert/vet-reservation/vet-reservation.module';
+import {PetModule} from "@/modules/pet/pet.module";
+import {ChatComplaintModule} from "@/modules/chat-complaint/chat-complaint.module";
 
 @Module({
   imports: [
@@ -56,24 +57,25 @@ import {ImageExtractModule} from "./API/image-extract/image-extract.module";
       TypeOrmModule.forFeature([ExpertEntity]),
       UserModule,
       AuthModule,
-      PetModule,
       ChatRoomModule,
       ChatLogModule,
       AdminModule,
       ImageModule,
       ChatModule,
+      ChatComplaintModule,
       AnnouncementModule,
       QuestionsModule,
       NewsapiModule,
-      VetReservationModule,
-      LawyerchatModule,
-      InsurerchatModule,
       AniapiModule,
       LawapiModule,
       ImageExtractModule,
+      PetModule,
       ExpertModule,
       MailauthModule,
       MailModule,
+      InsurerchatModule,
+      LawyerchatModule,
+      VetReservationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

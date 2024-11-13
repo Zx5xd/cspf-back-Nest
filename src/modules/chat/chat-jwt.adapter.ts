@@ -1,6 +1,8 @@
 import {IoAdapter} from "@nestjs/platform-socket.io";
-import {INestApplication} from "@nestjs/common";
+import {INestApplication, Injectable} from "@nestjs/common";
 import { Server, Socket } from "socket.io";
+import {AuthService} from "../auth/auth.service";
+import process from "process";
 import {JwtService} from "@nestjs/jwt";
 import {ConfigService} from "@nestjs/config";
 import {ChatRoomService} from "../chatroom/chatroom.service";
@@ -18,13 +20,14 @@ export class ChatJwtAdapter extends IoAdapter {
 
         server.use(async (socket:Socket, next)=>{
             console.log("socket address: ",socket.handshake.address)
-            const accessToken:string = socket.handshake.query.accessToken as string || socket.handshake.auth.authorization
-            || (socket.handshake.headers.cookie
+            // const accessToken:string = socket.handshake.query.accessToken as string ||  socket.handshake.auth.authorization;
+            const accessToken: string =
+                socket.handshake.query.accessToken as string ||
+                socket.handshake.auth.authorization ||
+                (socket.handshake.headers.cookie
                     ?.split('; ')
                     .find(row => row.startsWith('authorization='))
-                    ?.split('=')[1] || '');
-
-            console.log("test access: "+ accessToken)
+                    ?.split('=')[1] || '');  // 쿠키에서 'authorization' 토큰 추출
 
             const roomId = socket.handshake.query.roomId as string | null | undefined;
 

@@ -9,6 +9,7 @@ import {
 import { ExpertProfileEntity } from './expertProfile.entity';
 import {ChatLogEntity} from "../chatlog/chatlog.entity";
 import {ChatImageEntity} from "../image/image.entity";
+import {InsurerchatEntity} from "./insurerchat/insurerchat.entity";
 
 @Entity('Expert')
 @Unique(['username'])
@@ -58,4 +59,7 @@ export class ExpertEntity {
 
   @OneToMany(() => ChatLogEntity, chatLog => chatLog.user)
   chatLogs: ChatLogEntity[];
+
+  @OneToMany(() => InsurerchatEntity, insChat => insChat.insurerId)
+  insChatReqs: InsurerchatEntity[];
 }

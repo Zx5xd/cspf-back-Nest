@@ -2,6 +2,7 @@ import {Entity, Column, Unique, CreateDateColumn, PrimaryColumn, OneToMany} from
 import {ChatLogEntity} from "../chatlog/chatlog.entity";
 import {ChatImageEntity, ImageEntity} from "../image/image.entity";
 import {PetEntity} from "../pet/pet.entity";
+import {InsurerchatEntity} from "../expert/insurerchat/insurerchat.entity";
 
 @Entity('User')
 @Unique(['username'])
@@ -60,4 +61,7 @@ export class UserEntity {
 
     @OneToMany(() => PetEntity, pet => pet.owner)
     pets: PetEntity[];
+
+    @OneToMany(() => InsurerchatEntity, insChat => insChat.owner)
+    insChatReqs: InsurerchatEntity[];
 }

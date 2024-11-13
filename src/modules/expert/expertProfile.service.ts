@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ExpertEntity } from './expert.entity';
-import { ExpertProfileEntity } from './expertProfile.entity';
-import { ExpertProfileDto } from '../../dto/expertProfile.dto';
+import {ExpertProfileEntity} from "@/modules/expert/expertProfile.entity";
+import {ExpertEntity} from "@/modules/expert/expert.entity";
+import {ExpertProfileDto} from "@/dto/expertProfile.dto";
 
 @Injectable()
 export class ExpertProfileService {
