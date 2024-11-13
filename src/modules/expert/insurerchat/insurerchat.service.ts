@@ -4,22 +4,18 @@ import {Repository} from "typeorm";
 import {PetService} from "@/modules/pet/pet.service";
 import {createInsuereChatDto, updateStatusDto, InsurerListDto} from "@/dto/insurerchat.dto";
 import {InsurerchatEntity} from "@/modules/expert/insurerchat/insurerchat.entity";
-import {use} from "passport";
-import {PetEntity} from "@/modules/pet/pet.entity";
 
 @Injectable()
 export class InsurerchatService {
   constructor(
       @InjectRepository(InsurerchatEntity)
       private readonly insurerchatEntityRepository: Repository<InsurerchatEntity>,
-      private readonly petService: PetService,
+      private readonly petServece:PetService
   ) {
   }
 
   async create(createInsurerchatDto: createInsuereChatDto, userCode:string) {
 
-    console.log('createInsurerchatDto', userCode)
-    // const pet = await this.petService.findOneToUser(userCode)
 
     const createReq = {
       insurerId: {expertCode: createInsurerchatDto.insurerId},

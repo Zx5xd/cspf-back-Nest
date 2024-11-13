@@ -34,7 +34,7 @@ export class createVetReservDto{
 
 export class updateStatusDto{
     @IsString()
-    @IsNotEmpty()
+    @Length(1,10)
     hospId: string;
 
     @IsNumber()

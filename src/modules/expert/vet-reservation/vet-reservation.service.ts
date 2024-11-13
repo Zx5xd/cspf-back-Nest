@@ -53,6 +53,16 @@ export class VetReservationService {
     return await this.VetReservationEntityRepository.find({
       where: {
         hospId: {expertCode: userCode}
+      },
+      relations: ['owner','pet'],
+      select:{
+        owner:{
+          name: true
+        },
+        pet:{
+          kindNm: true,
+          Birthday: true
+        }
       }
     });
   }

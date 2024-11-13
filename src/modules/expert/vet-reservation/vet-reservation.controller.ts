@@ -28,7 +28,7 @@ export class VetReservationController {
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
-  update(@Param('id') id: string, @Body() updateVetReservationDto: updateStatusDto, @Req() req) {
+  update(@Param('id') id: string, @Body() updateVetReservationDto: any, @Req() req) {
     updateVetReservationDto.hospId = req.user.userCode;
     return this.vetReservationService.updateStatus(+id, updateVetReservationDto);
   }
