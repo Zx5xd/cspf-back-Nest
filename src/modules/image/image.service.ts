@@ -80,15 +80,15 @@ export class ImageService {
         }
     }
 
-    async saveProfileImage(imgBuffer:Buffer, userCode:string) {
+    async saveProfileImage(imgBuffer:Buffer) {
         try {
             const file = await this.imageProcess(
-              join("./uploads","profileImage"),
-              imgBuffer
+                join("./uploads","profileImage"),
+                imgBuffer
             );
 
             const result:ImageEntity = this.imageRepository.create({
-                user:{userCode},
+                // user:{userCode},
                 path: file.directory,
             });
 
@@ -100,6 +100,27 @@ export class ImageService {
             throw new Error('Image save failed');
         }
     }
+
+    // async saveProfileImage(imgBuffer:Buffer, userCode:string) {
+    //     try {
+    //         const file = await this.imageProcess(
+    //           join("./uploads","profileImage"),
+    //           imgBuffer
+    //         );
+    //
+    //         const result:ImageEntity = this.imageRepository.create({
+    //             // user:{userCode},
+    //             path: file.directory,
+    //         });
+    //
+    //         await this.imageRepository.save(result);
+    //
+    //         return result.uuid;
+    //     } catch (err) {
+    //         console.error('Error saving image:', err);
+    //         throw new Error('Image save failed');
+    //     }
+    // }
 
     async saveDefaultImage(filename:string, imgBuffer:Buffer, userCode:string) {
         try {

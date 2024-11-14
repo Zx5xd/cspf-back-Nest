@@ -26,10 +26,14 @@ export class UserController {
     ) {}
 
     @Post()
+    async create(@Body() createUserDTO: CreateUserDto) {
+        return await this.userService.create(createUserDTO);
+    }
+
+    @Post('/createImage')
     @UseInterceptors(FileInterceptor('img') as unknown as NestInterceptor)
-    async create(@Body() createUserDTO: CreateUserDto,
-                 @UploadedFile() profileImage?: Express.Multer.File) {
-        return await this.userService.create(createUserDTO, profileImage.buffer as Buffer);
+    async createImage(@UploadedFile() profileImage: Express.Multer.File) {
+        return await this.userService.createImage(profileImage.buffer as Buffer)
     }
 
     @UseGuards(JwtAuthGuard)
