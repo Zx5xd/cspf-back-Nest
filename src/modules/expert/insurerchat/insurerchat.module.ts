@@ -13,7 +13,8 @@ import {PetModule} from "@/modules/pet/pet.module";
   imports:[
     TypeOrmModule.forFeature([InsurerchatEntity]),
     ExpertModule,
-      PetModule
+      PetModule,
+      ChatRoomModule,
   ],
   controllers: [InsurerchatController],
   providers: [InsurerchatService],

@@ -1,26 +1,25 @@
-import {IoAdapter} from "@nestjs/platform-socket.io";
-import {INestApplication, Injectable} from "@nestjs/common";
+import { IoAdapter } from "@nestjs/platform-socket.io";
+import { INestApplication } from "@nestjs/common";
 import { Server, Socket } from "socket.io";
-import {AuthService} from "../auth/auth.service";
-import process from "process";
-import {JwtService} from "@nestjs/jwt";
-import {ConfigService} from "@nestjs/config";
-import {ChatRoomService} from "../chatroom/chatroom.service";
+import { JwtService } from "@nestjs/jwt";
+import { ConfigService } from "@nestjs/config";
+import { ChatRoomService } from "../chatroom/chatroom.service";
 
 export class ChatJwtAdapter extends IoAdapter {
     constructor(
-        app:INestApplication,
+        app: INestApplication,
         private readonly jwtService: JwtService,
         private readonly configService: ConfigService,
         private readonly chatRoomService: ChatRoomService,
-    ) {super(app);}
+    ) {
+        super(app);
+    }
 
     createIOServer(port: number, options?: any): Server {
+
         const server = super.createIOServer(port, options);
 
-        server.use(async (socket:Socket, next)=>{
-            console.log("socket address: ",socket.handshake.address)
-            // const accessToken:string = socket.handshake.query.accessToken as string ||  socket.handshake.auth.authorization;
+        server.use(async (socket: Socket, next) => {
             const accessToken: string =
                 socket.handshake.query.accessToken as string ||
                 socket.handshake.auth.authorization ||
@@ -29,14 +28,16 @@ export class ChatJwtAdapter extends IoAdapter {
                     .find(row => row.startsWith('authorization='))
                     ?.split('=')[1] || '');  // 쿠키에서 'authorization' 토큰 추출
 
+            console.log(socket.handshake.address, accessToken);
+
             const roomId = socket.handshake.query.roomId as string | null | undefined;
 
             if (!accessToken) {
-                socket.disconnect(true)
+                socket.disconnect(true);
                 return next(new Error('No accessToken provided'));
             }
             if (!roomId) {
-                socket.disconnect(true)
+                socket.disconnect(true);
                 return next(new Error('No roomId provided'));
             }
 
@@ -51,18 +52,18 @@ export class ChatJwtAdapter extends IoAdapter {
                     secret: secretKey
                 });
 
-                if (!existChatRoom.accessUser.access.some(code => code===payload.sub)) {
-                    return next(new Error('Not Found Access Permission'))
+                if (!existChatRoom.accessUser.access.some(code => code === payload.sub)) {
+                    return next(new Error('Not Found Access Permission'));
                 }
 
                 socket.data.user = payload;
                 socket.data.roomId = roomId;
-                socket.join(roomId)
+                socket.join(roomId);
                 next();
             } catch (error) {
                 return next(new Error('Invalid token'));
             }
-        })
+        });
 
         return server;
     }

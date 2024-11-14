@@ -49,7 +49,9 @@ export class LawyerchatController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLawyerchatDto: any) {
+  @UseGuards(JwtAuthGuard)
+  update(@Param('id') id: string, @Body() updateLawyerchatDto: any, @Req() req) {
+    updateLawyerchatDto.lawyerCode = req.user.userCode
     return this.lawyerchatService.updateStatus(+id, updateLawyerchatDto);
   }
 

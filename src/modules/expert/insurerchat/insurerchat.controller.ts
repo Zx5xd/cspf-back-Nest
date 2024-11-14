@@ -15,10 +15,16 @@ export class InsurerchatController {
     return this.insurerchatService.create(createInsurerchatDto, req.user.userCode);
   }
 
+  @Get('/cnt')
+  @UseGuards(JwtAuthGuard)
+  async lawyerCount(@Req() req) {
+    return await this.insurerchatService.insurerCnt(req.user.userCode);
+  }
+
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   findOne(@Param('id') id: string, @Req() req) {
-    return this.insurerchatService.findOne(+id, req.user.userCode);
+    return this.insurerchatService.findOne(+id);
   }
 
   @Get()
@@ -28,12 +34,20 @@ export class InsurerchatController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateInsurerchatDto: any) {
+  @UseGuards(JwtAuthGuard)
+  update(@Param('id') id: string, @Body() updateInsurerchatDto: any, @Req() req) {
+    updateInsurerchatDto.insurerId = req.user.userCode;
     return this.insurerchatService.updateStatus(+id, updateInsurerchatDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.insurerchatService.remove(+id);
+  }
+
+  @Get('commit/:id')
+  @UseGuards(JwtAuthGuard)
+  commitChat(@Req() req, @Param('id') id: string) {
+    return this.insurerchatService.commitChat(+id, req.user.userCode);
   }
 }
