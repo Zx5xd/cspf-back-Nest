@@ -22,6 +22,7 @@ async function bootstrap() {
   const chatRoomService = app.get(ChatRoomService);
   const configService = app.get(ConfigService);
   const chatAdapter = new ChatJwtAdapter(app, jwtService,configService,chatRoomService);
+
   app.useWebSocketAdapter(chatAdapter);
 
   app.enableCors({

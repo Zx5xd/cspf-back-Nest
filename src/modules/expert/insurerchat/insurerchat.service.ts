@@ -4,13 +4,16 @@ import {Repository} from "typeorm";
 import {PetService} from "@/modules/pet/pet.service";
 import {createInsuereChatDto, updateStatusDto, InsurerListDto} from "@/dto/insurerchat.dto";
 import {InsurerchatEntity} from "@/modules/expert/insurerchat/insurerchat.entity";
+import {accessUsers} from "@/types/chatroomTypes";
+import {ChatRoomService} from "@/modules/chatroom/chatroom.service";
 
 @Injectable()
 export class InsurerchatService {
   constructor(
       @InjectRepository(InsurerchatEntity)
       private readonly insurerchatEntityRepository: Repository<InsurerchatEntity>,
-      private readonly petServece:PetService
+      private readonly petServece:PetService,
+      private readonly chatRoomService: ChatRoomService
   ) {
   }
 
@@ -35,18 +38,27 @@ export class InsurerchatService {
 
   async findAll(userCode: string) {
     return await this.insurerchatEntityRepository.find({
-      where: {insurerId: {expertCode: userCode}}
+      where: {insurerId: {expertCode: userCode}},
+      relations: ['owner', 'pet'],
+      select:{
+        owner:{
+          name:true
+        },
+        pet:{
+          kindNm: true,
+          Birthday: true
+        }}
     });
   }
 
-  async findOne(id: number, userCode: string) {
+  async findOne(id: number) {
     return await this.insurerchatEntityRepository.findOne({
-      where: {insChatReqNumber: id}
-    });
+      where: {insChatReqNumber: id}, relations:['owner']
+    })
   }
 
   async updateStatus(id: number, updateStatusDto: updateStatusDto) {
-    let reqInfo = await this.findOne(id, updateStatusDto.insurerId);
+    let reqInfo = await this.findOne(id);
     reqInfo = {...reqInfo, reqStatus: updateStatusDto.reqStatus};
 
     return await this.insurerchatEntityRepository.save(reqInfo);
@@ -54,5 +66,25 @@ export class InsurerchatService {
 
   remove(id: number) {
     return `This action removes a #${id} insurerchat`;
+  }
+
+  async insurerCnt(userCode) {
+    return await this.insurerchatEntityRepository.count({where: {insurerId: {expertCode: userCode}, reqStatus: 0}})
+  }
+
+  async commitChat(id: number, userCode: string) {
+    const reqChatInfo = await this.findOne(id);
+
+    this.updateStatus(id,{
+      reqStatus: 1
+    })
+
+    const accessUser: accessUsers = {
+      owner: reqChatInfo.owner.userCode,
+      access: [reqChatInfo.owner.userCode, userCode],
+      invite: []
+    }
+
+    return this.chatRoomService.create({accessUser:accessUser}) ;
   }
 }

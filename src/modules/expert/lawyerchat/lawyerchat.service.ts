@@ -12,7 +12,7 @@ import {accessUsers} from "@/types/chatroomTypes";
 export class LawyerchatService {
   constructor(
       @InjectRepository(LawyerchatEntity)
-      private readonly  lawyerchatRepository: Repository<LawyerchatEntity>,
+      private readonly lawyerchatRepository: Repository<LawyerchatEntity>,
       private readonly schedulerRegistry: SchedulerRegistry,
       private readonly chatRoomService: ChatRoomService,
   ) {

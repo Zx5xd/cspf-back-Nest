@@ -17,9 +17,9 @@ export class createInsuereChatDto{
 }
 export class updateStatusDto{
 
-    @IsString()
-    @IsNotEmpty()
-    insurerId: string;
+    // @IsString()
+    // @IsNotEmpty()
+    // insurerId: string;
 
     @IsNumber()
     @Length(1, 5)
