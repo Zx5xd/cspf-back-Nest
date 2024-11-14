@@ -34,7 +34,7 @@ export class ExpertController {
   @Get('/type/:type')
   attList(@Param('type') type: string) {
     console.log(type)
-    if(type === 'lawyer'){
+    if(type === 'Lawyer'){
       return this.expertService.expertList('L');
     }
     if(type === 'Insurance'){

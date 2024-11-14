@@ -6,6 +6,8 @@ import {ConfigService} from "@nestjs/config";
 import {ChatRoomService} from "../chatroom/chatroom.service";
 import * as cookie from 'cookie'
 import {UserService} from "../user/user.service";
+import {ExpertService} from "@/modules/expert/expert.service";
+import {UserEntity} from "@/modules/user/user.entity";
 
 export class ChatJwtAdapter extends IoAdapter {
     constructor(
@@ -13,7 +15,8 @@ export class ChatJwtAdapter extends IoAdapter {
         private readonly jwtService: JwtService,
         private readonly configService: ConfigService,
         private readonly chatRoomService: ChatRoomService,
-        private readonly userService: UserService
+        private readonly userService: UserService,
+        private readonly expertService: ExpertService
     ) {super(app);}
 
     createIOServer(port: number, options?: any): Server {
@@ -25,7 +28,11 @@ export class ChatJwtAdapter extends IoAdapter {
             const cookies = cookie.parse(handshakeCookie)
             const accessToken:string = socket.handshake.query.accessToken as string || socket.handshake.auth.authorization || cookies.authorization;
 
+            console.log('accessToken, ', accessToken)
+
+
             const roomId = socket.handshake.query.roomId as string | null | undefined;
+            console.log('roomId, ', roomId)
 
             if (!accessToken) {
                 socket.disconnect(true)
@@ -46,9 +53,11 @@ export class ChatJwtAdapter extends IoAdapter {
                 const payload = this.jwtService.verify(accessToken, {
                     secret: secretKey
                 });
+                console.log('secretKey', secretKey);
+                console.log('payload', payload);
 
-                const findUser = await this.userService.getUserById(payload.username);
-                payload.nickname = findUser.nickname;
+                const findUser = await this.userService.getUserById(payload.username) ?? await this.expertService.getExpertByUsername(payload.username);
+                payload.nickname = findUser instanceof UserEntity ? findUser.nickname : findUser.name;
 
                 if (!existChatRoom.accessUser.access.some(code => code===payload.sub)) {
                     return next(new Error('Not Found Access Permission'))
