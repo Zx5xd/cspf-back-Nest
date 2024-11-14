@@ -7,6 +7,7 @@ import 'dotenv/config';
 import {ConfigService} from "@nestjs/config";
 import {ChatRoomService} from "./modules/chatroom/chatroom.service";
 import {ValidationPipe} from "@nestjs/common";
+import {UserService} from "./modules/user/user.service";
 import {NestExpressApplication} from "@nestjs/platform-express";
 import {join} from "path";
 
@@ -21,14 +22,13 @@ async function bootstrap() {
   const jwtService = app.get(JwtService);
   const chatRoomService = app.get(ChatRoomService);
   const configService = app.get(ConfigService);
-  const chatAdapter = new ChatJwtAdapter(app, jwtService,configService,chatRoomService);
-
+  const chatAdapter = new ChatJwtAdapter(app, jwtService,configService,chatRoomService,userService);
   app.useWebSocketAdapter(chatAdapter);
 
   app.enableCors({
     origin: true,
     credentials: true,
-    exposedHeaders: "Cookie"
+
   });
 
   app.useStaticAssets(join(__dirname, '..', '/uploads'), {
