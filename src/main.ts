@@ -22,6 +22,7 @@ async function bootstrap() {
   const jwtService = app.get(JwtService);
   const chatRoomService = app.get(ChatRoomService);
   const configService = app.get(ConfigService);
+  const userService = app.get(UserService);
   const chatAdapter = new ChatJwtAdapter(app, jwtService,configService,chatRoomService,userService);
   app.useWebSocketAdapter(chatAdapter);
 

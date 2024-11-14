@@ -96,6 +96,10 @@ export class ChatLogService {
     page:number,
     limit:number
   }) {
+
+    const page = option.page || 1;
+    const limit = option.limit || 20;
+
     const chatRoomID = option.roomId
     const query = this.chatLogRepository
         .createQueryBuilder('chatLog')
@@ -106,8 +110,8 @@ export class ChatLogService {
         .leftJoin('chatLog.user', 'user')   // user와 조인
         .addSelect(['user.userCode', 'user.username', 'user.nickname']) // 필요한 필드만 선택
         .orderBy('chatLog.createdAt', 'DESC') // 최신순 정렬
-        .skip((option.page - 1) * option.limit)
-        .take(option.limit);
+        .skip((page - 1) * limit)
+        .take(limit);
 
     const [results, total] = await query.getManyAndCount();
 
@@ -134,6 +138,8 @@ export class ChatLogService {
   // -- 유저&전문가 코드 --
   async getChatLogRoom(roomId:string,count:number=50):Promise<(ChatLogEntity[] | number)[]> {
 
+    console.log('getChatLogRoom, 유저&전문가 코드')
+    
     const query = this.chatLogRepository
       .createQueryBuilder('chatLog')
       .innerJoinAndSelect('chatLog.chatRoom', 'chatRoom')
@@ -148,6 +154,7 @@ export class ChatLogService {
     return result.reverse()
   }
 
+  // --- 채팅신고 ---
   async complainChat(option: {
     chatLog: number,
     roomId: string,
@@ -158,8 +165,8 @@ export class ChatLogService {
 
     console.log('cpChat, ', option);
 
-    const chckMessages : ChatLogEntity[] = await this.chatLogRepository.find({
-      where: {chatLogID: LessThanOrEqual(option.chatLog),chatRoom:{chatRoomID:option.roomId}},
+    const chckMessages: ChatLogEntity[] = await this.chatLogRepository.find({
+      where: {chatLogID: LessThanOrEqual(option.chatLog), chatRoom: {chatRoomID: option.roomId}},
       // where: {chatRoom: {chatRoomID: option.roomId}, createdAt: LessThanOrEqual(chatEntity.createdAt),},
       order: {chatLogID: 'desc'},
       take: 20,
@@ -170,3 +177,4 @@ export class ChatLogService {
     return chckMessages
   }
 }
+

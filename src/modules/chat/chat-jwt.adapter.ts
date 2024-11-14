@@ -20,6 +20,7 @@ export class ChatJwtAdapter extends IoAdapter {
         const server = super.createIOServer(port, options);
 
         server.use(async (socket:Socket, next)=>{
+            console.log("socket address: ",socket.handshake.address)
             const handshakeCookie = socket.handshake.headers.cookie;
             const cookies = cookie.parse(handshakeCookie)
             const accessToken:string = socket.handshake.query.accessToken as string || socket.handshake.auth.authorization || cookies.authorization;

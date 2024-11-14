@@ -64,12 +64,9 @@ export class ChatLogController{
 
           const option = {page,limit}
 
-          return await this.chatLogService.getChatLogFilter({
-            roomId: options.roomId,
-            page: page,
-            limit: limit,
-          });
-
+          return await this.chatLogService.getChatLogRoom(
+              options.roomId
+          );
 
       } else{
         throw new HttpException('You do not have permission to access.', HttpStatus.UNAUTHORIZED);
