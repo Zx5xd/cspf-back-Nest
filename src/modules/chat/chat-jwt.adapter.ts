@@ -19,7 +19,7 @@ export class ChatJwtAdapter extends IoAdapter {
         const server = super.createIOServer(port, options);
 
         server.use(async (socket:Socket, next)=>{
-            console.log("socket address: ",socket.handshake.address)
+            // console.log("socket address: ",socket.handshake.address)
             // const accessToken:string = socket.handshake.query.accessToken as string ||  socket.handshake.auth.authorization;
             const accessToken: string =
                 socket.handshake.query.accessToken as string ||
@@ -28,6 +28,8 @@ export class ChatJwtAdapter extends IoAdapter {
                     ?.split('; ')
                     .find(row => row.startsWith('authorization='))
                     ?.split('=')[1] || '');  // 쿠키에서 'authorization' 토큰 추출
+
+            console.log(socket.handshake.address, accessToken)
 
             const roomId = socket.handshake.query.roomId as string | null | undefined;
 

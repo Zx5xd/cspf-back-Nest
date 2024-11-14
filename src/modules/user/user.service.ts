@@ -15,7 +15,7 @@ export class UserService {
         private readonly imageService: ImageService
     ) {}
 
-    async create(userDto:CreateUserDto, imgBuffer?:Buffer) {
+    async create(userDto:CreateUserDto) {
         const existingUser = await this.userRepository.findOne({where:[{username:userDto.username},{email:userDto.email}]})
         if (existingUser) {
             return { success: false, message: '해당 아이디 또는 이메일은 사용 중 입니다.' };
@@ -35,16 +35,26 @@ export class UserService {
         console.log('test')
         const user = await this.userRepository.create({...userDto,userCode,});
         await this.userRepository.save(user);
-        if (imgBuffer != null) {
-            user.profileImg = await this.imageService.saveProfileImage(imgBuffer, userCode);
-            await this.userRepository.save(user);
-        }
+
 
         return { success: true, message: '계정 생성 성공' };
     }
 
+    async createImage(imgBuffer: Buffer) {
+
+        return await this.imageService.saveProfileImage(imgBuffer)
+    }
+
     async getUserById(username: string): Promise<UserEntity> {
         return await this.userRepository.findOne({ where: { username } });
+    }
+
+    async getDogRegNo(userCode: string): Promise<UserEntity> {
+        return await this.userRepository.findOne({ where: { userCode },
+        relations: ['pets'],
+        select: {pets:{
+        dogRegNo:true
+        }}});
     }
 
     async getAllUsers(): Promise<UserEntity[]> {

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import {forwardRef, Module} from '@nestjs/common';
 import { TypeOrmModule } from "@nestjs/typeorm";
 import {UserEntity} from "@/modules/user/user.entity";
 import {GoogleUsersEntity} from "@/modules/user/google-user/google-user.entity";
@@ -10,11 +10,12 @@ import {GoogleUserService} from "@/modules/user/google-user/google-user.service"
 import {NaverUserService} from "@/modules/user/naver-user/naver-user.service";
 import {NaverStrategy} from "@/modules/user/naver-user/naver.strategy";
 import {GoogleStrategy} from "@/modules/user/google-user/google.strategy";
+import {ChatModule} from "@/modules/chat/chat.module";
 
 @Module({
   imports:[
     TypeOrmModule.forFeature([UserEntity, GoogleUsersEntity, NaverUserEntity]),
-    ImageModule
+    forwardRef(() => ChatModule), ImageModule
   ],
   providers: [UserService, GoogleUserService, NaverUserService, NaverStrategy, GoogleStrategy],
   controllers: [UserController],
