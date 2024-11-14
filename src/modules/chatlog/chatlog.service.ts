@@ -41,6 +41,7 @@ export class ChatLogService {
     }
   }
 
+  // -- 관리자 코드 --
   async getChatLog(option:{
     page:number,
     limit:number
@@ -115,6 +116,23 @@ export class ChatLogService {
       currentPage: option.page,
       totalPages: Math.ceil(total / option.limit),
     };
+  }
+
+  // -- 유저&전문가 코드 --
+  async getChatLogRoom(roomId:string,count:number=50):Promise<(ChatLogEntity[] | number)[]> {
+
+    const query = this.chatLogRepository
+      .createQueryBuilder('chatLog')
+      .innerJoinAndSelect('chatLog.chatRoom', 'chatRoom')
+      .where('chatRoom.chatRoomID = :chatRoomID', { chatRoomID:roomId })
+      .leftJoin('chatLog.user', 'user')   // user와 조인
+      .addSelect(['user.userCode', 'user.username', 'user.nickname']) // 필요한 필드만 선택
+      .orderBy('chatLog.createdAt', 'DESC') // 최신순 정렬
+      .take(count);
+
+    const result = await query.getManyAndCount();
+
+    return result.reverse()
   }
 
 }

@@ -1,11 +1,11 @@
 import {IoAdapter} from "@nestjs/platform-socket.io";
-import {INestApplication, Injectable} from "@nestjs/common";
+import {INestApplication} from "@nestjs/common";
 import { Server, Socket } from "socket.io";
-import {AuthService} from "../auth/auth.service";
-import process from "process";
 import {JwtService} from "@nestjs/jwt";
 import {ConfigService} from "@nestjs/config";
 import {ChatRoomService} from "../chatroom/chatroom.service";
+import * as cookie from 'cookie'
+import {UserService} from "../user/user.service";
 
 export class ChatJwtAdapter extends IoAdapter {
     constructor(
@@ -13,19 +13,16 @@ export class ChatJwtAdapter extends IoAdapter {
         private readonly jwtService: JwtService,
         private readonly configService: ConfigService,
         private readonly chatRoomService: ChatRoomService,
+        private readonly userService: UserService
     ) {super(app);}
 
     createIOServer(port: number, options?: any): Server {
         const server = super.createIOServer(port, options);
 
         server.use(async (socket:Socket, next)=>{
-            // const accessToken:string = socket.handshake.query.accessToken as string || socket.handshake.headers['authorization'];
-            const accessToken: string =
-                socket.handshake.query.accessToken as string ||
-                (socket.handshake.headers.cookie
-                    ?.split('; ')
-                    .find(row => row.startsWith('authorization='))
-                    ?.split('=')[1] || '');  // 쿠키에서 'authorization' 토큰 추출
+            const handshakeCookie = socket.handshake.headers.cookie;
+            const cookies = cookie.parse(handshakeCookie)
+            const accessToken:string = socket.handshake.query.accessToken as string || socket.handshake.auth.authorization || cookies.authorization;
 
             const roomId = socket.handshake.query.roomId as string | null | undefined;
 
@@ -48,6 +45,9 @@ export class ChatJwtAdapter extends IoAdapter {
                 const payload = this.jwtService.verify(accessToken, {
                     secret: secretKey
                 });
+
+                const findUser = await this.userService.getUserById(payload.username);
+                payload.nickname = findUser.nickname;
 
                 if (!existChatRoom.accessUser.access.some(code => code===payload.sub)) {
                     return next(new Error('Not Found Access Permission'))

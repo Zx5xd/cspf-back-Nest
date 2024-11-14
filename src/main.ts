@@ -7,6 +7,7 @@ import 'dotenv/config';
 import {ConfigService} from "@nestjs/config";
 import {ChatRoomService} from "./modules/chatroom/chatroom.service";
 import {ValidationPipe} from "@nestjs/common";
+import {UserService} from "./modules/user/user.service";
 
 async function bootstrap() {
 
@@ -18,8 +19,9 @@ async function bootstrap() {
 
   const jwtService = app.get(JwtService);
   const chatRoomService = app.get(ChatRoomService);
+  const userService = app.get(UserService);
   const configService = app.get(ConfigService);
-  const chatAdapter = new ChatJwtAdapter(app, jwtService,configService,chatRoomService);
+  const chatAdapter = new ChatJwtAdapter(app, jwtService,configService,chatRoomService,userService);
   app.useWebSocketAdapter(chatAdapter);
 
   app.enableCors({

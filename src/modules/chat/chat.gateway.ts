@@ -40,13 +40,22 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         // const user = socket.data.user;  // 미들웨어에서 설정된 사용자 정보 사용
         // console.log(`${roomId} - <${userCode}>`+msg);
 
-        client.to(roomId).emit('message',{
+        this.server.to(roomId).emit('message',{
+            senderCode:userCode,
             sender:userNickname,
-            message:msg
+            message:msg,
+            date:new Date()
         })
 
         await this.chatLogService.addChatMessage(roomId,userCode,msg)
         //this.server.emit('message', { user, message });
+    }
+
+    @SubscribeMessage('recent')
+    async handleRecent(@MessageBody() msg: {recentMsg:number}, @ConnectedSocket() client: Socket):Promise<void> {
+        const recentMessage = await this.chatLogService.getChatLogRoom(client.data.roomId, msg.recentMsg);
+
+        client.emit("recent",recentMessage)
     }
 
     /*sendMessageToRoom(roomId:string, message: string) {
