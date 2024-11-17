@@ -50,8 +50,8 @@ export class ExpertEntity {
   @Column({type:'text', nullable: true})
   refreshToken?: string;
 
-  @OneToOne(() => ExpertProfileEntity)
-  @JoinColumn()
+  @OneToOne(() => ExpertProfileEntity, pubEntity => pubEntity.id,{nullable:true})
+  @JoinColumn({name: 'profile'})
   profile?: ExpertProfileEntity;
 
   @OneToMany(()=> ChatImageEntity, chatImage => chatImage.expert)

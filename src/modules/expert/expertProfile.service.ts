@@ -15,24 +15,25 @@ export class ExpertProfileService {
   ) {}
 
   async create(createExpertProp: any) {
-    const { expertCode: expert, profileInputData } = createExpertProp;
+    // console.log('createExpertProp', createExpertProp);
+    const { expertCode: expert, ...profileInputData } = createExpertProp;
 
-    console.log(profileInputData);
+    // console.log('profileInputData, ', profileInputData);
 
     const profile_yn = await this.expertRepository.findOne({
-      where: [expert],
+      where: {expertCode: expert},
       relations: ['profile'],
     });
-    // console.log(`profile`+ JSON.stringify(profile_yn));
+    // console.log(`profile_yn`+ JSON.stringify(profile_yn));
     if (profile_yn.profile) {
       this.update(profile_yn.profile.id, profileInputData);
     } else {
       const expertProfileDto: ExpertProfileDto = profileInputData;
-      expertProfileDto.id = expert.expertCode;
-      console.log(expertProfileDto);
+      expertProfileDto.id = expert+'_public';
+      // console.log(expertProfileDto);
       const profile = this.expertProfileRepository.create(expertProfileDto);
       await this.expertProfileRepository.save(profile);
-      await this.expertRepository.update(expert.expertCode, {
+      await this.expertRepository.update({expertCode: expert}, {
         profile: profile,
       });
       return { success: true, message: '프로필 생성 성공' };

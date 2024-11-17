@@ -70,6 +70,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
         await this.chatLogService.addChatMessage(roomId,userCode,msg)
         //this.server.emit('message', { user, message });
+
     }
 
     /*sendMessageToRoom(roomId:string, message: string) {

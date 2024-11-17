@@ -83,6 +83,13 @@ export class AuthService {
         if (!user) {
             throw new UnauthorizedException('Invalid credentials');
         }
+
+        const expertInfo = await this.expertService.getExpertByUsername(loginDto.username)
+
+        if(expertInfo.credentialStatus === 0){
+            throw new UnauthorizedException('Invalid credentials');
+        }
+
         const payload = { username: user.username, sub: user.expertCode };
 
         const accessToken = this.token(payload,'15m')
@@ -92,8 +99,8 @@ export class AuthService {
         await this.userService.updateRefreshToken(user.expertCode,hashedRefreshToken)
 
         return {
-            accessToken,
-            refreshToken
+           accessToken,
+           refreshToken
         };
     }
 
