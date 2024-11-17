@@ -9,7 +9,7 @@ export class InsurerchatEntity {
     @PrimaryGeneratedColumn()
     insChatReqNumber: number;
 
-    @ManyToOne(() => ExpertEntity, expert => expert.expertCode, {nullable:false})
+    @ManyToOne(() => ExpertEntity, expert => expert.insChatReqs, {nullable:false})
     @JoinColumn({ name: 'insurerId' })
     insurerId: ExpertEntity;
 

@@ -10,6 +10,8 @@ import { ExpertProfileEntity } from './expertProfile.entity';
 import {ChatLogEntity} from "../chatlog/chatlog.entity";
 import {ChatImageEntity} from "../image/image.entity";
 import {InsurerchatEntity} from "./insurerchat/insurerchat.entity";
+import {LawyerchatEntity} from "@/modules/expert/lawyerchat/lawyerchat.entity";
+import {VetReservationEntity} from "@/modules/expert/vet-reservation/vet-reservation.entity";
 
 @Entity('Expert')
 @Unique(['username'])
@@ -60,6 +62,12 @@ export class ExpertEntity {
   @OneToMany(() => ChatLogEntity, chatLog => chatLog.user)
   chatLogs: ChatLogEntity[];
 
-  @OneToMany(() => InsurerchatEntity, insChat => insChat.insurerId)
+  @OneToMany(() => InsurerchatEntity, insChat => insChat.insurerId, {nullable:true})
   insChatReqs: InsurerchatEntity[];
+
+  @OneToMany(() => LawyerchatEntity, lawChat => lawChat.lawChatReqId, {nullable:true})
+  lawChatReqs: LawyerchatEntity[];
+
+  @OneToMany(() => VetReservationEntity, vetResv => vetResv.hospId, {nullable:true})
+  vetResvReqs: VetReservationEntity[];
 }
