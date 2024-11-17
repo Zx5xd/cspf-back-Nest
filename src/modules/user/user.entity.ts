@@ -3,6 +3,8 @@ import {ChatLogEntity} from "../chatlog/chatlog.entity";
 import {ChatImageEntity, ImageEntity} from "../image/image.entity";
 import {PetEntity} from "../pet/pet.entity";
 import {InsurerchatEntity} from "../expert/insurerchat/insurerchat.entity";
+import {LawyerchatEntity} from "@/modules/expert/lawyerchat/lawyerchat.entity";
+import {VetReservationEntity} from "@/modules/expert/vet-reservation/vet-reservation.entity";
 
 @Entity('User')
 @Unique(['username'])
@@ -64,4 +66,10 @@ export class UserEntity {
 
     @OneToMany(() => InsurerchatEntity, insChat => insChat.owner)
     insChatReqs: InsurerchatEntity[];
+
+    @OneToMany(() => LawyerchatEntity, lawChat => lawChat.ownerCode)
+    lawChatReq: LawyerchatEntity[];
+
+    @OneToMany(() => VetReservationEntity, vetResvReq => vetResvReq.owner)
+    vetResvReq: VetReservationEntity[];
 }

@@ -1,6 +1,7 @@
 import {Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, Unique} from 'typeorm';
 import {UserEntity} from "../user/user.entity";
 import {InsurerchatEntity} from "../expert/insurerchat/insurerchat.entity";
+import {VetReservationEntity} from "@/modules/expert/vet-reservation/vet-reservation.entity";
 
 @Entity('Pet')
 @Unique(['dogRegNo'])
@@ -35,4 +36,7 @@ export class PetEntity {
 
   @OneToMany(() => InsurerchatEntity, insChat => insChat.pet)
   insChatReqs: InsurerchatEntity[];
+
+  @OneToMany(() => VetReservationEntity, vetResv => vetResv.pet)
+  vetResv: VetReservationEntity[];
 }
