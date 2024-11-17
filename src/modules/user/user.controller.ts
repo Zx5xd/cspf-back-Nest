@@ -27,24 +27,19 @@ export class UserController {
 
     @Post()
     async create(@Body() createUserDTO: CreateUserDto) {
-        console.log(createUserDTO)
         return await this.userService.create(createUserDTO);
     }
 
     @Post('/createImage')
     @UseInterceptors(FileInterceptor('img') as unknown as NestInterceptor)
-    createImage(@UploadedFile() profileImage: Express.Multer.File) {
-        console.log(profileImage);
-     return this.userService.createImage(profileImage.buffer as Buffer)
+    async createImage(@UploadedFile() profileImage: Express.Multer.File) {
+        return await this.userService.createImage(profileImage.buffer as Buffer)
     }
-
 
     @UseGuards(JwtAuthGuard)
     @Get('profile')
-    async profile(@Req() req, @Res() res) {
-        console.log(new Date(), req.user);
-        const user = await this.userService.getProfile(req.user.userCode)
-        res.send(user)
+    async profile(@Req() req) {
+        return await this.userService.getProfile(req.user.userCode)
     }
 
     @Get(':username')

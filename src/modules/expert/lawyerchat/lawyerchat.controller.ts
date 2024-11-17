@@ -1,4 +1,4 @@
-import {Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req} from '@nestjs/common';
+import {Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, Sse} from '@nestjs/common';
 import {LawyerchatService} from "@/modules/expert/lawyerchat/lawyerchat.service";
 import {ExpertService} from "@/modules/expert/expert.service";
 import {UserService} from "@/modules/user/user.service";
@@ -59,4 +59,6 @@ export class LawyerchatController {
   remove(@Param('id') id: string) {
     return this.lawyerchatService.remove(+id);
   }
+
+
 }

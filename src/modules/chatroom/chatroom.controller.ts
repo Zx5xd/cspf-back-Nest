@@ -34,9 +34,9 @@ export class ChatRoomController {
     async getUserCreateRooms(@Request() req: any) {
         const userCode = req.user.userCode;
         const result:ChatRoomEntity[] = await this.chatRoomService.findUserCreateRooms(userCode);
-        return {
+        return ([{
             content: result
-        }
+        }])
     }
 
     @UseGuards(JwtAuthGuard)

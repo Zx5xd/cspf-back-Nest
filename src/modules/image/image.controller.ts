@@ -17,6 +17,8 @@ import {Buffer} from "buffer";
 import {ChatService} from "@/modules/chat/chat.service";
 import {ChatLogService} from "@/modules/chatlog/chatlog.service";
 
+
+
 @Controller('images')
 export class ImageController {
     constructor(
@@ -24,6 +26,7 @@ export class ImageController {
       private readonly chatLogService: ChatLogService,
       private readonly chatService: ChatService
     ) {}
+
 
     @Get(':roomId/:uuid')
     async getImage(
@@ -75,7 +78,7 @@ export class ImageController {
       @UploadedFiles() files: Array<Express.Multer.File>
     ) {
         // console.log(req.user.userCode)
-        console.log(files)
+        // console.log(files)
         const host = req.headers['x-forwarded-host'] || req.headers.host;
         const protocol = req.headers['x-forwarded-proto'] || req.protocol;
 
