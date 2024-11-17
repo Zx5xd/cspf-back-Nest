@@ -3,6 +3,7 @@ import {createVetReservDto, updateStatusDto} from '@/dto/vetReservation.dto';
 import {InjectRepository} from "@nestjs/typeorm";
 import {VetReservationEntity} from "@/modules/expert/vet-reservation/vet-reservation.entity";
 import {Repository} from "typeorm";
+import {SseService} from "@/utils/sse/sse.service";
 
 @Injectable()
 export class VetReservationService {
@@ -10,6 +11,7 @@ export class VetReservationService {
   constructor(
       @InjectRepository(VetReservationEntity)
       private readonly VetReservationEntityRepository: Repository<VetReservationEntity>,
+      private readonly sseService: SseService,
   ) {
   }
 
@@ -42,6 +44,11 @@ export class VetReservationService {
     const result = this.VetReservationEntityRepository.create(createReq)
     console.log('result', result)
     await this.VetReservationEntityRepository.save(result)
+
+    this.sseService.sendEvent({
+      type:'vetResv_success',
+      data:JSON.stringify(`${result.hospId.company}의 예약 수락 완료하였습니다.`)
+    })
 
     return {
       success: true,

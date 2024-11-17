@@ -18,7 +18,20 @@ export class InsurerchatService {
   }
 
   async create(createInsurerchatDto: createInsuereChatDto, userCode:string) {
+    // const existingReqChat = await this.insurerchatEntityRepository.find({
+    //   where: {
+    //     insurerId: {expertCode: createInsurerchatDto.insurerId},
+    //     owner: {userCode: createInsurerchatDto.owner}
+    //   }
+    // })
 
+    // if (existingReqChat.some(data => data. === createInsurerchatDto.reqDate)) {
+    //   return {
+    //     success: false,
+    //     message: `Lawyer chats already exists`,
+    //   }
+    // }
+    // console.log(existingReqChat.length);
 
     const createReq = {
       insurerId: {expertCode: createInsurerchatDto.insurerId},

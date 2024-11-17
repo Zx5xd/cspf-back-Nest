@@ -1,14 +1,17 @@
-import {Controller, Get, HttpException, HttpStatus, Query, Req, UseGuards} from "@nestjs/common";
+import {Controller, Get, HttpException, HttpStatus, Query, Req, Sse, UseGuards} from "@nestjs/common";
 import {ChatLogService} from "@/modules/chatlog/chatlog.service";
 import {AdminService} from "@/modules/admin/admin.service";
 import {JwtAuthGuard} from "@/modules/auth/jwt-auth.guard";
 import {AdminEntity} from "@/modules/admin/admin.entity";
+import {Observable} from "rxjs";
+import {ChatService} from "@/modules/chat/chat.service";
 @Controller('chatLog')
 export class ChatLogController{
   constructor(
       private readonly chatLogService: ChatLogService,
-      private readonly adminService: AdminService
+      private readonly adminService: AdminService,
   ) {}
+
 
   @UseGuards(JwtAuthGuard)
   @Get('/complain')
@@ -64,12 +67,9 @@ export class ChatLogController{
 
           const option = {page,limit}
 
-          return await this.chatLogService.getChatLogFilter({
-            roomId: options.roomId,
-            page: page,
-            limit: limit,
-          });
-
+          return await this.chatLogService.getChatLogRoom(
+              options.roomId
+          );
 
       } else{
         throw new HttpException('You do not have permission to access.', HttpStatus.UNAUTHORIZED);
