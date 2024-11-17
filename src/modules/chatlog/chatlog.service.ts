@@ -12,19 +12,27 @@ export class ChatLogService {
   ) {}
 
   async addChatMessage(roomId:string,userCode:string,msg:string) {
-    const type = userCode.charAt(0) == 'U';
+    console.log('addChat', userCode)
+    console.log('type Boolean ', userCode.charAt(0).toUpperCase() === 'U')
+
+    const userTypeBoolean = userCode.charAt(0).toUpperCase() === 'U';
+
     let log:ChatLogEntity;
-    if (type) {
+    if (userTypeBoolean) {
+      console.log('type true 진행')
       log = this.chatLogRepository.create({
         chatRoom:{chatRoomID:roomId},
         user:{userCode:userCode},
-        chatMessage:msg
+        chatMessage:msg,
+        type:'USER'
       });
     } else {
+      console.log('type false 진행')
       log = this.chatLogRepository.create({
         chatRoom:{chatRoomID:roomId},
         expert:{expertCode:userCode},
-        chatMessage:msg
+        chatMessage:msg,
+        type:'EXPERT'
       });
     }
     await this.chatLogRepository.save(log);
@@ -138,7 +146,7 @@ export class ChatLogService {
   // -- 유저&전문가 코드 --
   async getChatLogRoom(roomId:string,count:number=50):Promise<(ChatLogEntity[] | number)[]> {
 
-    console.log('getChatLogRoom, 유저&전문가 코드')
+    // console.log('getChatLogRoom, 유저&전문가 코드')
     
     const query = this.chatLogRepository
       .createQueryBuilder('chatLog')
@@ -172,7 +180,7 @@ export class ChatLogService {
       take: 20,
     })
 
-    console.log('chck,', chckMessages);
+    // console.log('chck,', chckMessages);
 
     return chckMessages
   }

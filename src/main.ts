@@ -11,8 +11,10 @@ import {UserService} from "./modules/user/user.service";
 import {NestExpressApplication} from "@nestjs/platform-express";
 import {join} from "path";
 import {ExpertService} from "@/modules/expert/expert.service";
+import * as fs from "node:fs";
 
 async function bootstrap() {
+
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   //app.useGlobalGuards(new JwtAuthGuard());
@@ -41,3 +43,5 @@ async function bootstrap() {
   await app.listen(3800);
 }
 bootstrap();
+
+

@@ -23,16 +23,18 @@ export class ChatJwtAdapter extends IoAdapter {
         const server = super.createIOServer(port, options);
 
         server.use(async (socket:Socket, next)=>{
-            console.log("socket address: ",socket.handshake.address)
-            const handshakeCookie = socket.handshake.headers.cookie;
-            const cookies = cookie.parse(handshakeCookie)
+            // console.log("socket address: ",socket.handshake.address)
+            // console.log("socket headers: ", socket.handshake.headers);
+                const handshakeCookie = socket.handshake.headers.cookie;
+                const cookies = handshakeCookie ? cookie.parse(handshakeCookie) : null
+
             const accessToken:string = socket.handshake.query.accessToken as string || socket.handshake.auth.authorization || cookies.authorization;
 
-            console.log('accessToken, ', accessToken)
+            // console.log('accessToken, ', accessToken)
 
 
             const roomId = socket.handshake.query.roomId as string | null | undefined;
-            console.log('roomId, ', roomId)
+            // console.log('roomId, ', roomId)
 
             if (!accessToken) {
                 socket.disconnect(true)
@@ -53,8 +55,8 @@ export class ChatJwtAdapter extends IoAdapter {
                 const payload = this.jwtService.verify(accessToken, {
                     secret: secretKey
                 });
-                console.log('secretKey', secretKey);
-                console.log('payload', payload);
+                // console.log('secretKey', secretKey);
+                // console.log('payload', payload);
 
                 const findUser = await this.userService.getUserById(payload.username) ?? await this.expertService.getExpertByUsername(payload.username);
                 payload.nickname = findUser instanceof UserEntity ? findUser.nickname : findUser.name;
