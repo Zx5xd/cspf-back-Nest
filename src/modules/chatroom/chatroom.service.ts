@@ -54,7 +54,7 @@ export class ChatRoomService {
 
     }
 
-    async consultEndUpdate(updateData: Partial<ChatRoomEntity>): Promise<void> {
-        await this.chatRoomRepository.update({consultEndTime:new Date()},updateData);
+    async consultEndUpdate(roomId:string): Promise<void> {
+        await this.chatRoomRepository.update({chatRoomID:roomId},{consultEndTime:new Date()});
     }
 }
