@@ -12,14 +12,10 @@ export class ChatLogService {
   ) {}
 
   async addChatMessage(roomId:string,userCode:string,msg:string) {
-    console.log('addChat', userCode)
-    console.log('type Boolean ', userCode.charAt(0).toUpperCase() === 'U')
-
-    const userTypeBoolean = userCode.charAt(0).toUpperCase() === 'U';
-
+    const type = userCode.charAt(0) == 'U';
+    console.log(type)
     let log:ChatLogEntity;
-    if (userTypeBoolean) {
-      console.log('type true 진행')
+    if (type) {
       log = this.chatLogRepository.create({
         chatRoom:{chatRoomID:roomId},
         user:{userCode:userCode},
@@ -27,7 +23,6 @@ export class ChatLogService {
         type:'USER'
       });
     } else {
-      console.log('type false 진행')
       log = this.chatLogRepository.create({
         chatRoom:{chatRoomID:roomId},
         expert:{expertCode:userCode},
@@ -62,7 +57,6 @@ export class ChatLogService {
     }
   }
 
-  // -- 관리자 코드 --
   async getChatLog(option:{
     page:number,
     limit:number
@@ -101,22 +95,25 @@ export class ChatLogService {
 
   async getChatLogFilter(option:{
     roomId:string,
-    page:number,
-    limit:number
+    page?:number,
+    limit?:number
   }) {
 
     const page = option.page || 1;
     const limit = option.limit || 20;
 
+    // console.log('chatFilter Service, ', option.page, option.limit)
     const chatRoomID = option.roomId
     const query = this.chatLogRepository
         .createQueryBuilder('chatLog')
         .innerJoinAndSelect('chatLog.chatRoom', 'chatRoom')
         .where('chatRoom.chatRoomID = :chatRoomID', { chatRoomID })
-        .leftJoin('chatLog.chatRoom','chatRoom')
-        .addSelect(['chatRoom.chatRoomID'])
+        // .leftJoin('chatLog.chatRoom','chatRoom')
+        // .addSelect(['chatRoom.chatRoomID'])
         .leftJoin('chatLog.user', 'user')   // user와 조인
         .addSelect(['user.userCode', 'user.username', 'user.nickname']) // 필요한 필드만 선택
+        .leftJoin('chatLog.expert', 'expert')   // user와 조인
+        .addSelect(['expert.expertCode', 'expert.username', 'expert.name']) // 필요한 필드만 선택
         .orderBy('chatLog.createdAt', 'DESC') // 최신순 정렬
         .skip((page - 1) * limit)
         .take(limit);
@@ -127,12 +124,19 @@ export class ChatLogService {
       chatLogID: chatLog.chatLogID,
       createdAt: chatLog.createdAt,
       chatMessage: chatLog.chatMessage,
+      chatImageUrl: chatLog.chatImageUrl,
       chatRoomID: chatLog.chatRoom.chatRoomID, // chatRoomID를 별도로 추출
-      user: {
+      user: chatLog.user ? {
         userCode: chatLog.user.userCode,
         username: chatLog.user.username,
         nickname: chatLog.user.nickname,
-      },
+      } : null,
+      expert: chatLog.expert ? {
+        expertCode: chatLog.expert.expertCode,
+        username: chatLog.expert.username,
+        name: chatLog.expert.name,
+      } : null,
+      type: chatLog.type
     }));
 
     return {
@@ -143,26 +147,6 @@ export class ChatLogService {
     };
   }
 
-  // -- 유저&전문가 코드 --
-  async getChatLogRoom(roomId:string,count:number=50):Promise<(ChatLogEntity[] | number)[]> {
-
-    // console.log('getChatLogRoom, 유저&전문가 코드')
-    
-    const query = this.chatLogRepository
-      .createQueryBuilder('chatLog')
-      .innerJoinAndSelect('chatLog.chatRoom', 'chatRoom')
-      .where('chatRoom.chatRoomID = :chatRoomID', { chatRoomID:roomId })
-      .leftJoin('chatLog.user', 'user')   // user와 조인
-      .addSelect(['user.userCode', 'user.username', 'user.nickname']) // 필요한 필드만 선택
-      .orderBy('chatLog.createdAt', 'DESC') // 최신순 정렬
-      .take(count);
-
-    const result = await query.getManyAndCount();
-
-    return result.reverse()
-  }
-
-  // --- 채팅신고 ---
   async complainChat(option: {
     chatLog: number,
     roomId: string,
@@ -173,16 +157,15 @@ export class ChatLogService {
 
     console.log('cpChat, ', option);
 
-    const chckMessages: ChatLogEntity[] = await this.chatLogRepository.find({
-      where: {chatLogID: LessThanOrEqual(option.chatLog), chatRoom: {chatRoomID: option.roomId}},
+    const chckMessages : ChatLogEntity[] = await this.chatLogRepository.find({
+      where: {chatLogID: LessThanOrEqual(option.chatLog),chatRoom:{chatRoomID:option.roomId}},
       // where: {chatRoom: {chatRoomID: option.roomId}, createdAt: LessThanOrEqual(chatEntity.createdAt),},
       order: {chatLogID: 'desc'},
       take: 20,
     })
 
-    // console.log('chck,', chckMessages);
+    console.log('chck,', chckMessages);
 
     return chckMessages
   }
 }
-

@@ -29,7 +29,6 @@ import { LawyerchatModule } from '@/modules/expert/lawyerchat/lawyerchat.module'
 import { VetReservationModule } from '@/modules/expert/vet-reservation/vet-reservation.module';
 import {PetModule} from "@/modules/pet/pet.module";
 import {ChatComplaintModule} from "@/modules/chat-complaint/chat-complaint.module";
-import { SseModule } from '@/utils/sse/sse.module';
 
 @Module({
   imports: [
@@ -77,7 +76,6 @@ import { SseModule } from '@/utils/sse/sse.module';
       InsurerchatModule,
       LawyerchatModule,
       VetReservationModule,
-      SseModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -7,8 +7,6 @@ import {CronJob} from 'cron'
 import {SchedulerRegistry} from "@nestjs/schedule";
 import {ChatRoomService} from "@/modules/chatroom/chatroom.service";
 import {accessUsers} from "@/types/chatroomTypes";
-import {LawyerchatController} from "@/modules/expert/lawyerchat/lawyerchat.controller";
-import {SseService} from "@/utils/sse/sse.service";
 
 @Injectable()
 export class LawyerchatService {
@@ -17,7 +15,6 @@ export class LawyerchatService {
       private readonly lawyerchatRepository: Repository<LawyerchatEntity>,
       private readonly schedulerRegistry: SchedulerRegistry,
       private readonly chatRoomService: ChatRoomService,
-      private readonly sseService: SseService,
   ) {
   }
 
@@ -30,12 +27,11 @@ export class LawyerchatService {
       }
     })
 
-    if(existingReqChat.some(statusNumber => statusNumber.reqStatus <9)){
-      if(existingReqChat.some(data => data.reqDate === createLawyerchatDto.reqDate)) {
-        return {
-          success: false,
-          message: `Lawyer chats already exists`,
-        }
+
+    if(existingReqChat.some(data => data.reqDate === createLawyerchatDto.reqDate)) {
+      return {
+        success: false,
+        message: `Lawyer chats already exists`,
       }
     }
     // console.log(existingReqChat.length);
@@ -86,20 +82,11 @@ export class LawyerchatService {
 
   async findAll(userCode: string) {
     if(userCode.charAt(0) === 'L'){
-      this.sseService.sendEvent({
-        type: 'lawyerList',
-        data: {
-          messsage: "변호사 채팅 리스트",
-        },
-      })
-
       return await this.lawyerchatRepository.find({
         where: {lawyerCode: {expertCode: userCode}, reqStatus:0},
         relations: ['ownerCode'],
         select: {ownerCode: {name: true}}
       })
-
-
     }else{
       return {
         success: false,

@@ -37,12 +37,24 @@ export class UserService {
         await this.userRepository.save(user);
 
 
-
         return { success: true, message: '계정 생성 성공' };
+    }
+
+    async createImage(imgBuffer: Buffer) {
+
+        return await this.imageService.saveProfileImage(imgBuffer)
     }
 
     async getUserById(username: string): Promise<UserEntity> {
         return await this.userRepository.findOne({ where: { username } });
+    }
+
+    async getDogRegNo(userCode: string): Promise<UserEntity> {
+        return await this.userRepository.findOne({ where: { userCode },
+        relations: ['pets'],
+        select: {pets:{
+        dogRegNo:true
+        }}});
     }
 
     async getAllUsers(): Promise<UserEntity[]> {
@@ -81,9 +93,5 @@ export class UserService {
         } else {
             return { success: false, message: '계정이 존재하지 않거나 삭제할 수 없어 실패했습니다' };
         }
-    }
-
-    async createImage(imgBuffer: Buffer) {
-            return await this.imageService.saveProfileImage(imgBuffer);
     }
 }

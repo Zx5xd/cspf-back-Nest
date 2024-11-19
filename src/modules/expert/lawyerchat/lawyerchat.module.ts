@@ -7,7 +7,6 @@ import {LawyerchatController} from "@/modules/expert/lawyerchat/lawyerchat.contr
 import {LawyerchatService} from "@/modules/expert/lawyerchat/lawyerchat.service";
 import {ScheduleModule} from "@nestjs/schedule";
 import {ChatRoomModule} from "@/modules/chatroom/chatroom.module";
-import {SseModule} from "@/utils/sse/sse.module";
 
 @Module({
   imports: [
@@ -15,11 +14,10 @@ import {SseModule} from "@/utils/sse/sse.module";
     TypeOrmModule.forFeature([LawyerchatEntity]),
       ExpertModule,
       UserModule,
-      ChatRoomModule,
-      SseModule
+      ChatRoomModule
   ],
   controllers: [LawyerchatController],
   providers: [LawyerchatService],
-  exports: [LawyerchatService, ],
+  exports: [LawyerchatService],
 })
 export class LawyerchatModule {}

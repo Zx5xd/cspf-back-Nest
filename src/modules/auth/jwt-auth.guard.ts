@@ -25,6 +25,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     getRequest(context: ExecutionContext): Request {
         const request = context.switchToHttp().getRequest();
         const token = request.cookies['authorization'];  // 쿠키에서 'authorization' 값 가져옴
+        console.log('jwtToken Info, ', token);
         if (!token) {
             throw new UnauthorizedException('JWT token is missing in cookies');
         }

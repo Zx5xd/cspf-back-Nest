@@ -1,40 +1,37 @@
-import {IoAdapter} from "@nestjs/platform-socket.io";
-import {INestApplication} from "@nestjs/common";
+import { IoAdapter } from "@nestjs/platform-socket.io";
+import { INestApplication } from "@nestjs/common";
 import { Server, Socket } from "socket.io";
-import {JwtService} from "@nestjs/jwt";
-import {ConfigService} from "@nestjs/config";
-import {ChatRoomService} from "../chatroom/chatroom.service";
-import * as cookie from 'cookie'
-import {UserService} from "../user/user.service";
-import {ExpertService} from "@/modules/expert/expert.service";
-import {UserEntity} from "@/modules/user/user.entity";
+import { JwtService } from "@nestjs/jwt";
+import { ConfigService } from "@nestjs/config";
+import { ChatRoomService } from "../chatroom/chatroom.service";
 
 export class ChatJwtAdapter extends IoAdapter {
     constructor(
-        app:INestApplication,
+        app: INestApplication,
         private readonly jwtService: JwtService,
         private readonly configService: ConfigService,
         private readonly chatRoomService: ChatRoomService,
-        private readonly userService: UserService,
-        private readonly expertService: ExpertService
-    ) {super(app);}
+    ) {
+        super(app);
+    }
 
     createIOServer(port: number, options?: any): Server {
         const server = super.createIOServer(port, options);
 
         server.use(async (socket:Socket, next)=>{
-            // console.log("socket address: ",socket.handshake.address)
-            // console.log("socket headers: ", socket.handshake.headers);
-                const handshakeCookie = socket.handshake.headers.cookie;
-                const cookies = handshakeCookie ? cookie.parse(handshakeCookie) : null
+            console.log("socket address: ",socket.handshake.address)
+            // const accessToken:string = socket.handshake.query.accessToken as string ||  socket.handshake.auth.authorization;
+            const accessToken: string =
+                socket.handshake.query.accessToken as string ||
+                socket.handshake.auth.authorization ||
+                (socket.handshake.headers.cookie
+                    ?.split('; ')
+                    .find(row => row.startsWith('authorization='))
+                    ?.split('=')[1] || '');  // 쿠키에서 'authorization' 토큰 추출
 
-            const accessToken:string = socket.handshake.query.accessToken as string || socket.handshake.auth.authorization || cookies.authorization;
-
-            // console.log('accessToken, ', accessToken)
-
+            console.log(socket.handshake.address, accessToken);
 
             const roomId = socket.handshake.query.roomId as string | null | undefined;
-            // console.log('roomId, ', roomId)
 
             if (!accessToken) {
                 socket.disconnect(true)
@@ -55,11 +52,6 @@ export class ChatJwtAdapter extends IoAdapter {
                 const payload = this.jwtService.verify(accessToken, {
                     secret: secretKey
                 });
-                // console.log('secretKey', secretKey);
-                // console.log('payload', payload);
-
-                const findUser = await this.userService.getUserById(payload.username) ?? await this.expertService.getExpertByUsername(payload.username);
-                payload.nickname = findUser instanceof UserEntity ? findUser.nickname : findUser.name;
 
                 if (!existChatRoom.accessUser.access.some(code => code===payload.sub)) {
                     return next(new Error('Not Found Access Permission'))
