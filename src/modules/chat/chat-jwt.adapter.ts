@@ -1,6 +1,6 @@
 import {IoAdapter} from "@nestjs/platform-socket.io";
 import {INestApplication} from "@nestjs/common";
-import { Server, Socket } from "socket.io";
+import {Server, Socket} from "socket.io";
 import {JwtService} from "@nestjs/jwt";
 import {ConfigService} from "@nestjs/config";
 import {ChatRoomService} from "../chatroom/chatroom.service";
@@ -8,6 +8,7 @@ import * as cookie from 'cookie'
 import {UserService} from "../user/user.service";
 import {ExpertService} from "@/modules/expert/expert.service";
 import {UserEntity} from "@/modules/user/user.entity";
+import {UserType} from "@/types/chatTypes";
 
 export class ChatJwtAdapter extends IoAdapter {
     constructor(
@@ -25,13 +26,10 @@ export class ChatJwtAdapter extends IoAdapter {
         server.use(async (socket:Socket, next)=>{
             // console.log("socket address: ",socket.handshake.address)
             // console.log("socket headers: ", socket.handshake.headers);
-                const handshakeCookie = socket.handshake.headers.cookie;
-                const cookies = handshakeCookie ? cookie.parse(handshakeCookie) : null
+            const handshakeCookie = socket.handshake.headers.cookie;
+            const cookies = handshakeCookie ? cookie.parse(handshakeCookie) : null
 
             const accessToken:string = socket.handshake.query.accessToken as string || socket.handshake.auth.authorization || cookies.authorization;
-
-            // console.log('accessToken, ', accessToken)
-
 
             const roomId = socket.handshake.query.roomId as string | null | undefined;
             // console.log('roomId, ', roomId)
@@ -65,6 +63,7 @@ export class ChatJwtAdapter extends IoAdapter {
                     return next(new Error('Not Found Access Permission'))
                 }
 
+                socket.data.type = findUser instanceof UserEntity ? UserType.User : UserType.Expert;
                 socket.data.user = payload;
                 socket.data.roomId = roomId;
                 socket.join(roomId)

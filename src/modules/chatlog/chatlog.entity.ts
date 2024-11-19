@@ -8,11 +8,15 @@ import { UserEntity } from "../user/user.entity";
 import { ChatRoomEntity } from "../chatroom/chatroom.entity";
 import {ChatComplaintEntity} from "../chat-complaint/chatcomp.entity";
 import {ExpertEntity} from "../expert/expert.entity";
+import {ChatType, UserType} from "@/types/chatTypes";
 
 @Entity('ChatLog')
 export class ChatLogEntity extends BaseEntity {
   @PrimaryGeneratedColumn({type:'bigint'})
   chatLogID: number;  // 고유 식별자, 자동 생성됨
+
+  @Column({type:'varchar', length:8, default:ChatType.TEXT})
+  msgType: ChatType;
 
   @CreateDateColumn({type:'timestamp'})
   createdAt: Date;
@@ -26,7 +30,7 @@ export class ChatLogEntity extends BaseEntity {
   expert: ExpertEntity;
 
   @Column({type:'varchar',length:8})
-  type: 'USER' | 'EXPERT';
+  type: UserType;
 
   @ManyToOne(() => ChatRoomEntity, chatRoom => chatRoom.chatLogs, { nullable: false })
   @JoinColumn({ name: 'chatRoomID' })  // 외래 키로 참조

@@ -10,6 +10,7 @@ import {Logger} from "@nestjs/common";
 import { Server, Socket } from "socket.io";
 import {ChatLogService} from "../chatlog/chatlog.service";
 import {ChatService} from "./chat.service";
+import {Chat, UserType} from "@/types/chatTypes";
 import {PetService} from "@/modules/pet/pet.service";
 
 @WebSocketGateway({
@@ -43,33 +44,36 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     }
 
     @SubscribeMessage('message')
-    async handleMessage(@MessageBody() msg: string, @ConnectedSocket() client: Socket): Promise<void> {
+    async handleMessage(@MessageBody() msg: Chat, @ConnectedSocket() client: Socket): Promise<void> {
+        const userType:UserType = client.data.type;
         const userNickname = client.data.user?.nickname;
         const userCode = client.data.user?.sub;
+        const profileImg = client.data.user?.profileImg ?? null;
         const roomId = client.data.roomId;
         // const user = socket.data.user;  // 미들웨어에서 설정된 사용자 정보 사용
-        console.log(`${roomId} - <${userCode}>`+msg);
+        console.log(`${roomId} - <${userCode}>`+msg.toString());
 
         // client.emit('newMessage',{
         //     roomId: roomId,
         // })
 
-        this.server.to(roomId).emit('message',{
-            senderCode:userCode,
-            sender:userNickname,
-            message:msg,
-            date:new Date()
-        })
+        msg.userType = userType;
+        msg.profile = {
+            nickname: userNickname,
+            profileImg: profileImg,
+            userCode
+        }
 
-        await this.chatLogService.addChatMessage(roomId,userCode,msg)
+        client.to(roomId).emit('message',msg)
+
+        await this.chatLogService.addChatMessage(roomId,msg)
         //this.server.emit('message', { user, message });
 
     }
 
     @SubscribeMessage('recent')
     async handleRecent(@MessageBody() msg: {recentMsg:number}, @ConnectedSocket() client: Socket):Promise<void> {
-        const recentMessage = await this.chatLogService.getChatLogRoom(client.data.roomId, msg.recentMsg);
-
+        const recentMessage = await this.chatLogService.getChatLogsRoom(client.data.roomId, msg.recentMsg,client.data.user?.sub);
         client.emit("recent",recentMessage)
     }
 
