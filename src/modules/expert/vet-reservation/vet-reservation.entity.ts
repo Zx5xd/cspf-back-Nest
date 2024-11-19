@@ -22,7 +22,7 @@ export class VetReservationEntity {
     @JoinColumn({name:'ownerName'}) // 예약자 성함
     owner: UserEntity;
 
-    @ManyToOne(() => PetEntity, (pet) => pet.dogRegNo, {nullable:false})
+    @ManyToOne(() => PetEntity, (pet) => pet.vetResv, {nullable:false})
     @JoinColumn({name:'petRegNo'})
     pet: PetEntity; // KindNm, petBirth 참조용
 

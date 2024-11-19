@@ -1,4 +1,5 @@
 import {IsNotEmpty, IsString, Length} from "class-validator";
+import {UserEntity} from "@/modules/user/user.entity";
 
 export class petDto{
 
@@ -35,9 +36,8 @@ export class petDto{
     @IsNotEmpty()
     aprGbNm: string; // 승인여부
 
-    @IsString()
     @IsNotEmpty()
-    owner: string;
+    owner: UserEntity;
 
 }
 
@@ -53,7 +53,6 @@ export class regPetDataDto{
     @IsNotEmpty()
     Birthday: string;
 
-    @IsString()
-    @IsNotEmpty()
-    owner: string;
+    // @IsNotEmpty()
+    // owner: UserEntity;
 }

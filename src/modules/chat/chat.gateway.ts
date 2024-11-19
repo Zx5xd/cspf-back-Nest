@@ -10,6 +10,7 @@ import {Logger} from "@nestjs/common";
 import { Server, Socket } from "socket.io";
 import {ChatLogService} from "../chatlog/chatlog.service";
 import {ChatService} from "./chat.service";
+import {PetService} from "@/modules/pet/pet.service";
 
 @WebSocketGateway({
     cors:{
@@ -24,7 +25,8 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     constructor(
         private readonly chatLogService: ChatLogService,
-        private readonly chatService: ChatService
+        private readonly chatService: ChatService,
+        private readonly petService: PetService
     ) {}
 
     afterInit(server: any): any {
@@ -48,9 +50,9 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         // const user = socket.data.user;  // 미들웨어에서 설정된 사용자 정보 사용
         console.log(`${roomId} - <${userCode}>`+msg);
 
-        client.emit('newMessage',{
-            roomId: roomId,
-        })
+        // client.emit('newMessage',{
+        //     roomId: roomId,
+        // })
 
         this.server.to(roomId).emit('message',{
             senderCode:userCode,
@@ -76,6 +78,44 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         // this.logger.log(roomId+':'+message)
         console.log(roomId+':'+JSON.stringify(message))
     }*/
+
+    @SubscribeMessage('wantPetInfo')
+    reqPetInfo(@ConnectedSocket() client: Socket){
+        const userNickname = client.data.user?.nickname;
+        const userCode = client.data.user?.userCode;
+        const roomId = client.data.roomId;
+
+        console.log('wantPetInfo')
+
+        this.server.to(roomId).emit('wantPetInfo',{
+            sender: userCode,
+            senderNickName: userNickname
+        })
+    }
+
+    @SubscribeMessage('sendPetInfo')
+    async sendPetInfo(@MessageBody() msg:any, @ConnectedSocket() client: Socket) {
+        const userCode = client.data.user?.userCode;
+        const userNickname = client.data.user?.nickname;
+        const roomId = client.data.roomId;
+
+        if(msg.msgCode === 1){
+            const petInfo = await this.petService.findOneToUser(userCode)
+
+            this.server.to(roomId).emit('sendPetInfo', {
+                sender: userCode,
+                senderNickName: userNickname,
+                petInfo: petInfo,
+                successCode: 1
+            })
+        }else{
+            this.server.to(roomId).emit('sendPetInfo', {
+                senderNickName: userNickname,
+                successCode: 0
+            })
+        }
+
+    }
 
     handleConnection(@ConnectedSocket() client: Socket): any {
         const userCode = client.data.user?.sub;

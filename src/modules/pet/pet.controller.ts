@@ -34,20 +34,23 @@ export class PetController {
     const visionData = await this.imageExtractService.detextImageToPetDataBase(
       file.buffer,
     );
+
     const { owner, petId, birth } = visionData;
 
     const aniInfoData = await this.aniService.getAniInfo(owner, petId);
-    console.log(aniInfoData);
+
     aniInfoData.Birthday = birth;
-    aniInfoData.owner = userCode;
+    aniInfoData.owner = userCode
     console.log('image aniInfo', aniInfoData);
 
     return this.petService.create(aniInfoData);
   }
 
   @Post('/text')
-  async regPetDB(@Body() petData: regPetDataDto) {
-    const { owner, dogRegNo, Birthday } = petData;
+  @UseGuards(JwtAuthGuard)
+  async regPetDB(@Body() petData: regPetDataDto, @Req() req) {
+    const { dogRegNo, Birthday } = petData;
+    const owner = req.user.userCode
     console.log(`regPetDB`, owner, dogRegNo, Birthday);
 
     const aniInfoData = await this.aniService.getAniInfo(owner, dogRegNo);

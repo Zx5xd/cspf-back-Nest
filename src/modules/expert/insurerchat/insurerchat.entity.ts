@@ -26,7 +26,7 @@ export class InsurerchatEntity {
     @JoinColumn({ name: 'OwnerName' }) // 외래 키가 참조할 UserEntity의 컬럼 설정
     owner: UserEntity; // OwnerName 참조용
 
-    @ManyToOne(() => PetEntity, pet => pet.dogRegNo, {nullable:false})
+    @ManyToOne(() => PetEntity, pet => pet.insChatReqs, {nullable:false})
     @JoinColumn({name:'petRegNo'})
     pet: PetEntity; // petKindNm, petBirth 참조용
 
