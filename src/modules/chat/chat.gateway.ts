@@ -73,6 +73,43 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     }
 
+    @SubscribeMessage('wantPetInfo')
+    reqPetInfo(@ConnectedSocket() client: Socket){
+        const userNickname = client.data.user?.nickname;
+        const userCode = client.data.user?.sub;
+        const roomId = client.data.roomId;
+
+        console.log('wantPetInfo')
+
+        this.server.to(roomId).emit('wantPetInfo',{
+            senderCode: userCode,
+            sender: userNickname
+        })
+    }
+
+    @SubscribeMessage('sendPetInfo')
+    async sendPetInfo(@MessageBody() msg:any, @ConnectedSocket() client: Socket) {
+        const userCode = client.data.user?.sub;
+        const userNickname = client.data.user?.nickname;
+        const roomId = client.data.roomId;
+
+        if(msg.msgCode === 1){
+            const petInfo = await this.petService.findOneToUser(userCode)
+
+            this.server.to(roomId).emit('sendPetInfo', {
+                senderCode: userCode,
+                sender: userNickname,
+                petInfo: petInfo,
+                successCode: 1
+            })
+        }else{
+            this.server.to(roomId).emit('sendPetInfo', {
+                sender: userNickname,
+                successCode: 0
+            })
+        }
+    }
+
     /*sendMessageToRoom(roomId:string, message: string) {
         this.server.to(roomId).emit('message',message)
         // this.logger.log(roomId+':'+message)

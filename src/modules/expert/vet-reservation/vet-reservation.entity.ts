@@ -8,7 +8,7 @@ export class VetReservationEntity {
     @PrimaryGeneratedColumn()
     hosReservationId: number;
 
-    @ManyToOne(() => ExpertEntity, expert => expert.expertCode, {nullable:false})
+    @ManyToOne(() => ExpertEntity, expert => expert.vetResvReqs, {nullable:false})
     @JoinColumn({ name: 'hospId' })
     hospId: ExpertEntity; // 수의사 Code
 

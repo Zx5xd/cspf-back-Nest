@@ -57,6 +57,11 @@ export class UserController {
         return await this.userService.getAllUsers();
     }
 
+    @Get('/admin/:userCode')
+    getUserProfileToAdmin(@Param('userCode') userCode: string) {
+        return this.userService.getProfile(userCode);
+    }
+
     @UseGuards(JwtAuthGuard)
     @Put()
     async updateUser(@Req() req,@Body() userDto:UpdateUserDTO) {

@@ -47,6 +47,8 @@ export class QuestionsController {
   @Patch(':boardId')
   async editBoard(@Req() req,@Param('boardId') boardId: number,@Body() questionDto:QuestionsDto) {
     const code = req.user.userCode ?? req.user.adminCode
+    console.log('editBoard,', req.user.userCode, boardId, questionDto)
+
     const isUpdated = await this.questionsService.update(code,boardId,questionDto);
 
     if (!isUpdated) {

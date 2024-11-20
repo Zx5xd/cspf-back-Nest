@@ -29,9 +29,9 @@ export class PetEntity {
   @Column({ type: 'varchar', length: 20, comment: '등록증 유효여부' })
   aprGbNm: string; // 승인여부
 
-  @ManyToOne(() => UserEntity, user => user.userCode)
+  @ManyToOne(() => UserEntity, user => user.pets)
   @JoinColumn({name:'OwnerCode'})
-  owner: string;
+  owner: UserEntity;
 
   @OneToMany(() => InsurerchatEntity, insChat => insChat.pet)
   insChatReqs: InsurerchatEntity[];

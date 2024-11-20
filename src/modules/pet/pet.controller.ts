@@ -18,9 +18,9 @@ import {JwtAuthGuard} from "@/modules/auth/jwt-auth.guard";
 @Controller('pet')
 export class PetController {
   constructor(
-    private readonly petService: PetService,
-    private readonly imageExtractService: ImageExtractService,
-    private readonly aniService: AniApiService,
+      private readonly petService: PetService,
+      private readonly imageExtractService: ImageExtractService,
+      private readonly aniService: AniApiService,
   ) {}
 
   @Post()
@@ -32,22 +32,31 @@ export class PetController {
     console.log(req.user);
 
     const visionData = await this.imageExtractService.detextImageToPetDataBase(
-      file.buffer,
+        file.buffer,
     );
+
+    console.log(visionData)
+
     const { owner, petId, birth } = visionData;
 
+    console.log(owner, petId, birth)
+
     const aniInfoData = await this.aniService.getAniInfo(owner, petId);
-    console.log(aniInfoData);
+    console.log('aniInfo, ', aniInfoData);
+
+    console.log('aniInfo, ', aniInfoData);
     aniInfoData.Birthday = birth;
-    aniInfoData.owner = userCode;
+    aniInfoData.owner = userCode
     console.log('image aniInfo', aniInfoData);
 
     return this.petService.create(aniInfoData);
   }
 
   @Post('/text')
-  async regPetDB(@Body() petData: regPetDataDto) {
-    const { owner, dogRegNo, Birthday } = petData;
+  @UseGuards(JwtAuthGuard)
+  async regPetDB(@Body() petData: regPetDataDto, @Req() req) {
+    const { dogRegNo, Birthday } = petData;
+    const owner = req.user.userCode
     console.log(`regPetDB`, owner, dogRegNo, Birthday);
 
     const aniInfoData = await this.aniService.getAniInfo(owner, dogRegNo);
@@ -65,6 +74,11 @@ export class PetController {
   findOne(@Param('dogRegNo') dogRegNo: string) {
     return this.petService.findOne(dogRegNo);
   }
+
+  // @Get('/temp/:userCode')
+  // findOneInfo(@Param('userCode') userCode: string){
+  //   return this.petService.findOneToUser(userCode)
+  // }
 
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updatePetDto: UpdatePetDto) {

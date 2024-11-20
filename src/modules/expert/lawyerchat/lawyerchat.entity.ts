@@ -8,7 +8,7 @@ export class LawyerchatEntity {
     @PrimaryGeneratedColumn()
     lawChatReqId: number;
 
-    @ManyToOne(()=>ExpertEntity, expert => expert.expertCode, {nullable:false})
+    @ManyToOne(()=>ExpertEntity, expert => expert.lawChatReqs, {nullable:false})
     @JoinColumn({name: 'lawyerId'})
     lawyerCode : ExpertEntity;
 

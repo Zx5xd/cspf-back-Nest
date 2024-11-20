@@ -51,9 +51,17 @@ export class PetService {
   //   });
   // }
 
+  async findOneToUser(userCode: string) {
+    return await this.petRepository.findOne({
+      where: { owner: {userCode} },
+    });
+  }
+
   // update(id: number, updatePetDto: petDto) {
   //   return `This action updates a #${id} pet`;
   // }
+
+  // getPetInfo(roomId:string)
 
   async remove(dogRegNo: string) {
     return await this.petRepository.findOne({
