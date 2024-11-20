@@ -2,8 +2,12 @@ import {Injectable} from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
 import {LessThanOrEqual, Repository} from "typeorm";
 import {ChatLogEntity} from "@/modules/chatlog/chatlog.entity";
-import {Chat, ChatType, UserType} from "@/types/chatTypes";
+import {Chat, ChatType, User, UserType} from "@/types/chatTypes";
 import {ChatRoomService} from "@/modules/chatroom/chatroom.service";
+import {UserService} from "@/modules/user/user.service";
+import {ExpertService} from "@/modules/expert/expert.service";
+import {UserEntity} from "@/modules/user/user.entity";
+import {ExpertEntity} from "@/modules/expert/expert.entity";
 
 @Injectable()
 export class ChatLogService {
@@ -12,6 +16,8 @@ export class ChatLogService {
     @InjectRepository(ChatLogEntity)
     private chatLogRepository: Repository<ChatLogEntity>,
     private chatRoomService: ChatRoomService,
+    private userService: UserService,
+    private expertService: ExpertService
   ) {}
 
   async addChatMessage(roomId:string,msg:Chat) {
@@ -39,7 +45,8 @@ export class ChatLogService {
         user:{userCode},
         chatMessage:null,
         type,
-        msgType: ChatType.IMG
+        msgType: ChatType.IMG,
+        chatImageUrl: value
       });
 
       await this.chatLogRepository.save(log);
@@ -145,47 +152,72 @@ export class ChatLogService {
 
     return result.reverse()
   }
+
   // -- 유저&전문가 코드 --
-  async getChatLogsRoom(roomId:string,count:number=50,userCode:string):Promise<{variant:'sent'|'received',content:Chat}[]> {
-
-        // console.log('getChatLogRoom, 유저&전문가 코드')
-
-    const query = this.chatLogRepository
+  async getChatLogsRoom(roomId:string,count:number=50,userCode:string):Promise<{profile:User,content:Chat[]}> {
+    const userResult:UserEntity|ExpertEntity = await this.userService.getProfile(userCode) ?? await this.expertService.findExpertCodeOne(userCode);
+    /*const query = this.chatLogRepository
       .createQueryBuilder('chatLog')
       .innerJoinAndSelect('chatLog.chatRoom', 'chatRoom')
       .where('chatRoom.chatRoomID = :chatRoomID', { chatRoomID:roomId })
       .leftJoin('chatLog.user', 'user')   // user와 조인
       .addSelect(['user.userCode', 'user.username', 'user.nickname']) // 필요한 필드만 선택
-        .leftJoin('chatLog.expert','expert')
-        .addSelect(['expert.expertCode', 'expert.username', 'expert.name'])
+      .leftJoin('chatLog.expert','expert')
+      .addSelect(['expert.expertCode', 'expert.username', 'expert.name'])
+      .orderBy('chatLog.createdAt', 'DESC') // 최신순 정렬
+      .take(count);*/
+
+    const query = this.chatLogRepository
+      .createQueryBuilder('chatLog')
+      .innerJoinAndSelect('chatLog.chatRoom', 'chatRoom')
+      .where('chatRoom.chatRoomID = :chatRoomID', { chatRoomID: roomId })
+      .leftJoin('chatLog.user', 'user') // user와 조인
+      .leftJoin('chatLog.expert', 'expert') // expert와 조인
+      .addSelect([
+        'CASE WHEN chatLog.type = \'user\' THEN user.userCode ELSE expert.expertCode END AS userCode',
+        'CASE WHEN chatLog.type = \'user\' THEN user.username ELSE expert.username END AS profileImg',
+        'CASE WHEN chatLog.type = \'user\' THEN user.nickname ELSE expert.name END AS nickname',
+      ])
       .orderBy('chatLog.createdAt', 'DESC') // 최신순 정렬
       .take(count);
 
-    const [results, number] = await query.getManyAndCount();
+    const results = await query.getRawMany();
 
-    const transformerResult:{variant:'sent'|'received',content:Chat}[] = results.map(value => {
-      console.log('trans',value[value.type])
+    const transformerResult: Chat[] = results.map((row) => ({
+      msgType: row.chatLog_msgType,
+      msg: row.chatLog_chatMessage,
+      date: row.chatLog_createdAt,
+      userType: row.chatLog_type,
+      imgUrl: row.chatLog_chatImageUrl,
+      profile: {
+        userCode: row.userCode,
+        profileImg: row.profileImg,
+        nickname: row.nickname,
+      },
+      petMsg: null,
+    }));
 
-      const variant = value.user.userCode === userCode ? 'sent' : 'received';
-      return {
-        variant: variant,
-        content: {
-          msgType:value.msgType,
-          msg:value.chatMessage,
-          date:value.createdAt,
-          userType:value.type,
-          imgUrl: value.chatImageUrl,
-          profile: {
-            userCode:value.user.userCode,
-            profileImg:value.user.profileImg,
-            nickname:value.user.nickname
-          },
-          petMsg: null,
-        }
+    if (userResult instanceof UserEntity) {
+      const profile: User = {
+        nickname: userResult.nickname,
+        profileImg: userResult.profileImg ?? null,
+        userCode
       }
-    })
-
-    return transformerResult.reverse()
+      return {
+        profile,
+        content: transformerResult.reverse()
+      }
+    } else {
+      const profile: User = {
+        nickname: userResult.name,
+        profileImg: userResult.profile.image,
+        userCode
+      }
+      return {
+        profile,
+        content: transformerResult.reverse()
+      }
+    }
   }
 
   // --- 채팅신고 ---

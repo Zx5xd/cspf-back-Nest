@@ -76,6 +76,10 @@ export class ExpertService {
     return await this.expertRepository.findOne({ where: { username }, relations: ['profile'] });
   }
 
+  async findExpertCodeOne(expertCode: string) {
+    return await this.expertRepository.findOne({where:{expertCode}})
+  }
+
   async findOne(username: string) {
     const existingUser = await this.expertRepository.findOne({
       where: [{ username: username }],
