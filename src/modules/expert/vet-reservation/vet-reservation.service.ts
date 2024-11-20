@@ -45,11 +45,6 @@ export class VetReservationService {
     console.log('result', result)
     await this.VetReservationEntityRepository.save(result)
 
-    this.sseService.sendEvent({
-      type:'vetResv_success',
-      data:JSON.stringify(`${result.hospId.company}의 예약 수락 완료하였습니다.`)
-    })
-
     return {
       success: true,
       message: '상담 신청이 완료되었습니다.'
@@ -83,7 +78,14 @@ export class VetReservationService {
   async updateStatus(id: number, updateDto: updateStatusDto) {
     let resvInfo = await this.findOne(id, updateDto.hospId);
     resvInfo = {...resvInfo, resvStatus: updateDto.resvStatus};
-    return await this.VetReservationEntityRepository.save(resvInfo);
+    const resv = await this.VetReservationEntityRepository.save(resvInfo)
+    if(updateDto.resvStatus === 1){
+      this.sseService.sendEvent({
+        type:'vetResv_success',
+        data:JSON.stringify(`${resv.hospId.company}의 예약 수락 완료하였습니다.`)
+      })
+    }
+    return resv;
   }
 
   remove(id: number) {

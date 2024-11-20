@@ -7,7 +7,7 @@ export class ChatComplaintController {
   constructor(private readonly chatComplaintService: ChatComplaintService) {}
 
   @Post()
-  complaintRecieve(@Body() compDto: chatComplaintDto) {
+  complaintRecieve(@Body() compDto: any) {
     return this.chatComplaintService.complaintReceive(compDto);
   }
 

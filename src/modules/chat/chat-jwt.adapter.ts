@@ -9,6 +9,7 @@ import {UserService} from "../user/user.service";
 import {ExpertService} from "@/modules/expert/expert.service";
 import {UserEntity} from "@/modules/user/user.entity";
 import {UserType} from "@/types/chatTypes";
+import {ExpertEntity} from "@/modules/expert/expert.entity";
 
 export class ChatJwtAdapter extends IoAdapter {
     constructor(
@@ -58,6 +59,7 @@ export class ChatJwtAdapter extends IoAdapter {
 
                 const findUser = await this.userService.getUserById(payload.username) ?? await this.expertService.getExpertByUsername(payload.username);
                 payload.nickname = findUser instanceof UserEntity ? findUser.nickname : findUser.name;
+                console.log('findUser Entity', findUser instanceof UserEntity, findUser instanceof ExpertEntity);
 
                 if (!existChatRoom.accessUser.access.some(code => code===payload.sub)) {
                     return next(new Error('Not Found Access Permission'))

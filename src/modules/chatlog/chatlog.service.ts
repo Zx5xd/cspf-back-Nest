@@ -148,7 +148,7 @@ export class ChatLogService {
   // -- 유저&전문가 코드 --
   async getChatLogsRoom(roomId:string,count:number=50,userCode:string):Promise<{variant:'sent'|'received',content:Chat}[]> {
 
-    // console.log('getChatLogRoom, 유저&전문가 코드')
+        // console.log('getChatLogRoom, 유저&전문가 코드')
 
     const query = this.chatLogRepository
       .createQueryBuilder('chatLog')
@@ -156,12 +156,16 @@ export class ChatLogService {
       .where('chatRoom.chatRoomID = :chatRoomID', { chatRoomID:roomId })
       .leftJoin('chatLog.user', 'user')   // user와 조인
       .addSelect(['user.userCode', 'user.username', 'user.nickname']) // 필요한 필드만 선택
+        .leftJoin('chatLog.expert','expert')
+        .addSelect(['expert.expertCode', 'expert.username', 'expert.name'])
       .orderBy('chatLog.createdAt', 'DESC') // 최신순 정렬
       .take(count);
 
     const [results, number] = await query.getManyAndCount();
 
     const transformerResult:{variant:'sent'|'received',content:Chat}[] = results.map(value => {
+      console.log('trans',value[value.type])
+
       const variant = value.user.userCode === userCode ? 'sent' : 'received';
       return {
         variant: variant,
