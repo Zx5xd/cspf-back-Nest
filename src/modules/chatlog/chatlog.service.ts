@@ -23,13 +23,24 @@ export class ChatLogService {
   async addChatMessage(roomId:string,msg:Chat) {
     console.log('addChat', msg.profile.userCode)
 
-    let log:ChatLogEntity = this.chatLogRepository.create({
-      chatRoom:{chatRoomID:roomId},
-      user:{userCode:msg.profile.userCode},
-      chatMessage:msg.msg,
-      type:msg.userType,
-      msgType: msg.msgType
-    });
+    let log:ChatLogEntity
+    if (msg.userType===UserType.User) {
+      log = this.chatLogRepository.create({
+        chatRoom:{chatRoomID:roomId},
+        user:{userCode:msg.profile.userCode},
+        chatMessage:msg.msg,
+        type:msg.userType,
+        msgType: msg.msgType
+      });
+    } else {
+      log = this.chatLogRepository.create({
+        chatRoom:{chatRoomID:roomId},
+        expert:{expertCode:msg.profile.userCode},
+        chatMessage:msg.msg,
+        type:msg.userType,
+        msgType: msg.msgType
+      });
+    }
 
     this.chatRoomService.consultEndUpdate(roomId);
 
@@ -210,7 +221,7 @@ export class ChatLogService {
     } else {
       const profile: User = {
         nickname: userResult.name,
-        profileImg: userResult.profile.image,
+        profileImg: userResult.image,
         userCode
       }
       return {
