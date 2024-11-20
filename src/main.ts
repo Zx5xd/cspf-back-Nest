@@ -15,12 +15,7 @@ import * as fs from "node:fs";
 
 async function bootstrap() {
 
-  const httpsOptions = {
-    cert: fs.readFileSync("./cert.pem"),
-    key: fs.readFileSync("./key.pem")
-  }
-
-  const app = await NestFactory.create<NestExpressApplication>(AppModule,{httpsOptions});
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   //app.useGlobalGuards(new JwtAuthGuard());
 
   app.use(cookieParser());
@@ -44,8 +39,6 @@ async function bootstrap() {
     prefix: `/uploads/`,
   });
 
-  await app.listen(3000);
+  await app.listen(3800);
 }
 bootstrap();
-
-

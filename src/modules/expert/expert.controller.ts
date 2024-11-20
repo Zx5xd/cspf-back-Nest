@@ -51,6 +51,11 @@ export class ExpertController {
     return this.expertService.getExpertByUsername(req.user.username);
   }
 
+  @Get('/admin/:userCode')
+  getExpertProfileToAdmin(@Param('userCode') userCode:string){
+    return this.expertService.getProfileToAdmin(userCode);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateDto: Partial<ExpertEntity>) {
     // console.log(`expert Update`,id, updateDto);
