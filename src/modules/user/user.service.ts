@@ -56,6 +56,13 @@ export class UserService {
         })
     }
 
+    async getSimpleProfile(userCode:string): Promise<UserEntity> {
+        return await this.userRepository.findOne({
+            where: {userCode},
+            select: ['userCode','nickname','profileImg']
+        })
+    }
+
     async updateRefreshToken(userCode:string,refreshToken:string) {
         await this.userRepository.update(
             userCode,
