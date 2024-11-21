@@ -6,6 +6,7 @@ import {createInsuereChatDto, updateStatusDto, InsurerListDto} from "@/dto/insur
 import {InsurerchatEntity} from "@/modules/expert/insurerchat/insurerchat.entity";
 import {accessUsers} from "@/types/chatroomTypes";
 import {ChatRoomService} from "@/modules/chatroom/chatroom.service";
+import {SseService} from "@/utils/sse/sse.service";
 
 @Injectable()
 export class InsurerchatService {
@@ -13,7 +14,8 @@ export class InsurerchatService {
       @InjectRepository(InsurerchatEntity)
       private readonly insurerchatEntityRepository: Repository<InsurerchatEntity>,
       private readonly petServece:PetService,
-      private readonly chatRoomService: ChatRoomService
+      private readonly chatRoomService: ChatRoomService,
+      private readonly sseService: SseService,
   ) {
   }
 
@@ -42,6 +44,14 @@ export class InsurerchatService {
     const result = this.insurerchatEntityRepository.create(createReq)
     console.log('result', result)
     await this.insurerchatEntityRepository.save(result)
+
+    this.sseService.sendEventToUser(createInsurerchatDto.insurerId,{
+      type:"request",
+      data:{
+        id:result.insChatReqNumber,
+        message:"상담 요청이 들어왔습니다"
+      }
+    })
 
     return {
       success: true,
