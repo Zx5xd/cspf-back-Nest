@@ -10,8 +10,6 @@ import {Logger} from "@nestjs/common";
 import { Server, Socket } from "socket.io";
 import {ChatLogService} from "../chatlog/chatlog.service";
 import {ChatService} from "./chat.service";
-import {Chat, UserType} from "@/types/chatTypes";
-import {PetService} from "@/modules/pet/pet.service";
 
 @WebSocketGateway({
     cors:{
@@ -26,8 +24,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     constructor(
         private readonly chatLogService: ChatLogService,
-        private readonly chatService: ChatService,
-        private readonly petService: PetService
+        private readonly chatService: ChatService
     ) {}
 
     afterInit(server: any): any {
@@ -68,7 +65,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
         await this.chatLogService.addChatMessage(roomId,msg)
         //this.server.emit('message', { user, message });
-
     }
 
     @SubscribeMessage('recent')
