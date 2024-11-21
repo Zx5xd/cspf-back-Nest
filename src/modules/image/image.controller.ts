@@ -1,22 +1,28 @@
 import {
     Controller,
     Get,
-    Param,
-    Res,
+    InternalServerErrorException,
+    NestInterceptor,
     NotFoundException,
-    Post,
-    UseGuards,
+    Param,
+    Post, Query,
     Req,
-    UseInterceptors, UploadedFiles, NestInterceptor, UploadedFile, InternalServerErrorException, SetMetadata
+    Res,
+    UploadedFile,
+    UploadedFiles,
+    UseGuards,
+    UseInterceptors
 } from '@nestjs/common';
-import { ImageService } from '@/modules/image/image.service';
-import { Response } from 'express';
+import {ImageService} from '@/modules/image/image.service';
+import {Response} from 'express';
 import {JwtAuthGuard} from "@/modules/auth/jwt-auth.guard";
 import {FileInterceptor, FilesInterceptor} from '@nestjs/platform-express';
 import {Buffer} from "buffer";
 import {ChatService} from "@/modules/chat/chat.service";
 import {ChatLogService} from "@/modules/chatlog/chatlog.service";
-
+import {Chat, ChatType, Pet, User, UserType} from "@/types/chatTypes";
+import {UserService} from "@/modules/user/user.service";
+import {UserEntity} from "@/modules/user/user.entity";
 
 
 @Controller('images')
@@ -24,7 +30,8 @@ export class ImageController {
     constructor(
       private readonly imageService: ImageService,
       private readonly chatLogService: ChatLogService,
-      private readonly chatService: ChatService
+      private readonly chatService: ChatService,
+      private readonly userService: UserService
     ) {}
 
 
@@ -69,12 +76,12 @@ export class ImageController {
 
 
     // 채팅 이미지 저장
-    @Post(':roomId')
+    @Post('chat')
     @UseGuards(JwtAuthGuard)
     @UseInterceptors(FilesInterceptor('files', 3) as unknown as NestInterceptor)
     async uploadImage(
       @Req() req,
-      @Param('roomId') roomId: string,
+      @Query('roomId') roomId: string,
       @UploadedFiles() files: Array<Express.Multer.File>
     ) {
         // console.log(req.user.userCode)
@@ -87,20 +94,35 @@ export class ImageController {
 
         const savedFileUuids:Array<string> = [];
 
+        const user:UserEntity = await this.userService.getUserById(req.user.username)
+
+        const userType = (user instanceof UserEntity) ? UserType.User : UserType.Expert;
+
         for (const file of files) {
             // const filename = file.
             const filename = file.originalname
             const fileBuffer = file.buffer as Buffer;
-            const savedFileUuid = await this.imageService.saveChatImage(filename, fileBuffer, roomId, userCode, type);
-            savedFileUuids.push(`${protocol}://${host}/images/${roomId}/${savedFileUuid}`); // 각 파일의 UUID 저장
+            const encodeUUID = await this.imageService.saveChatImage(filename, fileBuffer, roomId, userCode, type);
+            const url = `${protocol}://${host}/images/${roomId}/${encodeUUID}`
+            savedFileUuids.push(url); // 각 파일의 UUID 저장
+
+            const sendMsg:Chat = {
+                userType: userType,
+                msgType: ChatType.IMG,
+                profile: {
+                    userCode:user.userCode,
+                    nickname:user.nickname,
+                    profileImg:user.profileImg
+                },
+                msg: null,
+                imgUrl: url,
+                petMsg: null,
+                date: new Date()
+            }
+
+            this.chatService.sendMessageToRoom(roomId,'message', sendMsg)
         }
         // this.chatService.sendMessageToAll('message','test')
-        this.chatService.sendMessageToRoom(roomId,'image',
-            JSON.stringify({
-                userCode:userCode,
-                images:savedFileUuids
-            })
-        )
 
         await this.chatLogService.addChatMessageList(roomId,userCode,savedFileUuids)
 

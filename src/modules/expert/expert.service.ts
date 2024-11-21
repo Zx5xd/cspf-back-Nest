@@ -27,7 +27,6 @@ export class ExpertService {
       order: { expertCode: 'DESC' },
       take: 1,
     });
-    console.log(latestUsers)
 
     let expertCode: string;
     if (latestUsers.length === 0) {
@@ -77,8 +76,8 @@ export class ExpertService {
     return await this.expertRepository.findOne({ where: { username }, relations: ['profile'] });
   }
 
-  async getProfileToAdmin(userCode: string) {
-    return await this.expertRepository.findOne({where: {expertCode: userCode}});
+  async findExpertCodeOne(expertCode: string) {
+    return await this.expertRepository.findOne({where:{expertCode}})
   }
 
   async findOne(username: string) {

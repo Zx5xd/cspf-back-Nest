@@ -1,4 +1,4 @@
-import {Controller, Sse, UseGuards} from '@nestjs/common';
+import {Controller, Param, Sse, UseGuards} from '@nestjs/common';
 import { SseService } from './sse.service';
 import {JwtAuthGuard} from "@/modules/auth/jwt-auth.guard";
 import {Observable} from "rxjs";
@@ -7,9 +7,9 @@ import {Observable} from "rxjs";
 export class SseController {
   constructor(private readonly sseService: SseService) {}
 
-  @Sse()
+  @Sse(":userCode")
   @UseGuards(JwtAuthGuard)
-  stream(): Observable<MessageEvent> {
-    return this.sseService.getEvents()
+  stream(@Param("userCode") userCode:string): Observable<MessageEvent> {
+    return this.sseService.getUserEvents(userCode);
   }
 }

@@ -86,7 +86,7 @@ export class LawyerchatService {
 
   async findAll(userCode: string) {
     if(userCode.charAt(0) === 'L'){
-      this.sseService.sendEvent({
+      this.sseService.sendEventToUser(userCode,{
         type: 'lawyerList',
         data: {
           messsage: "변호사 채팅 리스트",

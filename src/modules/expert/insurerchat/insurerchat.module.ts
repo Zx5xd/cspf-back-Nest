@@ -8,6 +8,7 @@ import {ChatModule} from "../../chat/chat.module";
 import {ExpertModule} from "../expert.module";
 import {InsurerchatEntity} from "./insurerchat.entity";
 import {PetModule} from "@/modules/pet/pet.module";
+import {SseModule} from "@/utils/sse/sse.module";
 
 @Module({
   imports:[
@@ -15,6 +16,7 @@ import {PetModule} from "@/modules/pet/pet.module";
     ExpertModule,
       PetModule,
       ChatRoomModule,
+    SseModule
   ],
   controllers: [InsurerchatController],
   providers: [InsurerchatService],
