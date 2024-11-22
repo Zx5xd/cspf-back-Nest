@@ -51,6 +51,12 @@ export class ExpertController {
     return this.expertService.getExpertByUsername(req.user.username);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get("simple_profile")
+  expertSimpleProfile(@Req() req:any){
+    return this.expertService.getExpertSimpleProfile(req.user.username);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateDto: Partial<ExpertEntity>) {
     // console.log(`expert Update`,id, updateDto);

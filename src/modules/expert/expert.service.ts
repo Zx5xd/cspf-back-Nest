@@ -76,6 +76,10 @@ export class ExpertService {
     return await this.expertRepository.findOne({ where: { username }, relations: ['profile'] });
   }
 
+  async getExpertSimpleProfile(username: string): Promise<ExpertEntity> {
+    return await this.expertRepository.findOne({ where: { username }, select:['expertCode','name','image'], relations: ['profile'] });
+  }
+
   async findExpertCodeOne(expertCode: string) {
     return await this.expertRepository.findOne({where:{expertCode}})
   }
