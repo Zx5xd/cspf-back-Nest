@@ -52,7 +52,7 @@ export class ExpertController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get("simple_profile")
+  @Get("/simple_profile")
   expertSimpleProfile(@Req() req:any){
     return this.expertService.getExpertSimpleProfile(req.user.username);
   }
