@@ -26,6 +26,12 @@ export class ExpertController {
     return this.expertService.findAll();
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get("/simple_profile")
+  expertSimpleProfile(@Req() req:any){
+    return this.expertService.getExpertSimpleProfile(req.user.username);
+  }
+
   @Get(':username')
   findOne(@Param('username') username: string) {
     return this.expertService.findOne(username);
@@ -49,12 +55,6 @@ export class ExpertController {
   @Get()
   expertProfile(@Req() req:any){
     return this.expertService.getExpertByUsername(req.user.username);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get("/simple_profile")
-  expertSimpleProfile(@Req() req:any){
-    return this.expertService.getExpertSimpleProfile(req.user.username);
   }
 
   @Patch(':id')
