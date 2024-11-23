@@ -8,6 +8,8 @@ import * as cookie from 'cookie'
 import {UserService} from "../user/user.service";
 import {ExpertService} from "@/modules/expert/expert.service";
 import {UserEntity} from "@/modules/user/user.entity";
+import {UserType} from "@/types/chatTypes";
+import {ExpertEntity} from "@/modules/expert/expert.entity";
 
 export class ChatJwtAdapter extends IoAdapter {
     constructor(

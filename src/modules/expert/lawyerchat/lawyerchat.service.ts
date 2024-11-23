@@ -94,7 +94,7 @@ export class LawyerchatService {
       })
 
       return await this.lawyerchatRepository.find({
-        where: {lawyerCode: {expertCode: userCode}, reqStatus:0},
+        where: {lawyerCode: {expertCode: userCode}},
         relations: ['ownerCode'],
         select: {ownerCode: {name: true}}
       })

@@ -82,7 +82,7 @@ export class VetReservationService {
     if(updateDto.resvStatus === 1){
       this.sseService.sendEvent({
         type:'vetResv_success',
-        data:JSON.stringify(`${resv.hospId.company}의 예약 수락 완료하였습니다.`)
+        data:JSON.stringify(`동물병원 예약 수락 완료하였습니다.`)
       })
     }
     return resv;

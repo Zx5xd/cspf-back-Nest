@@ -53,7 +53,7 @@ export class ExpertController {
 
   @Get('/admin/:userCode')
   getExpertProfileToAdmin(@Param('userCode') userCode:string){
-    return this.expertService.getProfileToAdmin(userCode);
+    return this.expertService.findExpertCodeOne(userCode);
   }
 
   @Patch(':id')

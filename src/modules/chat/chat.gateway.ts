@@ -10,6 +10,8 @@ import {Logger} from "@nestjs/common";
 import { Server, Socket } from "socket.io";
 import {ChatLogService} from "../chatlog/chatlog.service";
 import {ChatService} from "./chat.service";
+import {PetService} from "@/modules/pet/pet.service";
+import {Chat, UserType} from "@/types/chatTypes";
 
 @WebSocketGateway({
     cors:{
@@ -24,7 +26,8 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
     constructor(
         private readonly chatLogService: ChatLogService,
-        private readonly chatService: ChatService
+        private readonly chatService: ChatService,
+        private readonly petService: PetService
     ) {}
 
     afterInit(server: any): any {
@@ -48,7 +51,7 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
         const profileImg = client.data.user?.profileImg ?? null;
         const roomId = client.data.roomId;
         // const user = socket.data.user;  // 미들웨어에서 설정된 사용자 정보 사용
-        console.log(`${roomId} - <${userCode}>`+msg.msg);
+        console.log(`${roomId} - <${userCode}>`+msg.toString());
 
         // client.emit('newMessage',{
         //     roomId: roomId,

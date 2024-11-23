@@ -4,10 +4,10 @@ import {LessThanOrEqual, Repository} from "typeorm";
 import {ChatLogEntity} from "@/modules/chatlog/chatlog.entity";
 import {Chat, ChatType, User, UserType} from "@/types/chatTypes";
 import {ChatRoomService} from "@/modules/chatroom/chatroom.service";
-import {UserService} from "@/modules/user/user.service";
-import {ExpertService} from "@/modules/expert/expert.service";
 import {UserEntity} from "@/modules/user/user.entity";
 import {ExpertEntity} from "@/modules/expert/expert.entity";
+import {UserService} from "@/modules/user/user.service";
+import {ExpertService} from "@/modules/expert/expert.service";
 
 @Injectable()
 export class ChatLogService {
@@ -17,7 +17,7 @@ export class ChatLogService {
     private chatLogRepository: Repository<ChatLogEntity>,
     private chatRoomService: ChatRoomService,
     private userService: UserService,
-    private expertService: ExpertService
+    private expertService: ExpertService,
   ) {}
 
   async addChatMessage(roomId:string,msg:Chat) {
@@ -163,7 +163,6 @@ export class ChatLogService {
 
     return result.reverse()
   }
-
   // -- 유저&전문가 코드 --
   async getChatLogsRoom(roomId:string,count:number=50,userCode:string):Promise<{profile:User,content:Chat[]}> {
     const userResult:UserEntity|ExpertEntity = await this.userService.getProfile(userCode) ?? await this.expertService.findExpertCodeOne(userCode);
