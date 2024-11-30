@@ -52,6 +52,13 @@ export class LawyerchatService {
     console.log('result', result)
     await this.lawyerchatRepository.save(result)
 
+    this.sseService.sendEventToUser(createLawyerchatDto.lawyerCode, {
+      type: 'request',
+      data: JSON.stringify({
+        messsage: `상담 요청이 왔습니다.`
+      }),
+    })
+
     return {
       success: true,
       message: '상담 신청이 완료되었습니다.'
@@ -94,7 +101,7 @@ export class LawyerchatService {
       })
 
       return await this.lawyerchatRepository.find({
-        where: {lawyerCode: {expertCode: userCode}, reqStatus:0},
+        where: {lawyerCode: {expertCode: userCode}},
         relations: ['ownerCode'],
         select: {ownerCode: {name: true}}
       })

@@ -60,13 +60,20 @@ export class UserController {
 
     @UseGuards(JwtAuthGuard)
     @Put()
-    async updateUser(@Req() req,@Body() userDto:UpdateUserDTO) {
-        return await this.userService.updateUser(req.user.userCode,userDto)
+    async updateUser(@Req() req,@Body() userDto:any) {
+        console.log(userDto)
+        const userCode = req.user.userCode === userDto.userCode ? req.user.userCode : userDto.userCode;
+        return await this.userService.updateUser(userCode,userDto)
     }
 
     @UseGuards(JwtAuthGuard)
     @Delete()
     async deleteUser(@Req() req) {
         return await this.userService.deleteUser(req.user.userCode)
+    }
+
+    @Delete(':userCode')
+    async deleteAdminUser(@Param('userCode') userCode: string) {
+        return await this.userService.deleteUser(userCode)
     }
 }
